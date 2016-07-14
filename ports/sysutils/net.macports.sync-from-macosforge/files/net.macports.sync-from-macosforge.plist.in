@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>GroupName</key>
+        <string>_www</string>
+        <key>Label</key>
+        <string>net.macports.sync-from-macosforge</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>@PREFIX@/bin/sync-from-macosforge.sh</string>
+        </array>
+        <key>StandardErrorPath</key>
+        <string>@PREFIX@/var/log/sync-form-macosforge</string>
+        <key>StandardOutPath</key>
+        <string>@PREFIX@/var/log/sync-form-macosforge</string>
+        <key>StartInterval</key>
+        <integer>3600</integer>
+        <key>UserName</key>
+        <string>_www</string>
+    </dict>
+</plist>
