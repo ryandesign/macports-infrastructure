@@ -7,7 +7,6 @@ forward lookup = false
 list = true
 log file = @PREFIX@/var/log/rsyncd/rsyncd.log
 max connections = 0
-pid file = @PREFIX@/var/run/rsyncd/rsyncd.pid
 read only = true
 reverse lookup = false
 timeout = 600

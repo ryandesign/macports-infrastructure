@@ -4,14 +4,14 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.rsyncd
-version             3
+version             4
 
 depends_lib         port:rsync
 
-destroot.keepdirs   ${destroot}${prefix}/var/log/rsyncd ${destroot}${prefix}/var/run/rsyncd
+destroot.keepdirs   ${destroot}${prefix}/var/log/rsyncd
 destroot {
     xinstall -d ${destroot}${prefix}/etc/rsyncd
-    xinstall -d -o _www -g _www ${destroot}${prefix}/var/log/rsyncd ${destroot}${prefix}/var/run/rsyncd
+    xinstall -d -o _www -g _www ${destroot}${prefix}/var/log/rsyncd
     xinstall -m 644 ${filespath}/rsyncd.conf.in ${destroot}${prefix}/etc/rsyncd/rsyncd.conf
     xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
     reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/etc/rsyncd/rsyncd.conf ${destroot}/Library/LaunchDaemons/${name}.plist
