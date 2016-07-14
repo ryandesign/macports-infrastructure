@@ -18,7 +18,7 @@ RSYNC_URL_FORMAT="rsync://rsync-origin.macports.org/%s/"
 #RSYNC_URL_FORMAT="rsync://sea.us.rsync.macports.org/%s/"
 #RSYNC_URL_FORMAT="rsync://sjc.us.rsync.macports.org/%s/"
 
-RSYNC=rsync
+RSYNC="@PREFIX@/bin/rsync"
 RSYNC_ARGS="--compress --delete-delay --hard-links --links --no-motd --perms --recursive --stats --timeout=600 --times"
 if [ -t 1 ]; then
     RSYNC_ARGS="$RSYNC_ARGS --info=progress2"
@@ -27,6 +27,6 @@ fi
 for RSYNC_MODULE in $RSYNC_MODULES; do
     RSYNC_URL="$(printf "$RSYNC_URL_FORMAT" "$RSYNC_MODULE")"
     echo "Syncing $RSYNC_MODULE from $RSYNC_URL"
-    $RSYNC $RSYNC_ARGS "$RSYNC_URL" "$RSYNC_DIR/$RSYNC_MODULE"
+    "$RSYNC" $RSYNC_ARGS "$RSYNC_URL" "$RSYNC_DIR/$RSYNC_MODULE"
     echo
 done
