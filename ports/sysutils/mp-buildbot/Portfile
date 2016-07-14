@@ -1,0 +1,39 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+
+name                mp-buildbot
+version             0.1
+categories          sysutils
+platforms           darwin
+maintainers         ryandesign
+license             BSD
+supported_archs     noarch
+
+description         Scripts used by MacPorts buildbot
+
+long_description    ${description}
+
+homepage            https://www.macports.org/
+fetch.type          svn
+svn.url             https://svn.macports.org/repository/macports/contrib/${name}
+svn.revision        147043
+
+worksrcdir          ${name}
+
+use_configure       no
+
+build {}
+
+destroot {
+    copy ${worksrcpath} ${destroot}${prefix}/libexec/${name}
+
+    xinstall ${filespath}/mpbb.in ${destroot}${prefix}/bin/mpbb
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/bin/mpbb
+
+    set docdir ${prefix}/share/doc/${subport}
+    xinstall -d ${destroot}${docdir}
+    move ${destroot}${prefix}/libexec/${name}/README ${destroot}${docdir}
+}
+
+livecheck.type      none
