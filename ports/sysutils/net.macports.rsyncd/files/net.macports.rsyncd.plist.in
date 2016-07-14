@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>GroupName</key>
+        <string>_www</string>
+        <key>inetdCompatibility</key>
+        <dict>
+            <key>Wait</key>
+            <false/>
+        </dict>
+        <key>Label</key>
+        <string>net.macports.rsyncd</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>@PREFIX@/bin/rsync</string>
+            <string>--config=@PREFIX@/etc/rsyncd/rsyncd.conf</string>
+            <string>--daemon</string>
+            <string>--no-detach</string>
+        </array>
+        <key>Sockets</key>
+        <dict>
+            <key>Listeners</key>
+            <dict>
+                <key>SockServiceName</key>
+                <string>rsync</string>
+            </dict>
+        </dict>
+        <key>UserName</key>
+        <string>_www</string>
+    </dict>
+</plist>
