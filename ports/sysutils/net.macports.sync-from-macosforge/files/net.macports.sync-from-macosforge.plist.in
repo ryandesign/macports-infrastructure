@@ -11,9 +11,9 @@
             <string>@PREFIX@/bin/sync-from-macosforge.sh</string>
         </array>
         <key>StandardErrorPath</key>
-        <string>@PREFIX@/var/log/sync-form-macosforge/sync-from-macosforge.log</string>
+        <string>@PREFIX@/var/log/net.macports.sync-from-macosforge/sync.log</string>
         <key>StandardOutPath</key>
-        <string>@PREFIX@/var/log/sync-form-macosforge/sync-from-macosforge.log</string>
+        <string>@PREFIX@/var/log/net.macports.sync-from-macosforge/sync.log</string>
         <key>StartInterval</key>
         <integer>3600</integer>
         <key>UserName</key>
