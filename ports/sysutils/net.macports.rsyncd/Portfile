@@ -4,9 +4,9 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.rsyncd
-version             4
+version             5
 
-depends_lib         port:rsync
+depends_run         port:rsync
 
 destroot.keepdirs   ${destroot}${prefix}/var/log/rsyncd
 destroot {
