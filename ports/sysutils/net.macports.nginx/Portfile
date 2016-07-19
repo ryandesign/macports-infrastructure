@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.nginx
-version             1
+version             2
 
 depends_run         port:nginx
 
@@ -17,3 +17,5 @@ destroot {
     xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
     reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/etc/nginx/nginx.conf ${destroot}/Library/LaunchDaemons/${name}.plist
 }
+
+startupitem.autostart   yes
