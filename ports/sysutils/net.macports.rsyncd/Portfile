@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.rsyncd
-version             5
+version             6
 
 depends_run         port:rsync
 
@@ -16,3 +16,5 @@ destroot {
     xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
     reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/etc/rsyncd/rsyncd.conf ${destroot}/Library/LaunchDaemons/${name}.plist
 }
+
+startupitem.autostart   yes
