@@ -2,9 +2,9 @@
 user  _www _www;
 worker_processes  auto;
 
-error_log  logs/error.log;
-#error_log  logs/error.log  notice;
-#error_log  logs/error.log  info;
+error_log  @PREFIX@/var/log/nginx/error.log;
+#error_log  @PREFIX@/var/log/nginx/error.log  notice;
+#error_log  @PREFIX@/var/log/nginx/error.log  info;
 
 pid  @PREFIX@/var/run/nginx/nginx.pid;
 
@@ -22,7 +22,7 @@ http {
                       '$status $body_bytes_sent "$http_referer" '
                       '"$http_user_agent" "$http_x_forwarded_for"';
 
-    access_log  logs/access.log  main;
+    access_log  @PREFIX@/var/log/nginx/access.log  main;
 
     sendfile        on;
     #tcp_nopush     on;
@@ -44,7 +44,7 @@ http {
 
         #charset koi8-r;
 
-        #access_log  logs/host.access.log  main;
+        #access_log  @PREFIX@/var/log/nginx/host.access.log  main;
 
         root   share/nginx/html;
         index  index.html index.htm;
