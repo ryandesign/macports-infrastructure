@@ -6,6 +6,9 @@ server {
     server_name_in_redirect on;
     autoindex on;
 
+    access_log  @PREFIX@/var/log/nginx/distfiles-access.log  main;
+    error_log  @PREFIX@/var/log/nginx/distfiles-error.log;
+
     add_header Cache-Control "max-age=2592000, public";
     location ~ /$ {
         add_header Cache-Control "max-age=300, public";
