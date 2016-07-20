@@ -1,0 +1,59 @@
+--- master.cfg	(revision 150492)
++++ master.cfg	(working copy)
+@@ -29,7 +29,7 @@
+ svnurl       = "https://svn.macports.org/repository/macports/trunk"
+ archivesite  = "https://packages.macports.org"
+ slaveprefix  = "/opt/local"
+-toolsprefix  = "/opt/mports"
++toolsprefix  = "/opt/bblocal"
+ 
+ if os.path.exists(_path('config.json')):
+     with open(_path('config.json')) as f:
+@@ -40,7 +40,7 @@
+             locals[key] = configdata[key]
+ 
+ # TODO: the following list should be configured in slaves.json
+-build_platforms = ["10.6-x86_64"]
++build_platforms = ["lion-legacy-x86_64"]
+ #build_platforms = ["snowleopard-x86_64", "lion-x86_64", "mtln-x86_64", "mavericks-x86_64", "yosemite-x86_64", "elcapitan-x86_64", "oelinux-6.3-x86_64"]
+ 
+ # Allow spaces and tabs in property values
+@@ -241,7 +241,7 @@
+ if production:
+     prefix='/opt/local'
+     dlhost='packages@packages-origin.macports.org'
+-    dlpath='/var/www/html/packages'
++    dlpath='@PREFIX@/var/rsync/macports/packages'
+ else:
+     prefix=slaveprefix
+     dlhost=''
+@@ -395,16 +395,10 @@
+ # XXX: slavenames assignment should be automatic and more generic
+ portsslaves = {}
+ baseslaves = {}
+-if production:
+-    slavenames = slavedata.keys()
+-    for plat in build_platforms:
+-        baseslaves[plat]  = filter(lambda x: x.endswith(plat+"-base"),  slavenames)
+-        portsslaves[plat] = filter(lambda x: x.endswith(plat+"-ports"), slavenames)
+-#else:
+-    #slavenames = ["snowleopard-x86_64"]
+-    #slavenames = ["base-10.6-x86_64","10.6-x86_64","10.9-x86_64"]
+-    #portsslaves = {build_platforms[0]:slavenames[0],build_platforms[1]:slavenames[1]}
+-    #baseslaves = {build_platforms[0]:slavenames[0],build_platforms[1]:slavenames[1]}
++slavenames = slavedata.keys()
++for plat in build_platforms:
++    baseslaves[plat]  = filter(lambda x: x.endswith(plat+"-base"),  slavenames)
++    portsslaves[plat] = filter(lambda x: x.endswith(plat+"-ports"), slavenames)
+ 
+ c['builders']=[]
+ for plat in build_platforms:
+@@ -522,7 +516,7 @@
+ # 'titleURL') and is embedded in the title of the waterfall HTML page.
+ 
+ c['title'] = "MacPorts"
+-c['titleURL'] = "http://www.macports.org/"
++c['titleURL'] = "https://www.macports.org/"
+ 
+ c['buildbotURL'] = buildboturl
+ c['status'].append(html.WebStatus(

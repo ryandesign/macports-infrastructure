@@ -1,0 +1,17 @@
+--- config.json.sample	(revision 150492)
++++ config.json.sample	(working copy)
+@@ -1,6 +1,6 @@
+ {
+ 	"production":   0,
+-	"privkey":      "/var/keys/macports-privkey.pem",
++	"privkey":      "@PREFIX@/var/keys/macports-privkey.pem",
+ 	"slaveport":    9989,
+ 	"httpport":     8010,
+ 	"buildboturl":  "http://localhost:8010/",
+@@ -9,5 +9,5 @@
+ 	"svnurl":       "https://svn.macports.org/repository/macports/trunk",
+ 	"archivesite":  "https://packages.macports.org",
+ 	"slaveprefix":  "/opt/local",
+-	"toolsprefix":  "/opt/mports"
++	"toolsprefix":  "/opt/bblocal"
+ }
