@@ -40,10 +40,8 @@ http {
     gzip_vary on;
 
     server {
-        listen       80;
-        listen       [::]:80;
-        listen       443 ssl http2;
-        listen       [::]:443 ssl http2;
+        listen       80 default_server;
+        listen       [::]:80 default_server ipv6only=on;
         server_name  localhost;
 
         #charset koi8-r;
