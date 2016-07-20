@@ -1,0 +1,42 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           net.macports 1.0
+
+name                net.macports.buildworker
+version             1
+
+depends_run         port:buildbot-slave
+
+add_users           buildbot group=buildbot realname=buildbot
+
+#startupitem.autostart   yes
+
+destroot.keepdirs   ${destroot}${prefix}/var/buildworker ${destroot}${prefix}/var/log/buildworker ${destroot}${prefix}/var/run/buildworker
+destroot {
+    xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker ${destroot}${prefix}/var/log/buildworker ${destroot}${prefix}/var/run/buildworker
+
+    xinstall -m 644 ${filespath}/${name}.base.plist.in ${destroot}/Library/LaunchDaemons/${name}.base.plist
+    xinstall -m 644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/LaunchDaemons/${name}.ports.plist
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/LaunchDaemons/${name}.base.plist ${destroot}/Library/LaunchDaemons/${name}.ports.plist
+}
+
+set password        some-random-password
+
+notes "
+To create or update the buildworkers, run:
+
+sudo -H -u buildbot ${prefix}/bin/buildslave\
+    create-slave --umask 022\
+    ${prefix}/var/buildworker/base\
+    localhost:9989\
+    base-${macosx_deployment_target}-${build_arch}\
+    ${password}
+
+sudo -H ${prefix}/bin/buildslave\
+    create-slave --umask 022\
+    ${prefix}/var/buildworker/ports\
+    localhost:9989\
+    ports-${macosx_deployment_target}-${build_arch}\
+    ${password}
+"
