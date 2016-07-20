@@ -5,7 +5,7 @@ PortGroup           active_variants 1.1
 PortGroup           net.macports 1.0
 
 name                net.macports.nginx
-version             6
+version             7
 
 depends_run         port:nginx
 

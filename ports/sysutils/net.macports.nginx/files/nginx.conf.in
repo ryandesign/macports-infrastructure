@@ -1,6 +1,7 @@
 
 user  _www _www;
 worker_processes  auto;
+daemon  off;
 
 error_log  @PREFIX@/var/log/nginx/error.log;
 #error_log  @PREFIX@/var/log/nginx/error.log  notice;
