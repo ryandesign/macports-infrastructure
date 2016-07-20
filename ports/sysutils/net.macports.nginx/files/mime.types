@@ -87,3 +87,25 @@ types {
     video/x-ms-wmv                        wmv;
     video/x-msvideo                       avi;
 }
+
+types {
+    application/macbinhex-40 hqx;
+    application/octet-stream bin exe rmd160;
+    application/vnd.apple.installer+xml dist distz mpkg pkg;
+    application/x-7z-compressed 7z;
+    application/x-apple-diskimage dmg image img smi;
+    application/x-bzip2 bz2 tbz tbz2;
+    application/x-compress Z;
+    application/x-gzip gz tgz;
+    application/x-iso9660-image iso;
+    application/x-lzip lz;
+    application/x-lzma lzma tlz;
+    application/x-rar-compressed rar;
+    application/x-stuffit sit;
+    application/x-stuffitx sitx;
+    application/x-tar tar;
+    application/x-tcl tcl;
+    application/x-xz txz xz;
+    application/zip zip;
+    image/icns icns;
+}
