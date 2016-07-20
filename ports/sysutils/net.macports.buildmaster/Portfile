@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster
-version             1
+version             2
 
 fetch.type          svn
 svn.url             https://svn.macports.org/repository/macports/contrib/buildbot-test
@@ -32,12 +32,6 @@ destroot {
     xinstall -W ${worksrcpath} -m 644 config.json master.cfg slaves.json.sample ${destroot}${prefix}/var/buildmaster
     xinstall -W ${worksrcpath} -m 755 deploy_archives.sh ${destroot}${prefix}/var/buildmaster
 
-    system "${prefix}/bin/buildbot create-master ${destroot}${prefix}/var/buildmaster"
-    reinplace "s|${destroot}||g" ${destroot}${prefix}/var/buildmaster/buildbot.tac
-    fs-traverse item ${destroot}${prefix}/var/buildmaster {
-        file attributes ${item} -owner buildbot -group buildbot
-    }
-
     xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
 
     xinstall -d ${destroot}${prefix}/etc/nginx/sites-available/ ${destroot}${prefix}/etc/nginx/sites-enabled/
@@ -49,3 +43,9 @@ destroot {
 #startupitem.autostart   yes
 
 # TODO: check config and reload nginx in post-activate and post-deactivate
+
+notes "
+To create or update the buildmaster, run:
+
+sudo -u buildbot ${prefix}/bin/buildbot create-master ${prefix}/var/buildmaster
+"
