@@ -32,8 +32,11 @@ destroot {
     xinstall -W ${worksrcpath} -m 644 config.json master.cfg slaves.json.sample ${destroot}${prefix}/var/buildmaster
     xinstall -W ${worksrcpath} -m 755 deploy_archives.sh ${destroot}${prefix}/var/buildmaster
 
-    system "sudo -u buildbot ${prefix}/bin/buildbot create-master ${destroot}${prefix}/var/buildbot"
-    reinplace "s|${destroot}||g" ${destroot}${prefix}/var/buildbot/buildbot.tac
+    system "${prefix}/bin/buildbot create-master ${destroot}${prefix}/var/buildmaster"
+    reinplace "s|${destroot}||g" ${destroot}${prefix}/var/buildmaster/buildbot.tac
+    fs-traverse item ${destroot}${prefix}/var/buildmaster {
+        file attributes ${item} -owner buildbot -group buildbot
+    }
 
     xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
 
