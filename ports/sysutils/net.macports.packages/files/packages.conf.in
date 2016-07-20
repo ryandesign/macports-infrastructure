@@ -1,0 +1,13 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name packages.macports.org packages;
+    root @PREFIX@/var/rsync/macports/packages;
+    server_name_in_redirect on;
+    autoindex on;
+
+    add_header Cache-Control "max-age=2592000, public";
+    location ~ /$ {
+        add_header Cache-Control "max-age=300, public";
+    }
+}
