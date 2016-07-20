@@ -1,12 +1,15 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
+PortGroup           active_variants 1.1
 PortGroup           net.macports 1.0
 
 name                net.macports.nginx
-version             5
+version             6
 
 depends_run         port:nginx
+
+require_active_variants port:nginx {http2}
 
 destroot.keepdirs   ${destroot}${prefix}/var/log/nginx ${destroot}${prefix}/var/run/nginx
 destroot {
