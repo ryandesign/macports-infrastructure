@@ -1,0 +1,16 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name distfiles.macports.org distfiles;
+    root @PREFIX@/var/rsync/macports/distfiles;
+    server_name_in_redirect on;
+    autoindex on;
+
+    add_header Cache-Control "max-age=2592000, public";
+    location ~ /$ {
+        add_header Cache-Control "max-age=300, public";
+    }
+    location = /ports.tar.gz {
+        add_header Cache-Control "max-age=1800, public";
+    }
+}
