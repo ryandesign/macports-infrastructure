@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster
-version             7
+version             8
 
 fetch.type          svn
 svn.url             https://svn.macports.org/repository/macports/contrib/buildbot-test
@@ -48,4 +48,12 @@ notes "
 To create or update the buildmaster, run:
 
 sudo -u buildbot ${prefix}/bin/buildbot create-master ${prefix}/var/buildmaster
+
+To start the buildmaster, run:
+
+sudo port load ${name}
+
+To stop the buildmaster, run:
+
+sudo port unload ${name}
 "
