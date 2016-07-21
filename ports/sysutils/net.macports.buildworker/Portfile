@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             6
+version             7
 
 depends_run         port:buildbot-slave
 
@@ -24,15 +24,12 @@ if {[vercmp ${os_version} 10.9] < 0} {
 
 startupitem.autostart   yes
 
-destroot.keepdirs   ${destroot}${prefix}/var/log/buildworker ${destroot}${prefix}/var/run/buildworker
 destroot {
     xinstall -d -o buildbot -g buildbot \
         ${destroot}${prefix}/share/buildworker \
         ${destroot}${prefix}/var/buildworker/base \
         ${destroot}${prefix}/var/buildworker/info \
-        ${destroot}${prefix}/var/buildworker/ports \
-        ${destroot}${prefix}/var/log/buildworker \
-        ${destroot}${prefix}/var/run/buildworker
+        ${destroot}${prefix}/var/buildworker/ports
 
     xinstall ${filespath}/host.sh.in ${destroot}${prefix}/share/buildworker/host.sh
     xinstall ${filespath}/update_host.sh.in ${destroot}${prefix}/share/buildworker/update_host.sh
