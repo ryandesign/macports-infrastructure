@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             1
+version             2
 
 depends_run         port:buildbot-slave
 
@@ -12,16 +12,54 @@ add_users           buildbot group=buildbot realname=buildbot
 
 #startupitem.autostart   yes
 
-destroot.keepdirs   ${destroot}${prefix}/var/buildworker ${destroot}${prefix}/var/log/buildworker ${destroot}${prefix}/var/run/buildworker
+set os_version      10.[expr [lindex [split ${os.version} .] 0] - 4].[lindex [split ${os.version} .] 1]
+set worker_id       [join [lrange [split ${os_version} .] 0 1] .]-${build_arch}
+set cxx_lib         libc++
+
+if {[vercmp ${os_version} 10.9] < 0} {
+    variant legacy description {Use libstdc++ instead of libc++} {}
+    if {[variant_isset legacy]} {
+        append worker_id -legacy
+        set cxx_lib     libstdc++
+    }
+}
+
+destroot.keepdirs   ${destroot}${prefix}/var/log/buildworker ${destroot}${prefix}/var/run/buildworker
 destroot {
-    xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker ${destroot}${prefix}/var/log/buildworker ${destroot}${prefix}/var/run/buildworker
+    xinstall -d -o buildbot -g buildbot \
+        ${destroot}${prefix}/share/buildworker \
+        ${destroot}${prefix}/var/buildworker/base \
+        ${destroot}${prefix}/var/buildworker/ports \
+        ${destroot}${prefix}/var/log/buildworker \
+        ${destroot}${prefix}/var/run/buildworker
+
+    xinstall ${filespath}/host.sh.in ${destroot}${prefix}/share/buildworker/host.sh
+    reinplace "s|@CXX_LIB@|${cxx_lib}|g" ${destroot}${prefix}/share/buildworker/host.sh
+
+    xinstall -m 644 -o buildbot -g buildbot ${filespath}/admin ${destroot}${prefix}/var/buildworker/info
+
+    ln -s ../info ${destroot}${prefix}/var/buildworker/base/info
+    ln -s ../info ${destroot}${prefix}/var/buildworker/ports/info
 
     xinstall -m 644 ${filespath}/${name}.base.plist.in ${destroot}/Library/LaunchDaemons/${name}.base.plist
     xinstall -m 644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/LaunchDaemons/${name}.ports.plist
     reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/LaunchDaemons/${name}.base.plist ${destroot}/Library/LaunchDaemons/${name}.ports.plist
 }
 
-set password        some-random-password
+post-activate {
+    system "${prefix}/share/buildworker/host.sh > ${prefix}/var/buildworker/info/host"
+}
+
+post-deactivate {
+    delete ${prefix}/var/buildworker/info/host
+}
+
+proc random_password {} {
+    return some-random-password
+}
+
+set password_base   [random_password]
+set password_ports  [random_password]
 
 notes "
 To create or update the buildworkers, run:
@@ -29,14 +67,19 @@ To create or update the buildworkers, run:
 sudo -H -u buildbot ${prefix}/bin/buildslave\
     create-slave --umask 022\
     ${prefix}/var/buildworker/base\
-    localhost:9989\
-    base-${macosx_deployment_target}-${build_arch}\
-    ${password}
+    build:9989\
+    base-${worker_id}\
+    ${password_base}
 
 sudo -H ${prefix}/bin/buildslave\
     create-slave --umask 022\
     ${prefix}/var/buildworker/ports\
-    localhost:9989\
-    ports-${macosx_deployment_target}-${build_arch}\
-    ${password}
+    build:9989\
+    ports-${worker_id}\
+    ${password_ports}
+
+Add these lines to slaves.json on buildmaster:
+
+\"base-${worker_id}\": \"${password_base}\",
+\"ports-${worker_id}\": \"${password_ports}\",
 "

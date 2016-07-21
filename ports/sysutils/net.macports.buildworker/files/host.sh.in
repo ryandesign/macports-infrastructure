@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -euo pipefail
+
+case $(sw_vers -productVersion | cut -d . -f 2) in
+    4)  echo "Mac OS X Tiger";;
+    5)  echo "Mac OS X Leopard";;
+    6)  echo "Mac OS X Snow Leopard";;
+    7)  echo "Mac OS X Lion";;
+    8)  echo "OS X Mountain Lion";;
+    9)  echo "OS X Mavericks";;
+    10) echo "OS X Yosemite";;
+    11) echo "OS X El Capitan";;
+    12) echo "macOS Sierra";;
+    *)  echo "unknown"
+esac
+echo
+echo "Version: $(sw_vers -productVersion)"
+echo "Build: $(sw_vers -buildVersion)"
+echo "CPU: $(sysctl -n hw.activecpu) ⨉ $(echo "scale=2; $(sysctl -n hw.cpufrequency) / 10 ^ 9" | bc) GHz"
+echo "RAM: $(echo "$(sysctl -n hw.memsize) / 2 ^ 30" | bc) GB"
+echo "Architecture: $(uname -m)"
+echo "C++ library: @CXX_LIB@"
