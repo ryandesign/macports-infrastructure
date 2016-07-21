@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             2
+version             3
 
 depends_run         port:buildbot-slave
 
@@ -29,6 +29,7 @@ destroot {
     xinstall -d -o buildbot -g buildbot \
         ${destroot}${prefix}/share/buildworker \
         ${destroot}${prefix}/var/buildworker/base \
+        ${destroot}${prefix}/var/buildworker/info \
         ${destroot}${prefix}/var/buildworker/ports \
         ${destroot}${prefix}/var/log/buildworker \
         ${destroot}${prefix}/var/run/buildworker
