@@ -17,10 +17,8 @@
         <key>ProgramArguments</key>
         <array>
             <string>@PREFIX@/bin/twistd-2.7</string>
-            <string>--logfile=@PREFIX@/var/log/buildworker/ports.log</string>
             <string>--nodaemon</string>
             <string>--no_save</string>
-            <string>--pidfile=@PREFIX@/var/run/buildworker/ports.pid</string>
             <string>--python=buildbot.tac</string>
         </array>
         <key>RunAtLoad</key>
