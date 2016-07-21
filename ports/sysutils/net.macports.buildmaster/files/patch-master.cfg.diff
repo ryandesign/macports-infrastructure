@@ -14,7 +14,7 @@
  
  # TODO: the following list should be configured in slaves.json
 -build_platforms = ["10.6-x86_64"]
-+build_platforms = ["lion-legacy-x86_64"]
++build_platforms = ["10.7-x86_64-legacy", "10.11-x86_64"]
  #build_platforms = ["snowleopard-x86_64", "lion-x86_64", "mtln-x86_64", "mavericks-x86_64", "yosemite-x86_64", "elcapitan-x86_64", "oelinux-6.3-x86_64"]
  
  # Allow spaces and tabs in property values
