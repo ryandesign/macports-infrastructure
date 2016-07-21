@@ -4,13 +4,11 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             3
+version             4
 
 depends_run         port:buildbot-slave
 
 add_users           buildbot group=buildbot realname=buildbot
-
-#startupitem.autostart   yes
 
 set os_version      10.[expr [lindex [split ${os.version} .] 0] - 4].[lindex [split ${os.version} .] 1]
 set worker_id       [join [lrange [split ${os_version} .] 0 1] .]-${build_arch}
@@ -23,6 +21,8 @@ if {[vercmp ${os_version} 10.9] < 0} {
         set cxx_lib     libstdc++
     }
 }
+
+startupitem.autostart   yes
 
 destroot.keepdirs   ${destroot}${prefix}/var/log/buildworker ${destroot}${prefix}/var/run/buildworker
 destroot {
@@ -42,13 +42,10 @@ destroot {
     ln -s ../info ${destroot}${prefix}/var/buildworker/base/info
     ln -s ../info ${destroot}${prefix}/var/buildworker/ports/info
 
+    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
     xinstall -m 644 ${filespath}/${name}.base.plist.in ${destroot}/Library/LaunchDaemons/${name}.base.plist
     xinstall -m 644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/LaunchDaemons/${name}.ports.plist
-    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/LaunchDaemons/${name}.base.plist ${destroot}/Library/LaunchDaemons/${name}.ports.plist
-}
-
-post-activate {
-    system "${prefix}/share/buildworker/host.sh > ${prefix}/var/buildworker/info/host"
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/LaunchDaemons/${name}.plist ${destroot}/Library/LaunchDaemons/${name}.base.plist ${destroot}/Library/LaunchDaemons/${name}.ports.plist
 }
 
 post-deactivate {
@@ -83,4 +80,14 @@ Add these lines to slaves.json on buildmaster:
 
 \"base-${worker_id}\": \"${password_base}\",
 \"ports-${worker_id}\": \"${password_ports}\",
+
+To start the buildworkers, run:
+
+sudo launchctl load -w /Library/LaunchDaemons/${name}.base.plist
+sudo launchctl load -w /Library/LaunchDaemons/${name}.ports.plist
+
+To stop the buildworkers, run:
+
+sudo launchctl unload -w /Library/LaunchDaemons/${name}.base.plist
+sudo launchctl unload -w /Library/LaunchDaemons/${name}.ports.plist
 "
