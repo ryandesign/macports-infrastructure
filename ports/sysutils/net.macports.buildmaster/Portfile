@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster
-version             6
+version             7
 
 fetch.type          svn
 svn.url             https://svn.macports.org/repository/macports/contrib/buildbot-test
@@ -25,9 +25,9 @@ patchfiles          patch-config.json.diff \
 
 add_users           buildbot group=buildbot realname=buildbot
 
-destroot.keepdirs   ${destroot}${prefix}/var/keys ${destroot}${prefix}/var/log/buildmaster ${destroot}${prefix}/var/run/buildmaster
+destroot.keepdirs   ${destroot}${prefix}/var/keys
 destroot {
-    xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildmaster ${destroot}${prefix}/var/keys ${destroot}${prefix}/var/log/buildmaster ${destroot}${prefix}/var/run/buildmaster
+    xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildmaster ${destroot}${prefix}/var/keys
 
     xinstall -W ${worksrcpath} -m 644 config.json master.cfg slaves.json.sample ${destroot}${prefix}/var/buildmaster
     xinstall -W ${worksrcpath} -m 755 deploy_archives.sh ${destroot}${prefix}/var/buildmaster
