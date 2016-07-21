@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             4
+version             5
 
 depends_run         port:buildbot-slave
 
@@ -35,6 +35,7 @@ destroot {
         ${destroot}${prefix}/var/run/buildworker
 
     xinstall ${filespath}/host.sh.in ${destroot}${prefix}/share/buildworker/host.sh
+    xinstall ${filespath}/update_host.sh.in ${destroot}${prefix}/share/buildworker/update_host.sh
     reinplace "s|@CXX_LIB@|${cxx_lib}|g" ${destroot}${prefix}/share/buildworker/host.sh
 
     xinstall -m 644 -o buildbot -g buildbot ${filespath}/admin ${destroot}${prefix}/var/buildworker/info
@@ -45,7 +46,7 @@ destroot {
     xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
     xinstall -m 644 ${filespath}/${name}.base.plist.in ${destroot}/Library/LaunchDaemons/${name}.base.plist
     xinstall -m 644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/LaunchDaemons/${name}.ports.plist
-    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/LaunchDaemons/${name}.plist ${destroot}/Library/LaunchDaemons/${name}.base.plist ${destroot}/Library/LaunchDaemons/${name}.ports.plist
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/share/buildworker/update_host.sh ${destroot}/Library/LaunchDaemons/${name}.plist ${destroot}/Library/LaunchDaemons/${name}.base.plist ${destroot}/Library/LaunchDaemons/${name}.ports.plist
 }
 
 post-deactivate {

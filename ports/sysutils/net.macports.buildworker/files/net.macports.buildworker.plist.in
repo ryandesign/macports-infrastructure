@@ -6,11 +6,9 @@
         <string>net.macports.buildworker</string>
         <key>ProgramArguments</key>
         <array>
-            <string>@PREFIX@/share/buildworker/host.sh</string>
+            <string>@PREFIX@/share/buildworker/update_host.sh</string>
         </array>
         <key>RunAtLoad</key>
         <true/>
-        <key>StandardOutPath</key>
-        <string>@PREFIX@/var/buildworker/info/host</string>
     </dict>
 </plist>
