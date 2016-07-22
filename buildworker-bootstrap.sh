@@ -33,12 +33,12 @@ if [ ! -x $PREFIX/bin/port ]; then
 
   if [ $UNIVERSAL -eq 1 ]; then
     if [ "$(sw_vers -productVersion | cut -d . -f 2)" -lt 6 ]; then
-      ARCHFLAGS="-arch i386 -arch ppc"
+      ARCHS="i386 ppc"
     else
-      ARCHFLAGS="-arch i386 -arch x86_64"
+      ARCHS="i386 x86_64"
     fi
   else
-    ARCHFLAGS=""
+    ARCHS="$(uname -m)"
   fi
 
   export CC="/usr/bin/cc"
@@ -46,10 +46,10 @@ if [ ! -x $PREFIX/bin/port ]; then
   export CXX="/usr/bin/c++"
 
   OPTFLAGS="-Os"
-  export CFLAGS="$OPTFLAGS $ARCHFLAGS"
+  export CFLAGS="$OPTFLAGS"
   export CPPFLAGS=""
-  export CXXFLAGS="$OPTFLAGS $ARCHFLAGS"
-  export LDFLAGS="$ARCHFLAGS"
+  export CXXFLAGS="$OPTFLAGS"
+  export LDFLAGS=""
 
   export MACOSX_DEPLOYMENT_TARGET="$(sw_vers -productVersion | cut -d . -f 1-2)"
 
@@ -77,7 +77,8 @@ if [ ! -x $PREFIX/bin/port ]; then
   --with-frameworks-dir=$PREFIX/Library/Frameworks \
   --with-install-group="$GROUP" \
   --with-install-user="$USER" \
-  --with-macports-user=macports
+  --with-macports-user=macports \
+  --with-universal-archs="$ARCHS"
 
   echo "$UI_PREFIX Building MacPorts"
   make -j$JOBS
