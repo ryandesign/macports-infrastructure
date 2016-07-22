@@ -8,7 +8,7 @@ version             8
 
 fetch.type          svn
 svn.url             https://svn.macports.org/repository/macports/contrib/buildbot-test
-svn.revision        150492
+svn.revision        150571
 worksrcdir          buildbot-test
 
 depends_run         port:buildbot \
