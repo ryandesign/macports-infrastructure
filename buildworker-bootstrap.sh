@@ -14,7 +14,7 @@ SOURCE_DIR=/opt/macports-base
 EXTRA_PORTS_URL=https://github.com/ryandesign/macports-infrastructure
 EXTRA_PORTS_WC=/opt/macports-infrastructure
 EXTRA_PORTS_DIR="$EXTRA_PORTS_WC/ports"
-UNIVERSAL=1
+UNIVERSAL=0
 
 if [ "$PREFIX" = "/opt/local" ]; then
   APPLICATIONS_DIR="/Applications/MacPorts"
