@@ -14,7 +14,6 @@ SOURCE_DIR=/opt/macports-base
 EXTRA_PORTS_URL=https://github.com/ryandesign/macports-infrastructure
 EXTRA_PORTS_WC=/opt/macports-infrastructure
 EXTRA_PORTS_DIR="$EXTRA_PORTS_WC/ports"
-UNIVERSAL=0
 
 if [ "$PREFIX" = "/opt/local" ]; then
   APPLICATIONS_DIR="/Applications/MacPorts"
@@ -30,26 +29,6 @@ ORIG_GROUP="$(id -n -g $ORIG_USER)"
 
 if [ ! -x $PREFIX/bin/port ]; then
   JOBS="$(sysctl -n hw.activecpu)"
-
-  if [ $UNIVERSAL -eq 1 ]; then
-    if [ "$(sw_vers -productVersion | cut -d . -f 2)" -lt 6 ]; then
-      ARCHS="i386 ppc"
-    else
-      ARCHS="i386 x86_64"
-    fi
-  else
-    ARCHS="$(uname -m)"
-  fi
-
-  export CC="/usr/bin/cc"
-  export CPP="$CC -E"
-  export CXX="/usr/bin/c++"
-
-  OPTFLAGS="-Os"
-  export CFLAGS="$OPTFLAGS"
-  export CPPFLAGS=""
-  export CXXFLAGS="$OPTFLAGS"
-  export LDFLAGS=""
 
   export MACOSX_DEPLOYMENT_TARGET="$(sw_vers -productVersion | cut -d . -f 1-2)"
 
@@ -77,8 +56,7 @@ if [ ! -x $PREFIX/bin/port ]; then
   --with-frameworks-dir=$PREFIX/Library/Frameworks \
   --with-install-group="$GROUP" \
   --with-install-user="$USER" \
-  --with-macports-user=macports \
-  --with-universal-archs="$ARCHS"
+  --with-macports-user=macports
 
   echo "$UI_PREFIX Building MacPorts"
   make -j$JOBS
