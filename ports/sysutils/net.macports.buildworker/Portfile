@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             7
+version             8
 
 depends_run         port:buildbot-slave
 
@@ -78,6 +78,11 @@ Add these lines to slaves.json on buildmaster:
 
 \"base-${worker_id}\": \"${password_base}\",
 \"ports-${worker_id}\": \"${password_ports}\",
+
+When initially setting up the buildworkers, or if the SSL certificate changes, run:
+
+sudo -u buildbot svn --config-dir ${prefix}/var/buildworker/base/.subversion info
+sudo svn --config-dir ${prefix}/var/buildworker/ports/.subversion info
 
 To start the buildworkers, run:
 
