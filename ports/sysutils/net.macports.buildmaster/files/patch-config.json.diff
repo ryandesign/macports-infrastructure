@@ -1,14 +1,16 @@
---- config.json.sample	(revision 150492)
-+++ config.json.sample	(working copy)
-@@ -1,6 +1,6 @@
+--- config.json.orig	2016-07-26 22:09:11.000000000 -0500
++++ config.json	2016-07-26 22:09:23.000000000 -0500
+@@ -1,13 +1,13 @@
  {
  	"production":   0,
 -	"privkey":      "/var/keys/macports-privkey.pem",
 +	"privkey":      "@PREFIX@/var/keys/macports-privkey.pem",
  	"slaveport":    9989,
  	"httpport":     8010,
- 	"buildboturl":  "http://localhost:8010/",
-@@ -9,5 +9,5 @@
+-	"buildboturl":  "http://localhost:8010/",
++	"buildboturl":  "./",
+ 	"htpasswdfile": "htpasswd",
+ 	"mpbbsvnurl":   "https://svn.macports.org/repository/macports/contrib/mp-buildbot",
  	"svnurl":       "https://svn.macports.org/repository/macports/trunk",
  	"archivesite":  "https://packages.macports.org",
  	"slaveprefix":  "/opt/local",
