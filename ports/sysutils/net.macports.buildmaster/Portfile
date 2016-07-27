@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster
-version             11
+version             12
 
 fetch.type          svn
 svn.url             https://svn.macports.org/repository/macports/contrib/buildbot-test
@@ -56,4 +56,8 @@ sudo port load ${name}
 To stop the buildmaster, run:
 
 sudo port unload ${name}
+
+To make the buildmaster re-read its config file, run:
+
+sudo -u buildbot ${prefix}/bin/buildbot reconfig ${prefix}/var/buildmaster
 "
