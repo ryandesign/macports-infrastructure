@@ -81,8 +81,8 @@ Add these lines to slaves.json on buildmaster:
 
 When initially setting up the buildworkers, or if the SSL certificate changes, run:
 
-sudo -u buildbot svn --config-dir ${prefix}/var/buildworker/base/.subversion info
-sudo svn --config-dir ${prefix}/var/buildworker/ports/.subversion info
+sudo -u buildbot svn --config-dir ${prefix}/var/buildworker/base/.subversion info https://svn.macports.org/repository/macports
+sudo svn --config-dir ${prefix}/var/buildworker/ports/.subversion info https://svn.macports.org/repository/macports
 
 To start the buildworkers, run:
 
