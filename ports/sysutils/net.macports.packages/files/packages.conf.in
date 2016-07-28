@@ -1,16 +1,6 @@
 server {
     listen 80;
     listen [::]:80;
-
-    server_name packages.macports.org packages-test.macports.org packages;
-    server_name_in_redirect on;
-    access_log @PREFIX@/var/log/nginx/packages-access.log main;
-    error_log @PREFIX@/var/log/nginx/packages-error.log;
-
-    return 301 https://$host$request_uri;
-}
-
-server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
 
