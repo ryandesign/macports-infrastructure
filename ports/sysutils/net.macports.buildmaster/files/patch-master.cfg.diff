@@ -1,5 +1,5 @@
---- master.cfg.orig	2016-07-22 12:00:49.000000000 -0500
-+++ master.cfg	2016-07-24 12:53:10.000000000 -0500
+--- master.cfg.orig	2016-07-26 22:39:10.000000000 -0500
++++ master.cfg	2016-07-28 00:54:53.000000000 -0500
 @@ -23,13 +23,13 @@
  privkey      = ''
  slaveport    = 9989
@@ -55,3 +55,25 @@
  
  c['builders']=[]
  for plat in build_platforms:
+@@ -412,6 +406,7 @@
+         name="base-" + plat,
+         slavenames=["base-" + plat],
+         factory=base_factory,
++        tags=[plat],
+         env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
+     if 'linux' not in plat:
+         c['builders'] += [
+@@ -419,11 +414,13 @@
+                 name="portwatcher-" + plat,
+                 slavenames=["ports-" + plat],
+                 factory=make_portwatcher_factory("porttrigger-" + plat),
++                tags=[plat],
+                 env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"}),
+             BuilderConfig(
+                 name="portbuilder-" + plat,
+                 slavenames=["ports-" + plat],
+                 factory=portbuilder_factory,
++                tags=[plat],
+                 env={"PATH": toolsprefix + "/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"})]
+ 
+ ####### STATUS TARGETS
