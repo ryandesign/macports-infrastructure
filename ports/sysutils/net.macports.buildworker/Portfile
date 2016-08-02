@@ -4,50 +4,27 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             8
+version             9
 
 depends_run         port:buildbot-slave
 
 add_users           buildbot group=buildbot realname=buildbot
 
+set hostname        [lindex [split [info hostname] .] 0]
+set legacy          [string match {*-legacy*} ${hostname}]
 set os_version      10.[expr [lindex [split ${os.version} .] 0] - 4].[lindex [split ${os.version} .] 1]
 set worker_id       [join [lrange [split ${os_version} .] 0 1] .]-${build_arch}
 set cxx_lib         libc++
 
 if {[vercmp ${os_version} 10.9] < 0} {
     variant legacy description {Use libstdc++ instead of libc++} {}
+    if {${legacy}} {
+        default_variants +legacy
+    }
     if {[variant_isset legacy]} {
         append worker_id -legacy
         set cxx_lib     libstdc++
     }
-}
-
-startupitem.autostart   yes
-
-destroot {
-    xinstall -d -o buildbot -g buildbot \
-        ${destroot}${prefix}/share/buildworker \
-        ${destroot}${prefix}/var/buildworker/base \
-        ${destroot}${prefix}/var/buildworker/info \
-        ${destroot}${prefix}/var/buildworker/ports
-
-    xinstall ${filespath}/host.sh.in ${destroot}${prefix}/share/buildworker/host.sh
-    xinstall ${filespath}/update_host.sh.in ${destroot}${prefix}/share/buildworker/update_host.sh
-    reinplace "s|@CXX_LIB@|${cxx_lib}|g" ${destroot}${prefix}/share/buildworker/host.sh
-
-    xinstall -m 644 -o buildbot -g buildbot ${filespath}/admin ${destroot}${prefix}/var/buildworker/info
-
-    ln -s ../info ${destroot}${prefix}/var/buildworker/base/info
-    ln -s ../info ${destroot}${prefix}/var/buildworker/ports/info
-
-    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
-    xinstall -m 644 ${filespath}/${name}.base.plist.in ${destroot}/Library/LaunchDaemons/${name}.base.plist
-    xinstall -m 644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/LaunchDaemons/${name}.ports.plist
-    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/share/buildworker/update_host.sh ${destroot}/Library/LaunchDaemons/${name}.plist ${destroot}/Library/LaunchDaemons/${name}.base.plist ${destroot}/Library/LaunchDaemons/${name}.ports.plist
-}
-
-post-deactivate {
-    delete ${prefix}/var/buildworker/info/host
 }
 
 proc random_password {} {
@@ -57,40 +34,105 @@ proc random_password {} {
 set password_base   [random_password]
 set password_ports  [random_password]
 
-notes "
-To create or update the buildworkers, run:
+variant base description {Use a base worker} {
+    post-destroot {
+        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker/base
 
+        ln -s ../info ${destroot}${prefix}/var/buildworker/base/info
+
+        xinstall -m 644 ${filespath}/${name}.base.plist.in ${destroot}/Library/LaunchDaemons/${name}.base.plist
+        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/LaunchDaemons/${name}.base.plist
+    }
+}
+
+if {![variant_isset legacy] && ([vercmp ${os_version} 10.6] != 0 || ${build_arch} eq "x86_64")} {
+    default_variants +base
+}
+
+if {[variant_isset base]} {
+    append notes_create "
 sudo -H -u buildbot ${prefix}/bin/buildslave\
     create-slave --umask 022\
     ${prefix}/var/buildworker/base\
     build:9989\
     base-${worker_id}\
-    ${password_base}
+    ${password_base}"
+    append notes_slaves "
+\"base-${worker_id}\": \"${password_base}\","
+    append notes_svn "
+sudo -u buildbot svn --config-dir ${prefix}/var/buildworker/base/.subversion info https://svn.macports.org/repository/macports"
+    append notes_load "
+sudo launchctl load -w /Library/LaunchDaemons/${name}.base.plist"
+    append notes_unload "
+sudo launchctl unload -w /Library/LaunchDaemons/${name}.base.plist"
+}
 
+variant ports description {Use a ports worker} {
+    post-destroot {
+        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker/ports
+
+        ln -s ../info ${destroot}${prefix}/var/buildworker/ports/info
+
+        xinstall -m 644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/LaunchDaemons/${name}.ports.plist
+        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/LaunchDaemons/${name}.ports.plist
+    }
+}
+
+default_variants +ports
+
+if {[variant_isset ports]} {
+    append notes_create "
 sudo -H ${prefix}/bin/buildslave\
     create-slave --umask 022\
     ${prefix}/var/buildworker/ports\
     build:9989\
     ports-${worker_id}\
-    ${password_ports}
+    ${password_ports}"
+    append notes_slaves "
+\"ports-${worker_id}\": \"${password_ports}\","
+    append notes_svn "
+sudo svn --config-dir ${prefix}/var/buildworker/ports/.subversion info https://svn.macports.org/repository/macports"
+    append notes_load "
+sudo launchctl load -w /Library/LaunchDaemons/${name}.ports.plist"
+    append notes_unload "
+sudo launchctl unload -w /Library/LaunchDaemons/${name}.ports.plist"
+}
+
+# This only handles automatically updating the host info.
+startupitem.autostart   yes
+
+destroot {
+    xinstall -d -o buildbot -g buildbot \
+        ${destroot}${prefix}/share/buildworker \
+        ${destroot}${prefix}/var/buildworker/info \
+
+    xinstall ${filespath}/host.sh.in ${destroot}${prefix}/share/buildworker/host.sh
+    xinstall ${filespath}/update_host.sh.in ${destroot}${prefix}/share/buildworker/update_host.sh
+    reinplace "s|@CXX_LIB@|${cxx_lib}|g" ${destroot}${prefix}/share/buildworker/host.sh
+
+    xinstall -m 644 -o buildbot -g buildbot ${filespath}/admin ${destroot}${prefix}/var/buildworker/info
+
+    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/share/buildworker/update_host.sh ${destroot}/Library/LaunchDaemons/${name}.plist
+}
+
+post-deactivate {
+    delete ${prefix}/var/buildworker/info/host
+}
+
+notes "
+To create or update the buildworkers, run:
+${notes_create}
 
 Add these lines to slaves.json on buildmaster:
-
-\"base-${worker_id}\": \"${password_base}\",
-\"ports-${worker_id}\": \"${password_ports}\",
+${notes_slaves}
 
 When initially setting up the buildworkers, or if the SSL certificate changes, run:
-
-sudo -u buildbot svn --config-dir ${prefix}/var/buildworker/base/.subversion info https://svn.macports.org/repository/macports
-sudo svn --config-dir ${prefix}/var/buildworker/ports/.subversion info https://svn.macports.org/repository/macports
+${notes_svn}
 
 To start the buildworkers, run:
-
-sudo launchctl load -w /Library/LaunchDaemons/${name}.base.plist
-sudo launchctl load -w /Library/LaunchDaemons/${name}.ports.plist
+${notes_load}
 
 To stop the buildworkers, run:
-
-sudo launchctl unload -w /Library/LaunchDaemons/${name}.base.plist
-sudo launchctl unload -w /Library/LaunchDaemons/${name}.ports.plist
+${notes_unload}
 "
