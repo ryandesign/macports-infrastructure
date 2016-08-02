@@ -113,5 +113,5 @@ if [ ! -f "$PROFILE" ]; then
 fi
 if ! grep -q "$PREFIX/bin:$PREFIX/sbin" "$PROFILE"; then
   echo "$UI_PREFIX Setting up profile"
-  echo "export PATH=$PREFIX/bin:$PREFIX/sbin:$PATH" >> "$PROFILE"
+  echo "export PATH=$PREFIX/bin:$PREFIX/sbin:\$PATH" >> "$PROFILE"
 fi
