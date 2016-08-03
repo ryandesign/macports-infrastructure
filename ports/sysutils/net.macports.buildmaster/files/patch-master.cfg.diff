@@ -1,5 +1,5 @@
 --- master.cfg.orig	2016-07-26 22:39:10.000000000 -0500
-+++ master.cfg	2016-07-28 00:54:53.000000000 -0500
++++ master.cfg	2016-08-03 12:59:25.000000000 -0500
 @@ -23,13 +23,13 @@
  privkey      = ''
  slaveport    = 9989
@@ -21,10 +21,42 @@
  
  # TODO: the following list should be configured in slaves.json
 -build_platforms = ["10.6-x86_64"]
-+build_platforms = ["10.6-i386-legacy", "10.7-x86_64-legacy", "10.11-x86_64"]
++build_platforms = ["10.6-x86_64", "10.6-x86_64-legacy", "10.6-i386", "10.6-i386-legacy", "10.7-x86_64", "10.7-x86_64-legacy", "10.8-x86_64", "10.8-x86_64-legacy", "10.9-x86_64", "10.11-x86_64"]
  #build_platforms = ["snowleopard-x86_64", "lion-x86_64", "mtln-x86_64", "mavericks-x86_64", "yosemite-x86_64", "elcapitan-x86_64", "oelinux-6.3-x86_64"]
  
  # Allow spaces and tabs in property values
+@@ -117,7 +117,7 @@
+ portsfilter = ChangeFilter(filter_fn=change_has_ports)
+ basefilter = ChangeFilter(filter_fn=change_has_base)
+ 
+-base_buildernames = ["base-"+plat for plat in build_platforms]
++base_buildernames = ["base-"+plat for plat in build_platforms if 'legacy' not in plat and '10.6-i386' not in plat]
+ portwatcher_buildernames = ["portwatcher-"+plat for plat in build_platforms if 'linux' not in plat]
+ portbuilder_buildernames = ["portbuilder-"+plat for plat in build_platforms if 'linux' not in plat]
+ portbuilder_triggerables = ["porttrigger-"+plat for plat in build_platforms if 'linux' not in plat]
+@@ -141,14 +141,14 @@
+     ForceScheduler(
+         name="base_force",
+         builderNames=base_buildernames),
+-    ForceScheduler(
+-        name="portbuilder_force",
+-        builderNames=portbuilder_buildernames,
+-        properties=[StringParameter(
+-            name="portname",
+-            label="Port name:",
+-            default="")
+-        ]),
++#    ForceScheduler(
++#        name="portbuilder_force",
++#        builderNames=portbuilder_buildernames,
++#        properties=[StringParameter(
++#            name="portname",
++#            label="Port name:",
++#            default="")
++#        ]),
+     ForceScheduler(
+         name="portwatcher_force",
+         builderNames=portwatcher_buildernames,
 @@ -241,7 +241,7 @@
  if production:
      prefix='/opt/local'
@@ -59,7 +91,7 @@
          name="base-" + plat,
          slavenames=["base-" + plat],
          factory=base_factory,
-+        tags=[plat],
++        tags=["base", plat],
          env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
      if 'linux' not in plat:
          c['builders'] += [
@@ -67,13 +99,13 @@
                  name="portwatcher-" + plat,
                  slavenames=["ports-" + plat],
                  factory=make_portwatcher_factory("porttrigger-" + plat),
-+                tags=[plat],
++                tags=["ports", plat],
                  env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"}),
              BuilderConfig(
                  name="portbuilder-" + plat,
                  slavenames=["ports-" + plat],
                  factory=portbuilder_factory,
-+                tags=[plat],
++                tags=["ports", plat],
                  env={"PATH": toolsprefix + "/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"})]
  
  ####### STATUS TARGETS
