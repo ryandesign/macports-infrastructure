@@ -99,6 +99,8 @@ else
   $PREFIX/bin/git -C "$EXTRA_PORTS_WC" pull
 fi
 
+sed -i '' -E 's/^#?(startupitem_install[[:space:]]+).*$/\1no/' $PREFIX/etc/macports/macports.conf
+
 if ! grep -q "file://$EXTRA_PORTS_DIR" $PREFIX/etc/macports/sources.conf; then
   echo "$UI_PREFIX Adding $EXTRA_PORTS_DIR to sources.conf"
   echo "file://$EXTRA_PORTS_DIR" >> $PREFIX/etc/macports/sources.conf
