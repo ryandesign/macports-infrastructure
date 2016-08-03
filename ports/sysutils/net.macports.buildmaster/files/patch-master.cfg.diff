@@ -1,5 +1,5 @@
---- master.cfg.orig	2016-07-26 22:39:10.000000000 -0500
-+++ master.cfg	2016-08-03 13:15:10.000000000 -0500
+--- master.cfg.orig	2016-07-28 23:34:43.000000000 -0500
++++ master.cfg	2016-08-03 13:23:55.000000000 -0500
 @@ -23,13 +23,13 @@
  privkey      = ''
  slaveport    = 9989
@@ -91,8 +91,8 @@
 +        workdir=portwatcher_factory.workdir+"/mpbb",
          haltOnFailure=True))
  
-     portwatcher_factory.addStep(SetPropertyFromCommandWithPortlist(
-@@ -325,6 +329,7 @@
+     portwatcher_factory.addStep(ShellCommand(
+@@ -338,6 +342,7 @@
  # -- Port Builder --
  
  portbuilder_factory = BuildFactory()
@@ -100,16 +100,22 @@
  
  # XXX: use InfoStep instead of running a dummy command
  portbuilder_factory.addStep(ShellCommand(
-@@ -337,7 +342,7 @@
-     alwaysUseLatest=True,
-     preferLastChangedRev=True,
-     mode="incremental",
+@@ -345,14 +350,6 @@
+     description=[WithProperties("Port: %(portname)s")]))
+ #portbuilder_factory.addStep(InfoStep(title=WithProperties("Port %(portname)s")))
+ 
+-portbuilder_factory.addStep(SVN(
+-    repourl=mpbbsvnurl,
+-    alwaysUseLatest=True,
+-    preferLastChangedRev=True,
+-    mode="incremental",
 -    workdir="build/mpbb",
-+    workdir=portbuilder_factory.workdir+"mpbb",
-     haltOnFailure=True))
+-    haltOnFailure=True))
+-
  portbuilder_factory.addStep(ShellCommand(
-     command=['./mpbb/mpbb', 'selfupdate', '--prefix', WithProperties(prefix)],
-@@ -395,16 +400,10 @@
+     command=['./mpbb/mpbb', 'install-dependencies', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
+     name="install-dependencies",
+@@ -400,16 +397,10 @@
  # XXX: slavenames assignment should be automatic and more generic
  portsslaves = {}
  baseslaves = {}
@@ -130,7 +136,7 @@
  
  c['builders']=[]
  for plat in build_platforms:
-@@ -412,6 +411,7 @@
+@@ -417,6 +408,7 @@
          name="base-" + plat,
          slavenames=["base-" + plat],
          factory=base_factory,
@@ -138,7 +144,7 @@
          env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
      if 'linux' not in plat:
          c['builders'] += [
-@@ -419,11 +419,13 @@
+@@ -424,11 +416,13 @@
                  name="portwatcher-" + plat,
                  slavenames=["ports-" + plat],
                  factory=make_portwatcher_factory("porttrigger-" + plat),
