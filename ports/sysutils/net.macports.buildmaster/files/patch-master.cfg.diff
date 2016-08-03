@@ -1,5 +1,5 @@
 --- master.cfg.orig	2016-07-26 22:39:10.000000000 -0500
-+++ master.cfg	2016-08-03 12:59:25.000000000 -0500
++++ master.cfg	2016-08-03 13:15:10.000000000 -0500
 @@ -23,13 +23,13 @@
  privkey      = ''
  slaveport    = 9989
@@ -57,7 +57,16 @@
      ForceScheduler(
          name="portwatcher_force",
          builderNames=portwatcher_buildernames,
-@@ -241,7 +241,7 @@
+@@ -180,6 +180,8 @@
+ from buildbot.steps.shell import ShellCommand, Compile, Configure, SetPropertyFromCommand
+ 
+ base_factory = BuildFactory()
++base_factory.workdir = '../build'
++
+ #base_factory.addStep(SVN(
+ #   repourl=Interpolate('https://svn.macports.org/repository/macports/%(src::branch:-trunk)s/base'),
+ base_factory.addStep(SVN(
+@@ -241,7 +243,7 @@
  if production:
      prefix='/opt/local'
      dlhost='packages@packages-origin.macports.org'
@@ -66,7 +75,41 @@
  else:
      prefix=slaveprefix
      dlhost=''
-@@ -395,16 +395,10 @@
+@@ -281,13 +283,15 @@
+ 
+ def make_portwatcher_factory(triggerable):
+     portwatcher_factory = BuildFactory()
++    portwatcher_factory.workdir = '../build'
++
+     # get mp-buildbot; we'll do the checkout of base and dports via these scripts
+     portwatcher_factory.addStep(SVN(
+         repourl=mpbbsvnurl,
+         alwaysUseLatest=True,
+         preferLastChangedRev=True,
+         mode="incremental",
+-        workdir="build/mpbb",
++        workdir=portwatcher_factory.workdir+"/mpbb",
+         haltOnFailure=True))
+ 
+     portwatcher_factory.addStep(SetPropertyFromCommandWithPortlist(
+@@ -325,6 +329,7 @@
+ # -- Port Builder --
+ 
+ portbuilder_factory = BuildFactory()
++portbuilder_factory.workdir = '../build'
+ 
+ # XXX: use InfoStep instead of running a dummy command
+ portbuilder_factory.addStep(ShellCommand(
+@@ -337,7 +342,7 @@
+     alwaysUseLatest=True,
+     preferLastChangedRev=True,
+     mode="incremental",
+-    workdir="build/mpbb",
++    workdir=portbuilder_factory.workdir+"mpbb",
+     haltOnFailure=True))
+ portbuilder_factory.addStep(ShellCommand(
+     command=['./mpbb/mpbb', 'selfupdate', '--prefix', WithProperties(prefix)],
+@@ -395,16 +400,10 @@
  # XXX: slavenames assignment should be automatic and more generic
  portsslaves = {}
  baseslaves = {}
@@ -87,7 +130,7 @@
  
  c['builders']=[]
  for plat in build_platforms:
-@@ -412,6 +406,7 @@
+@@ -412,6 +411,7 @@
          name="base-" + plat,
          slavenames=["base-" + plat],
          factory=base_factory,
@@ -95,7 +138,7 @@
          env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
      if 'linux' not in plat:
          c['builders'] += [
-@@ -419,11 +414,13 @@
+@@ -419,11 +419,13 @@
                  name="portwatcher-" + plat,
                  slavenames=["ports-" + plat],
                  factory=make_portwatcher_factory("porttrigger-" + plat),
