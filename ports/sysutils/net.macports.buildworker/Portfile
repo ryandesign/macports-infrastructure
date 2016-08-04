@@ -45,7 +45,7 @@ variant base description {Use a base worker} {
     }
 }
 
-if {![variant_isset legacy] && ([vercmp ${os_version} 10.6] != 0 || ${build_arch} eq "x86_64")} {
+if {!([variant_isset legacy] || ([vercmp ${os_version} 10.6] == 0 && ${build_arch} eq "i386"))} {
     default_variants +base
 }
 
