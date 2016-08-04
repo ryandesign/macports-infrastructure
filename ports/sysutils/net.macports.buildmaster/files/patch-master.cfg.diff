@@ -1,5 +1,5 @@
 --- master.cfg.orig	2016-07-28 23:34:43.000000000 -0500
-+++ master.cfg	2016-08-03 21:12:16.000000000 -0500
++++ master.cfg	2016-08-03 21:15:48.000000000 -0500
 @@ -23,13 +23,13 @@
  privkey      = ''
  slaveport    = 9989
@@ -155,13 +155,13 @@
                  name="portwatcher-" + plat,
                  slavenames=["ports-" + plat],
                  factory=make_portwatcher_factory("porttrigger-" + plat),
-+                tags=["ports", "portwatcher", plat],
++                tags=["portwatcher", plat],
                  env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"}),
              BuilderConfig(
                  name="portbuilder-" + plat,
                  slavenames=["ports-" + plat],
                  factory=portbuilder_factory,
-+                tags=["ports", "portbuilder", plat],
++                tags=["portbuilder", plat],
                  env={"PATH": toolsprefix + "/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"})]
  
  ####### STATUS TARGETS
