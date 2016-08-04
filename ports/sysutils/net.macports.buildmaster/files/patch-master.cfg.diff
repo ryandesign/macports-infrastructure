@@ -141,7 +141,7 @@
 -        slavenames=["base-" + plat],
 -        factory=base_factory,
 -        env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
-+    if if 'legacy' not in plat and '10.6-i386' not in plat:
++    if 'legacy' not in plat and '10.6-i386' not in plat:
 +        c['builders'] += [
 +            BuilderConfig(
 +                name="base-" + plat,
