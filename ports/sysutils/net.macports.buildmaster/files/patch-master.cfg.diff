@@ -1,5 +1,5 @@
 --- master.cfg.orig	2016-07-28 23:34:43.000000000 -0500
-+++ master.cfg	2016-08-03 13:23:55.000000000 -0500
++++ master.cfg	2016-08-03 20:56:48.000000000 -0500
 @@ -23,13 +23,13 @@
  privkey      = ''
  slaveport    = 9989
@@ -115,7 +115,7 @@
  portbuilder_factory.addStep(ShellCommand(
      command=['./mpbb/mpbb', 'install-dependencies', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
      name="install-dependencies",
-@@ -400,16 +397,10 @@
+@@ -400,35 +397,34 @@
  # XXX: slavenames assignment should be automatic and more generic
  portsslaves = {}
  baseslaves = {}
@@ -136,15 +136,22 @@
  
  c['builders']=[]
  for plat in build_platforms:
-@@ -417,6 +408,7 @@
-         name="base-" + plat,
-         slavenames=["base-" + plat],
-         factory=base_factory,
-+        tags=["base", plat],
-         env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
+-    c['builders'] += [BuilderConfig(
+-        name="base-" + plat,
+-        slavenames=["base-" + plat],
+-        factory=base_factory,
+-        env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
++    if if 'legacy' not in plat and '10.6-i386' not in plat:
++        c['builders'] += [
++            BuilderConfig(
++                name="base-" + plat,
++                slavenames=["base-" + plat],
++                factory=base_factory,
++                tags=["base", plat],
++                env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
      if 'linux' not in plat:
          c['builders'] += [
-@@ -424,11 +416,13 @@
+             BuilderConfig(
                  name="portwatcher-" + plat,
                  slavenames=["ports-" + plat],
                  factory=make_portwatcher_factory("porttrigger-" + plat),
