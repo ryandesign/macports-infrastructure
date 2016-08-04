@@ -1,5 +1,5 @@
---- master.cfg.orig	2016-07-28 23:34:43.000000000 -0500
-+++ master.cfg	2016-08-03 21:15:48.000000000 -0500
+--- master.cfg.orig	2016-08-04 11:04:02.000000000 -0500
++++ master.cfg	2016-08-04 11:04:02.000000000 -0500
 @@ -23,13 +23,13 @@
  privkey      = ''
  slaveport    = 9989
@@ -31,9 +31,9 @@
  
 -base_buildernames = ["base-"+plat for plat in build_platforms]
 +base_buildernames = ["base-"+plat for plat in build_platforms if 'legacy' not in plat and '10.6-i386' not in plat]
- portwatcher_buildernames = ["portwatcher-"+plat for plat in build_platforms if 'linux' not in plat]
- portbuilder_buildernames = ["portbuilder-"+plat for plat in build_platforms if 'linux' not in plat]
- portbuilder_triggerables = ["porttrigger-"+plat for plat in build_platforms if 'linux' not in plat]
+ portwatcher_buildernames = ["ports-"+plat+"-watcher" for plat in build_platforms if 'linux' not in plat]
+ portbuilder_buildernames = ["ports-"+plat+"-builder" for plat in build_platforms if 'linux' not in plat]
+ portbuilder_triggerables = ["ports-"+plat+"-trigger" for plat in build_platforms if 'linux' not in plat]
 @@ -141,14 +141,14 @@
      ForceScheduler(
          name="base_force",
