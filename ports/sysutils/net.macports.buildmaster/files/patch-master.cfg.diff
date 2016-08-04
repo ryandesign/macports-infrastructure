@@ -152,13 +152,13 @@
      if 'linux' not in plat:
          c['builders'] += [
              BuilderConfig(
-                 name="portwatcher-" + plat,
+                 name="ports-" + plat + "-watcher",
                  slavenames=["ports-" + plat],
-                 factory=make_portwatcher_factory("porttrigger-" + plat),
+                 factory=make_portwatcher_factory("ports-" + plat + "-trigger"),
 +                tags=["portwatcher", plat],
                  env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"}),
              BuilderConfig(
-                 name="portbuilder-" + plat,
+                 name="ports-" + plat + "-builder",
                  slavenames=["ports-" + plat],
                  factory=portbuilder_factory,
 +                tags=["portbuilder", plat],
