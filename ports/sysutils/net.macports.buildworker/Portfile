@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             9
+version             10
 
 depends_run         port:buildbot-slave
 
@@ -13,7 +13,7 @@ add_users           buildbot group=buildbot realname=buildbot
 set hostname        [lindex [split [info hostname] .] 0]
 set legacy          [string match {*-legacy*} ${hostname}]
 set os_version      10.[expr [lindex [split ${os.version} .] 0] - 4].[lindex [split ${os.version} .] 1]
-set worker_id       [join [lrange [split ${os_version} .] 0 1] .]-${build_arch}
+set worker_id       [join [lrange [split ${os_version} .] 0 1] .]_${build_arch}
 set cxx_lib         libc++
 
 if {[vercmp ${os_version} 10.9] < 0} {
@@ -22,7 +22,7 @@ if {[vercmp ${os_version} 10.9] < 0} {
         default_variants +legacy
     }
     if {[variant_isset legacy]} {
-        append worker_id -legacy
+        append worker_id _legacy
         set cxx_lib     libstdc++
     }
 }
