@@ -1,5 +1,5 @@
---- master.cfg.orig	2016-08-04 11:04:02.000000000 -0500
-+++ master.cfg	2016-08-04 11:04:02.000000000 -0500
+--- master.cfg.orig	2016-08-05 09:34:53.000000000 -0500
++++ master.cfg	2016-08-05 10:01:13.000000000 -0500
 @@ -23,13 +23,13 @@
  privkey      = ''
  slaveport    = 9989
@@ -16,57 +16,7 @@
  
  if os.path.exists(_path('config.json')):
      with open(_path('config.json')) as f:
-@@ -40,7 +40,7 @@
-             locals[key] = configdata[key]
- 
- # TODO: the following list should be configured in slaves.json
--build_platforms = ["10.6-x86_64"]
-+build_platforms = ["10.6-x86_64", "10.6-x86_64-legacy", "10.6-i386", "10.6-i386-legacy", "10.7-x86_64", "10.7-x86_64-legacy", "10.8-x86_64", "10.8-x86_64-legacy", "10.9-x86_64", "10.10-x86_64", "10.11-x86_64"]
- #build_platforms = ["snowleopard-x86_64", "lion-x86_64", "mtln-x86_64", "mavericks-x86_64", "yosemite-x86_64", "elcapitan-x86_64", "oelinux-6.3-x86_64"]
- 
- # Allow spaces and tabs in property values
-@@ -117,7 +117,7 @@
- portsfilter = ChangeFilter(filter_fn=change_has_ports)
- basefilter = ChangeFilter(filter_fn=change_has_base)
- 
--base_buildernames = ["base-"+plat for plat in build_platforms]
-+base_buildernames = ["base-"+plat for plat in build_platforms if 'legacy' not in plat and '10.6-i386' not in plat]
- portwatcher_buildernames = ["ports-"+plat+"-watcher" for plat in build_platforms if 'linux' not in plat]
- portbuilder_buildernames = ["ports-"+plat+"-builder" for plat in build_platforms if 'linux' not in plat]
- portbuilder_triggerables = ["ports-"+plat+"-trigger" for plat in build_platforms if 'linux' not in plat]
-@@ -141,14 +141,14 @@
-     ForceScheduler(
-         name="base_force",
-         builderNames=base_buildernames),
--    ForceScheduler(
--        name="portbuilder_force",
--        builderNames=portbuilder_buildernames,
--        properties=[StringParameter(
--            name="portname",
--            label="Port name:",
--            default="")
--        ]),
-+#    ForceScheduler(
-+#        name="portbuilder_force",
-+#        builderNames=portbuilder_buildernames,
-+#        properties=[StringParameter(
-+#            name="portname",
-+#            label="Port name:",
-+#            default="")
-+#        ]),
-     ForceScheduler(
-         name="portwatcher_force",
-         builderNames=portwatcher_buildernames,
-@@ -180,6 +180,8 @@
- from buildbot.steps.shell import ShellCommand, Compile, Configure, SetPropertyFromCommand
- 
- base_factory = BuildFactory()
-+base_factory.workdir = '../build'
-+
- #base_factory.addStep(SVN(
- #   repourl=Interpolate('https://svn.macports.org/repository/macports/%(src::branch:-trunk)s/base'),
- base_factory.addStep(SVN(
-@@ -241,7 +243,7 @@
+@@ -242,7 +242,7 @@
  if production:
      prefix='/opt/local'
      dlhost='packages@packages-origin.macports.org'
@@ -75,93 +25,3 @@
  else:
      prefix=slaveprefix
      dlhost=''
-@@ -281,13 +283,15 @@
- 
- def make_portwatcher_factory(triggerable):
-     portwatcher_factory = BuildFactory()
-+    portwatcher_factory.workdir = '../build'
-+
-     # get mp-buildbot; we'll do the checkout of base and dports via these scripts
-     portwatcher_factory.addStep(SVN(
-         repourl=mpbbsvnurl,
-         alwaysUseLatest=True,
-         preferLastChangedRev=True,
-         mode="incremental",
--        workdir="build/mpbb",
-+        workdir=portwatcher_factory.workdir+"/mpbb",
-         haltOnFailure=True))
- 
-     portwatcher_factory.addStep(ShellCommand(
-@@ -338,6 +342,7 @@
- # -- Port Builder --
- 
- portbuilder_factory = BuildFactory()
-+portbuilder_factory.workdir = '../build'
- 
- # XXX: use InfoStep instead of running a dummy command
- portbuilder_factory.addStep(ShellCommand(
-@@ -345,14 +350,6 @@
-     description=[WithProperties("Port: %(portname)s")]))
- #portbuilder_factory.addStep(InfoStep(title=WithProperties("Port %(portname)s")))
- 
--portbuilder_factory.addStep(SVN(
--    repourl=mpbbsvnurl,
--    alwaysUseLatest=True,
--    preferLastChangedRev=True,
--    mode="incremental",
--    workdir="build/mpbb",
--    haltOnFailure=True))
--
- portbuilder_factory.addStep(ShellCommand(
-     command=['./mpbb/mpbb', 'install-dependencies', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
-     name="install-dependencies",
-@@ -400,35 +397,34 @@
- # XXX: slavenames assignment should be automatic and more generic
- portsslaves = {}
- baseslaves = {}
--if production:
--    slavenames = slavedata.keys()
--    for plat in build_platforms:
--        baseslaves[plat]  = filter(lambda x: x.endswith(plat+"-base"),  slavenames)
--        portsslaves[plat] = filter(lambda x: x.endswith(plat+"-ports"), slavenames)
--#else:
--    #slavenames = ["snowleopard-x86_64"]
--    #slavenames = ["base-10.6-x86_64","10.6-x86_64","10.9-x86_64"]
--    #portsslaves = {build_platforms[0]:slavenames[0],build_platforms[1]:slavenames[1]}
--    #baseslaves = {build_platforms[0]:slavenames[0],build_platforms[1]:slavenames[1]}
-+slavenames = slavedata.keys()
-+for plat in build_platforms:
-+    baseslaves[plat]  = filter(lambda x: x.endswith(plat+"-base"),  slavenames)
-+    portsslaves[plat] = filter(lambda x: x.endswith(plat+"-ports"), slavenames)
- 
- c['builders']=[]
- for plat in build_platforms:
--    c['builders'] += [BuilderConfig(
--        name="base-" + plat,
--        slavenames=["base-" + plat],
--        factory=base_factory,
--        env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
-+    if 'legacy' not in plat and '10.6-i386' not in plat:
-+        c['builders'] += [
-+            BuilderConfig(
-+                name="base-" + plat,
-+                slavenames=["base-" + plat],
-+                factory=base_factory,
-+                tags=["base", plat],
-+                env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
-     if 'linux' not in plat:
-         c['builders'] += [
-             BuilderConfig(
-                 name="ports-" + plat + "-watcher",
-                 slavenames=["ports-" + plat],
-                 factory=make_portwatcher_factory("ports-" + plat + "-trigger"),
-+                tags=["portwatcher", plat],
-                 env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"}),
-             BuilderConfig(
-                 name="ports-" + plat + "-builder",
-                 slavenames=["ports-" + plat],
-                 factory=portbuilder_factory,
-+                tags=["portbuilder", plat],
-                 env={"PATH": toolsprefix + "/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"})]
- 
- ####### STATUS TARGETS
