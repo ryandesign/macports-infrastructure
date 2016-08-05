@@ -4,9 +4,10 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             10
+version             11
 
-depends_run         port:buildbot-slave
+depends_run         port:buildbot-slave \
+                    port:subversion
 
 add_users           buildbot group=buildbot realname=buildbot
 
