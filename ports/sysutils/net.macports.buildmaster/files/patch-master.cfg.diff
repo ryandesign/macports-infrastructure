@@ -40,7 +40,7 @@ Index: master.cfg
          svnurl='https://svn.macports.org/repository/macports/trunk',
 -        #'https://svn.macports.org/repository/macports/trunk',
 -        #svnbin='/opt/local/bin/svn',
-+        svnbin=toolsprefix+'/bin/svn',
++        svnbin='@PREFIX@/bin/svn',
          pollinterval=300,
          category='macports',
          project='ports'))
