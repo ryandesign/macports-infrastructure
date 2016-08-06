@@ -81,15 +81,6 @@ Index: master.cfg
  
  class InfoStep(BuildStep):
      def __init__(self, title='', **kwargs):
-@@ -363,7 +366,7 @@
- # XXX: use InfoStep instead of running a dummy command
- portbuilder_factory.addStep(ShellCommand(
-     command=["/usr/bin/true"],
--    description=[WithProperties("Port: %(portname)s")]))
-+    description=[util.Property("Port: %(prop:portname)s")]))
- #portbuilder_factory.addStep(InfoStep(title=WithProperties("Port %(portname)s")))
- 
- portbuilder_factory.addStep(Compile(
 @@ -394,13 +397,13 @@
  
  # XXX: move deploy_archives.sh functionality to mp-buildbot
@@ -102,7 +93,7 @@ Index: master.cfg
 -#                               'DLHOST': dlhost,
 -#                               'DLPATH': dlpath}))
 +if production:
-+    portbuilder_factory.addStep(MasterShellCommand(command=["./deploy_archives.sh", util.Property("ulpath_unique")],
++    portbuilder_factory.addStep(MasterShellCommand(command=["./deploy_archives.sh", WithProperties(ulpath_unique)],
 +                                       name="deploy archives",
 +                                       description="deploy archives",
 +                          env={'PRIVKEY': privkey,
