@@ -1,6 +1,6 @@
 Index: master.cfg
 ===================================================================
---- master.cfg	(revision 151042)
+--- master.cfg	(revision 151045)
 +++ master.cfg	(working copy)
 @@ -19,17 +19,17 @@
  # (where /opt/local shouldn't be messed with) and the production server (where
@@ -90,7 +90,7 @@ Index: master.cfg
  #portbuilder_factory.addStep(InfoStep(title=WithProperties("Port %(portname)s")))
  
  portbuilder_factory.addStep(Compile(
-@@ -391,13 +394,13 @@
+@@ -394,13 +397,13 @@
  
  # XXX: move deploy_archives.sh functionality to mp-buildbot
  # sign generated binaries and sync to download server (if distributable)
@@ -111,7 +111,42 @@ Index: master.cfg
  
  # TODO: do we want to upload the individual logs so maintainers can review them?
  #ports_factory.addStep(ShellCommand(command="./cleanup_old.sh",
-@@ -471,7 +474,8 @@
+@@ -422,14 +425,17 @@
+     portsslaves[plat] = filter(lambda x: x.endswith(plat+"-ports"), slavenames)
+ 
+ c['builders']=[]
++extract_os = re.compile("10\.\d+")
+ for plat in build_platforms:
++    os_match = extract_os.search(plat)
++    os = os_match.group(0) if os_match else plat
+     if 'legacy' not in plat and '10.6_i386' not in plat:
+         c['builders'] += [
+             BuilderConfig(
+                 name="base-" + plat,
+                 slavenames=["base-" + plat],
+                 factory=base_factory,
+-                tags=["base", plat],
++                tags=["base", os],
+                 env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
+     if 'linux' not in plat:
+         c['builders'] += [
+@@ -437,13 +443,13 @@
+                 name="ports-" + plat + "-watcher",
+                 slavenames=["ports-" + plat],
+                 factory=make_portwatcher_factory("ports-" + plat + "-trigger"),
+-                tags=["portwatcher", plat],
++                tags=["portwatcher", os],
+                 env={"PATH": toolsprefix + "/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"}),
+             BuilderConfig(
+                 name="ports-" + plat + "-builder",
+                 slavenames=["ports-" + plat],
+                 factory=portbuilder_factory,
+-                tags=["portbuilder", plat],
++                tags=["portbuilder", os],
+                 env={"PATH": toolsprefix + "/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"})]
+ 
+ ####### STATUS TARGETS
+@@ -474,7 +480,8 @@
      cancelPendingBuild = 'auth',
  )
  
@@ -121,7 +156,7 @@ Index: master.cfg
      # send mail about base failures to users on the blamelist
      from buildbot.status.mail import MailNotifier
      mn = MailNotifier(
-@@ -532,8 +536,6 @@
+@@ -535,8 +542,6 @@
  
  ####### PROJECT IDENTITY
  
