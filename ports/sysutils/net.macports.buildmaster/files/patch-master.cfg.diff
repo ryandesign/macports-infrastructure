@@ -81,20 +81,16 @@ Index: master.cfg
  
  class InfoStep(BuildStep):
      def __init__(self, title='', **kwargs):
-@@ -360,11 +363,7 @@
- portbuilder_factory = BuildFactory()
- portbuilder_factory.workdir = '../build'
- 
--# XXX: use InfoStep instead of running a dummy command
--portbuilder_factory.addStep(ShellCommand(
--    command=["/usr/bin/true"],
+@@ -363,7 +366,7 @@
+ # XXX: use InfoStep instead of running a dummy command
+ portbuilder_factory.addStep(ShellCommand(
+     command=["/usr/bin/true"],
 -    description=[WithProperties("Port: %(portname)s")]))
--#portbuilder_factory.addStep(InfoStep(title=WithProperties("Port %(portname)s")))
-+portbuilder_factory.addStep(InfoStep(title=Interpolate("Port: %(prop:portname)s")))
++    description=[util.Property("Port: %(prop:portname)s")]))
+ #portbuilder_factory.addStep(InfoStep(title=WithProperties("Port %(portname)s")))
  
  portbuilder_factory.addStep(Compile(
-     command=['./mpbb/mpbb', 'install-dependencies', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
-@@ -391,13 +390,13 @@
+@@ -391,13 +394,13 @@
  
  # XXX: move deploy_archives.sh functionality to mp-buildbot
  # sign generated binaries and sync to download server (if distributable)
@@ -115,7 +111,7 @@ Index: master.cfg
  
  # TODO: do we want to upload the individual logs so maintainers can review them?
  #ports_factory.addStep(ShellCommand(command="./cleanup_old.sh",
-@@ -471,7 +470,8 @@
+@@ -471,7 +474,8 @@
      cancelPendingBuild = 'auth',
  )
  
@@ -125,7 +121,7 @@ Index: master.cfg
      # send mail about base failures to users on the blamelist
      from buildbot.status.mail import MailNotifier
      mn = MailNotifier(
-@@ -532,8 +532,6 @@
+@@ -532,8 +536,6 @@
  
  ####### PROJECT IDENTITY
  
