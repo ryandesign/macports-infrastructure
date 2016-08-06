@@ -4,19 +4,17 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster
-version             26
+version             27
 
 fetch.type          svn
 svn.url             https://svn.macports.org/repository/macports/contrib/buildbot-test
-svn.revision        151011
+svn.revision        151042
 worksrcdir          buildbot-test
 
 depends_run         port:buildbot \
                     port:net.macports.nginx
 
 post-extract {
-    # Convert DOS to UNIX line endings so we can patch
-    reinplace -W ${worksrcpath} "s|\r||g" config.json.sample slaves.json.sample
     copy ${worksrcpath}/config.json.sample ${worksrcpath}/config.json
 }
 

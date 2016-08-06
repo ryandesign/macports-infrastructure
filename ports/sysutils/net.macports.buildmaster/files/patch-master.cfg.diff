@@ -1,5 +1,5 @@
---- master.cfg.orig	2016-08-05 09:34:53.000000000 -0500
-+++ master.cfg	2016-08-05 10:01:13.000000000 -0500
+--- master.cfg	2016-08-05 16:35:09.000000000 -0500
++++ master.cfg	2016-08-05 19:02:58.000000000 -0500
 @@ -23,13 +23,13 @@
  privkey      = ''
  slaveport    = 9989
@@ -9,19 +9,22 @@
  htpasswdfile = "htpasswd"
  mpbbsvnurl   = "https://svn.macports.org/repository/macports/contrib/mp-buildbot"
  svnurl       = "https://svn.macports.org/repository/macports/trunk"
- archivesite  = "https://packages.macports.org"
+-archivesite  = "https://packages.macports.org"
++archivesite  = "https://packages-test.macports.org"
  slaveprefix  = "/opt/local"
 -toolsprefix  = "/opt/mports"
 +toolsprefix  = "/opt/bblocal"
  
  if os.path.exists(_path('config.json')):
      with open(_path('config.json')) as f:
-@@ -242,7 +242,7 @@
+@@ -241,8 +241,8 @@
+ # because archives must be built with prefix=/opt/local
  if production:
      prefix='/opt/local'
-     dlhost='packages@packages-origin.macports.org'
+-    dlhost='packages@packages-origin.macports.org'
 -    dlpath='/var/www/html/packages'
-+    dlpath='@PREFIX@/var/rsync/macports/packages'
++    dlhost='packages@packages-test.macports.org'
++    dlpath='@PREFIX@/var/rsync/macports/packages-test'
  else:
      prefix=slaveprefix
      dlhost=''
