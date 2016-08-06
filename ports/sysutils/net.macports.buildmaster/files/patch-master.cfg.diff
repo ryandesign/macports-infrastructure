@@ -98,7 +98,7 @@ Index: master.cfg
 -#                               'DLHOST': dlhost,
 -#                               'DLPATH': dlpath}))
 +if production:
-+    portbuilder_factory.addStep(MasterShellCommand(command=["./deploy_archives.sh", Property("ulpath_unique")],
++    portbuilder_factory.addStep(MasterShellCommand(command=["./deploy_archives.sh", util.Property("ulpath_unique")],
 +                                       name="deploy archives",
 +                                       description="deploy archives",
 +                          env={'PRIVKEY': privkey,
