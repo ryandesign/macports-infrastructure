@@ -73,7 +73,15 @@ Index: master.cfg
          alwaysUseLatest=True,
          preferLastChangedRev=True,
          mode="incremental",
-@@ -360,11 +362,7 @@
+@@ -346,6 +348,7 @@
+     return portwatcher_factory
+ 
+ from buildbot.process.buildstep import BuildStep
++from buildbot.plugins import util
+ 
+ class InfoStep(BuildStep):
+     def __init__(self, title='', **kwargs):
+@@ -360,11 +363,7 @@
  portbuilder_factory = BuildFactory()
  portbuilder_factory.workdir = '../build'
  
@@ -86,7 +94,7 @@ Index: master.cfg
  
  portbuilder_factory.addStep(Compile(
      command=['./mpbb/mpbb', 'install-dependencies', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
-@@ -391,13 +389,13 @@
+@@ -391,13 +390,13 @@
  
  # XXX: move deploy_archives.sh functionality to mp-buildbot
  # sign generated binaries and sync to download server (if distributable)
@@ -107,7 +115,7 @@ Index: master.cfg
  
  # TODO: do we want to upload the individual logs so maintainers can review them?
  #ports_factory.addStep(ShellCommand(command="./cleanup_old.sh",
-@@ -471,7 +469,8 @@
+@@ -471,7 +470,8 @@
      cancelPendingBuild = 'auth',
  )
  
@@ -117,3 +125,12 @@ Index: master.cfg
      # send mail about base failures to users on the blamelist
      from buildbot.status.mail import MailNotifier
      mn = MailNotifier(
+@@ -532,8 +532,6 @@
+ 
+ ####### PROJECT IDENTITY
+ 
+-from buildbot.plugins import util
+-
+ # the 'title' string will appear at the top of this buildbot
+ # installation's html.WebStatus home page (linked to the
+ # 'titleURL') and is embedded in the title of the waterfall HTML page.
