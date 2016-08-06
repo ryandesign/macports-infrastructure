@@ -1,5 +1,5 @@
---- master.cfg	2016-08-05 16:35:09.000000000 -0500
-+++ master.cfg	2016-08-05 19:02:58.000000000 -0500
+--- master.cfg.orig	2016-08-05 16:35:09.000000000 -0500
++++ master.cfg	2016-08-05 21:41:16.000000000 -0500
 @@ -23,13 +23,13 @@
  privkey      = ''
  slaveport    = 9989
@@ -17,6 +17,26 @@
  
  if os.path.exists(_path('config.json')):
      with open(_path('config.json')) as f:
+@@ -88,8 +88,7 @@
+     from buildbot.changes.svnpoller import SVNPoller
+     c['change_source'] = (SVNPoller(
+         svnurl='https://svn.macports.org/repository/macports/trunk',
+-        #'https://svn.macports.org/repository/macports/trunk',
+-        #svnbin='/opt/local/bin/svn',
++        svnbin=toolsprefix+'/bin/svn',
+         pollinterval=300,
+         category='macports',
+         project='ports'))
+@@ -185,7 +184,8 @@
+ #   repourl=Interpolate('https://svn.macports.org/repository/macports/%(src::branch:-trunk)s/base'),
+ base_factory.addStep(SVN(
+     repourl='https://svn.macports.org/repository/macports/trunk/base',
+-    method="copy"))
++    method="copy",
++    env={"PATH": toolsprefix + "/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"}))
+ base_factory.addStep(Configure(command=WithProperties("""
+ env PATH=/usr/bin:/bin:/usr/sbin:/sbin ./configure --enable-readline \
+     --prefix=%(workdir)s/opt/local \
 @@ -241,8 +241,8 @@
  # because archives must be built with prefix=/opt/local
  if production:
@@ -28,3 +48,11 @@
  else:
      prefix=slaveprefix
      dlhost=''
+@@ -287,6 +287,7 @@
+     # get mp-buildbot; we'll do the checkout of base and dports via these scripts
+     portwatcher_factory.addStep(SVN(
+         repourl=mpbbsvnurl,
++        env={"PATH": toolsprefix + "/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"},
+         alwaysUseLatest=True,
+         preferLastChangedRev=True,
+         mode="incremental",
