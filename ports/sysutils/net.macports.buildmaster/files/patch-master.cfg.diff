@@ -1,6 +1,13 @@
---- master.cfg.orig	2016-08-05 16:35:09.000000000 -0500
-+++ master.cfg	2016-08-05 21:41:16.000000000 -0500
-@@ -23,13 +23,13 @@
+Index: master.cfg
+===================================================================
+--- master.cfg	(revision 151042)
++++ master.cfg	(working copy)
+@@ -19,17 +19,17 @@
+ # (where /opt/local shouldn't be messed with) and the production server (where
+ # it has to be)
+ 
+-production   = False
++production   = True
  privkey      = ''
  slaveport    = 9989
  httpport     = 8010
@@ -17,7 +24,17 @@
  
  if os.path.exists(_path('config.json')):
      with open(_path('config.json')) as f:
-@@ -88,8 +88,7 @@
+@@ -77,7 +77,8 @@
+ # poller is used for local testing but PBChangeSource (which relies on
+ # notifications from a post-commit script) should be used in production
+ 
+-if production:
++#if production:
++if False:
+     # TODO
+     from buildbot.changes.pb import PBChangeSource
+     sourcedata = []
+@@ -88,8 +89,7 @@
      from buildbot.changes.svnpoller import SVNPoller
      c['change_source'] = (SVNPoller(
          svnurl='https://svn.macports.org/repository/macports/trunk',
@@ -27,7 +44,7 @@
          pollinterval=300,
          category='macports',
          project='ports'))
-@@ -185,7 +184,8 @@
+@@ -185,7 +185,8 @@
  #   repourl=Interpolate('https://svn.macports.org/repository/macports/%(src::branch:-trunk)s/base'),
  base_factory.addStep(SVN(
      repourl='https://svn.macports.org/repository/macports/trunk/base',
@@ -37,7 +54,7 @@
  base_factory.addStep(Configure(command=WithProperties("""
  env PATH=/usr/bin:/bin:/usr/sbin:/sbin ./configure --enable-readline \
      --prefix=%(workdir)s/opt/local \
-@@ -241,8 +241,8 @@
+@@ -241,8 +242,8 @@
  # because archives must be built with prefix=/opt/local
  if production:
      prefix='/opt/local'
@@ -48,7 +65,7 @@
  else:
      prefix=slaveprefix
      dlhost=''
-@@ -287,6 +287,7 @@
+@@ -287,6 +288,7 @@
      # get mp-buildbot; we'll do the checkout of base and dports via these scripts
      portwatcher_factory.addStep(SVN(
          repourl=mpbbsvnurl,
@@ -56,3 +73,47 @@
          alwaysUseLatest=True,
          preferLastChangedRev=True,
          mode="incremental",
+@@ -360,11 +362,7 @@
+ portbuilder_factory = BuildFactory()
+ portbuilder_factory.workdir = '../build'
+ 
+-# XXX: use InfoStep instead of running a dummy command
+-portbuilder_factory.addStep(ShellCommand(
+-    command=["/usr/bin/true"],
+-    description=[WithProperties("Port: %(portname)s")]))
+-#portbuilder_factory.addStep(InfoStep(title=WithProperties("Port %(portname)s")))
++portbuilder_factory.addStep(InfoStep(title=Interpolate("Port: %(prop:portname)s")))
+ 
+ portbuilder_factory.addStep(Compile(
+     command=['./mpbb/mpbb', 'install-dependencies', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
+@@ -391,13 +389,13 @@
+ 
+ # XXX: move deploy_archives.sh functionality to mp-buildbot
+ # sign generated binaries and sync to download server (if distributable)
+-#if production:
+-#    portbuilder_factory.addStep(MasterShellCommand(command=["./deploy_archives.sh", WithProperties(ulpath_unique)],
+-#                                       name="deploy archives",
+-#                                       description="deploy archives",
+-#                          env={'PRIVKEY': privkey,
+-#                               'DLHOST': dlhost,
+-#                               'DLPATH': dlpath}))
++if production:
++    portbuilder_factory.addStep(MasterShellCommand(command=["./deploy_archives.sh", Property("ulpath_unique")],
++                                       name="deploy archives",
++                                       description="deploy archives",
++                          env={'PRIVKEY': privkey,
++                               'DLHOST': dlhost,
++                               'DLPATH': dlpath}))
+ 
+ # TODO: do we want to upload the individual logs so maintainers can review them?
+ #ports_factory.addStep(ShellCommand(command="./cleanup_old.sh",
+@@ -471,7 +469,8 @@
+     cancelPendingBuild = 'auth',
+ )
+ 
+-if production:
++#if production:
++if False:
+     # send mail about base failures to users on the blamelist
+     from buildbot.status.mail import MailNotifier
+     mn = MailNotifier(

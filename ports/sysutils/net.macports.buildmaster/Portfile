@@ -4,15 +4,18 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster
-version             28
+version             29
 
 fetch.type          svn
 svn.url             https://svn.macports.org/repository/macports/contrib/buildbot-test
+svn.method          checkout
 svn.revision        151042
 worksrcdir          buildbot-test
 
 depends_run         port:buildbot \
-                    port:net.macports.nginx
+                    port:net.macports.nginx \
+                    port:net.macports.packages \
+                    port:net.macports.rsyncd
 
 post-extract {
     copy ${worksrcpath}/config.json.sample ${worksrcpath}/config.json

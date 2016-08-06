@@ -1,9 +1,10 @@
---- config.json.orig	2016-08-05 18:33:24.000000000 -0500
-+++ config.json	2016-08-05 18:50:26.000000000 -0500
+--- config.json.orig	2016-08-05 22:00:29.000000000 -0500
++++ config.json	2016-08-05 22:17:12.000000000 -0500
 @@ -1,13 +1,13 @@
  {
-     "production":   0,
+-    "production":   0,
 -    "privkey":      "/var/keys/macports-privkey.pem",
++    "production":   1,
 +    "privkey":      "@PREFIX@/var/keys/macports-privkey.pem",
      "slaveport":    9989,
      "httpport":     8010,
