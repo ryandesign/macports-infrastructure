@@ -1,6 +1,6 @@
 Index: master.cfg
 ===================================================================
---- master.cfg	(revision 151107)
+--- master.cfg	(revision 151131)
 +++ master.cfg	(working copy)
 @@ -19,17 +19,17 @@
  # (where /opt/local shouldn't be messed with) and the production server (where
@@ -54,7 +54,7 @@ Index: master.cfg
  else:
      prefix=slaveprefix
      dlhost=''
-@@ -482,7 +483,8 @@
+@@ -488,7 +489,8 @@
      cancelPendingBuild = 'auth',
  )
  
