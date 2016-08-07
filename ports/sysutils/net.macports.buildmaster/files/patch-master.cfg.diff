@@ -1,7 +1,5 @@
-Index: master.cfg
-===================================================================
---- master.cfg	(revision 151045)
-+++ master.cfg	(working copy)
+--- master.cfg.orig	2016-08-07 10:00:42.000000000 -0500
++++ master.cfg	2016-08-07 10:00:43.000000000 -0500
 @@ -19,17 +19,17 @@
  # (where /opt/local shouldn't be messed with) and the production server (where
  # it has to be)
@@ -44,101 +42,18 @@ Index: master.cfg
          pollinterval=300,
          category='macports',
          project='ports'))
-@@ -185,7 +185,8 @@
- #   repourl=Interpolate('https://svn.macports.org/repository/macports/%(src::branch:-trunk)s/base'),
- base_factory.addStep(SVN(
-     repourl='https://svn.macports.org/repository/macports/trunk/base',
--    method="copy"))
-+    method="copy",
-+    env={"PATH": toolsprefix + "/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"}))
- base_factory.addStep(Configure(command=WithProperties("""
- env PATH=/usr/bin:/bin:/usr/sbin:/sbin ./configure --enable-readline \
-     --prefix=%(workdir)s/opt/local \
-@@ -241,8 +242,8 @@
+@@ -242,8 +242,8 @@
  # because archives must be built with prefix=/opt/local
  if production:
      prefix='/opt/local'
 -    dlhost='packages@packages-origin.macports.org'
 -    dlpath='/var/www/html/packages'
-+    dlhost='packages@packages-test.macports.org'
++    dlhost=''
 +    dlpath='@PREFIX@/var/rsync/macports/packages-test'
  else:
      prefix=slaveprefix
      dlhost=''
-@@ -287,6 +288,7 @@
-     # get mp-buildbot; we'll do the checkout of base and dports via these scripts
-     portwatcher_factory.addStep(SVN(
-         repourl=mpbbsvnurl,
-+        env={"PATH": toolsprefix + "/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"},
-         alwaysUseLatest=True,
-         preferLastChangedRev=True,
-         mode="incremental",
-@@ -346,6 +348,7 @@
-     return portwatcher_factory
- 
- from buildbot.process.buildstep import BuildStep
-+from buildbot.plugins import util
- 
- class InfoStep(BuildStep):
-     def __init__(self, title='', **kwargs):
-@@ -394,13 +397,14 @@
- 
- # XXX: move deploy_archives.sh functionality to mp-buildbot
- # sign generated binaries and sync to download server (if distributable)
--#if production:
--#    portbuilder_factory.addStep(MasterShellCommand(command=["./deploy_archives.sh", WithProperties(ulpath_unique)],
--#                                       name="deploy archives",
--#                                       description="deploy archives",
--#                          env={'PRIVKEY': privkey,
--#                               'DLHOST': dlhost,
--#                               'DLPATH': dlpath}))
-+if production:
-+    portbuilder_factory.addStep(MasterShellCommand(command=["./deploy_archives.sh", WithProperties(ulpath_unique)],
-+                                       name="deploy-archives",
-+                                       description=["deploying", "archives"],
-+                                       descriptionDone=["deploy", "archives"],
-+                          env={'PRIVKEY': privkey,
-+                               'DLHOST': dlhost,
-+                               'DLPATH': dlpath}))
- 
- # TODO: do we want to upload the individual logs so maintainers can review them?
- #ports_factory.addStep(ShellCommand(command="./cleanup_old.sh",
-@@ -422,14 +426,17 @@
-     portsslaves[plat] = filter(lambda x: x.endswith(plat+"-ports"), slavenames)
- 
- c['builders']=[]
-+extract_os = re.compile("10\.\d+")
- for plat in build_platforms:
-+    os_match = extract_os.search(plat)
-+    os = os_match.group(0) if os_match else plat
-     if 'legacy' not in plat and '10.6_i386' not in plat:
-         c['builders'] += [
-             BuilderConfig(
-                 name="base-" + plat,
-                 slavenames=["base-" + plat],
-                 factory=base_factory,
--                tags=["base", plat],
-+                tags=["base", os],
-                 env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
-     if 'linux' not in plat:
-         c['builders'] += [
-@@ -437,13 +444,13 @@
-                 name="ports-" + plat + "-watcher",
-                 slavenames=["ports-" + plat],
-                 factory=make_portwatcher_factory("ports-" + plat + "-trigger"),
--                tags=["portwatcher", plat],
-+                tags=["portwatcher", os],
-                 env={"PATH": toolsprefix + "/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"}),
-             BuilderConfig(
-                 name="ports-" + plat + "-builder",
-                 slavenames=["ports-" + plat],
-                 factory=portbuilder_factory,
--                tags=["portbuilder", plat],
-+                tags=["portbuilder", os],
-                 env={"PATH": toolsprefix + "/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"})]
- 
- ####### STATUS TARGETS
-@@ -474,7 +481,8 @@
+@@ -488,7 +488,8 @@
      cancelPendingBuild = 'auth',
  )
  
@@ -148,12 +63,3 @@ Index: master.cfg
      # send mail about base failures to users on the blamelist
      from buildbot.status.mail import MailNotifier
      mn = MailNotifier(
-@@ -535,8 +543,6 @@
- 
- ####### PROJECT IDENTITY
- 
--from buildbot.plugins import util
--
- # the 'title' string will appear at the top of this buildbot
- # installation's html.WebStatus home page (linked to the
- # 'titleURL') and is embedded in the title of the waterfall HTML page.
