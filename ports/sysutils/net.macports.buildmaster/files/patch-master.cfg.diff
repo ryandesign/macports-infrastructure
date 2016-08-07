@@ -96,7 +96,7 @@ Index: master.cfg
 +    portbuilder_factory.addStep(MasterShellCommand(command=["./deploy_archives.sh", WithProperties(ulpath_unique)],
 +                                       name="deploy-archives",
 +                                       description=["deploying", "archives"],
-+                                       descriptionDone=["deploy", "archives"]
++                                       descriptionDone=["deploy", "archives"],
 +                          env={'PRIVKEY': privkey,
 +                               'DLHOST': dlhost,
 +                               'DLPATH': dlpath}))
