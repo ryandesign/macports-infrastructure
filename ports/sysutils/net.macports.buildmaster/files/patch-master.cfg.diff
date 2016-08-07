@@ -1,5 +1,7 @@
---- master.cfg.orig	2016-08-07 10:00:42.000000000 -0500
-+++ master.cfg	2016-08-07 10:00:43.000000000 -0500
+Index: master.cfg
+===================================================================
+--- master.cfg	(revision 151105)
++++ master.cfg	(working copy)
 @@ -19,17 +19,17 @@
  # (where /opt/local shouldn't be messed with) and the production server (where
  # it has to be)
@@ -42,6 +44,34 @@
          pollinterval=300,
          category='macports',
          project='ports'))
+@@ -198,21 +198,21 @@
+ base_factory.addStep(ShellCommand(
+     command="make install",
+     name="install",
+-    description="install"))
++    description=["installing"],
++    descriptionDone=["install"]))
+ base_factory.addStep(ShellCommand(
+     command="make test",
+     name="test",
+-    description="test"))
++    description=["testing"],
++    descriptionDone=["test"]))
+ base_factory.addStep(ShellCommand(
+     command=WithProperties("make distclean; rm -rf %(workdir)s/opt/local"),
+     name="clean",
+-    description="clean"))
++    description=["cleaning"],
++    description=["clean"]))
+ 
+ # custom class to make the file list available on the slave...
+ class SetPropertyFromCommandWithPortlist(SetPropertyFromCommand):
+-    name = 'generate portlist'
+-    description = 'generate portlist'
+-
+     def setBuild(self, build):
+         SetPropertyFromCommand.setBuild(self, build)
+ 
 @@ -242,8 +242,8 @@
  # because archives must be built with prefix=/opt/local
  if production:
@@ -53,7 +83,97 @@
  else:
      prefix=slaveprefix
      dlhost=''
-@@ -488,7 +488,8 @@
+@@ -298,14 +298,16 @@
+     portwatcher_factory.addStep(ShellCommand(
+         command=['./mpbb/mpbb', 'selfupdate', '--prefix', WithProperties(prefix)],
+         name="selfupdate",
+-        description="selfupdate",
++        description=["updating", "MacPorts"],
++        descriptionDone=["update", "MacPorts"],
+         haltOnFailure=True))
+ 
+     portwatcher_factory.addStep(ShellCommand(
+         command=['./mpbb/mpbb', 'checkout', '--prefix', WithProperties(prefix), '--svn-url', svnurl],
+         timeout=3600,
+         name="checkout",
+-        description="checkout",
++        description=["syncing", "ports"],
++        description=["sync", "ports"],
+         haltOnFailure=True))
+ 
+     def extract_subportlist(rc, stdout, stderr):
+@@ -329,7 +331,7 @@
+         command=WithProperties('./mpbb/mpbb list-subports %(fullportlist)s'),
+         extract_fn=extract_subportlist,
+         name="subports",
+-        description="subports"))
++        description=["listing", "subports"]))
+ 
+     portwatcher_factory.addStep(TriggerWithPortlist(
+         schedulerNames=[triggerable],
+@@ -371,22 +373,22 @@
+ portbuilder_factory.addStep(Compile(
+     command=['./mpbb/mpbb', 'install-dependencies', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
+     name="install-dependencies",
+-    description="installing deps",
+-    descriptionDone="install deps",
++    description=["installing", "dependencies"],
++    descriptionDone=["install", "dependencies"],
+     haltOnFailure=True))
+ 
+ portbuilder_factory.addStep(Compile(
+     command=['./mpbb/mpbb', 'install-port', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
+     name="install-port",
+-    description="installing port",
+-    descriptionDone="install port",
++    description=["installing", "port"],
++    descriptionDone=["install", "port"],
+     haltOnFailure=True))
+ 
+ portbuilder_factory.addStep(ShellCommand(
+     command=['./mpbb/mpbb', 'gather-archives', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s'), '--archive-site', archivesite, '--staging-dir', ulpath],
+     name="gather-archives",
+-    description="gathering archives",
+-    descriptionDone="gather archives",
++    description=["gathering", "archives"],
++    descriptionDone=["gather", "archives"],
+     haltOnFailure=True))
+ 
+ # upload archives from build slave to master
+@@ -394,14 +396,6 @@
+     slavesrc=ulpath,
+     masterdest=WithProperties(ulpath_unique)))
+ 
+-portbuilder_factory.addStep(ShellCommand(
+-    command=['./mpbb/mpbb', 'cleanup', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
+-    name="cleanup",
+-    description="cleaning up",
+-    descriptionDone="clean up",
+-    alwaysRun=True))
+-
+-
+ # XXX: move deploy_archives.sh functionality to mp-buildbot
+ # sign generated binaries and sync to download server (if distributable)
+ if production:
+@@ -414,11 +408,12 @@
+                                'DLPATH': dlpath}))
+ 
+ # TODO: do we want to upload the individual logs so maintainers can review them?
+-#ports_factory.addStep(ShellCommand(command="./cleanup_old.sh",
+-#                                   name="cleanup",
+-#                                   description="cleanup",
+-#                                   env={'PREFIX': WithProperties(prefix),
+-#                                        'ULPATH': ulpath}))
++portbuilder_factory.addStep(ShellCommand(
++    command=['./mpbb/mpbb', 'cleanup', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
++    name="cleanup",
++    description=["cleaning"],
++    descriptionDone=["clean"],
++    alwaysRun=True))
+ 
+ # === BUILDER CONFIGURATION ===
+ 
+@@ -488,7 +483,8 @@
      cancelPendingBuild = 'auth',
  )
  
