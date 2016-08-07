@@ -81,7 +81,7 @@ Index: master.cfg
  
  class InfoStep(BuildStep):
      def __init__(self, title='', **kwargs):
-@@ -394,13 +397,13 @@
+@@ -394,13 +397,14 @@
  
  # XXX: move deploy_archives.sh functionality to mp-buildbot
  # sign generated binaries and sync to download server (if distributable)
@@ -94,15 +94,16 @@ Index: master.cfg
 -#                               'DLPATH': dlpath}))
 +if production:
 +    portbuilder_factory.addStep(MasterShellCommand(command=["./deploy_archives.sh", WithProperties(ulpath_unique)],
-+                                       name="deploy archives",
-+                                       description="deploy archives",
++                                       name="deploy-archives",
++                                       description=["deploying", "archives"],
++                                       descriptionDone=["deploy", "archives"]
 +                          env={'PRIVKEY': privkey,
 +                               'DLHOST': dlhost,
 +                               'DLPATH': dlpath}))
  
  # TODO: do we want to upload the individual logs so maintainers can review them?
  #ports_factory.addStep(ShellCommand(command="./cleanup_old.sh",
-@@ -422,14 +425,17 @@
+@@ -422,14 +426,17 @@
      portsslaves[plat] = filter(lambda x: x.endswith(plat+"-ports"), slavenames)
  
  c['builders']=[]
@@ -121,7 +122,7 @@ Index: master.cfg
                  env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
      if 'linux' not in plat:
          c['builders'] += [
-@@ -437,13 +443,13 @@
+@@ -437,13 +444,13 @@
                  name="ports-" + plat + "-watcher",
                  slavenames=["ports-" + plat],
                  factory=make_portwatcher_factory("ports-" + plat + "-trigger"),
@@ -137,7 +138,7 @@ Index: master.cfg
                  env={"PATH": toolsprefix + "/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"})]
  
  ####### STATUS TARGETS
-@@ -474,7 +480,8 @@
+@@ -474,7 +481,8 @@
      cancelPendingBuild = 'auth',
  )
  
@@ -147,7 +148,7 @@ Index: master.cfg
      # send mail about base failures to users on the blamelist
      from buildbot.status.mail import MailNotifier
      mn = MailNotifier(
-@@ -535,8 +542,6 @@
+@@ -535,8 +543,6 @@
  
  ####### PROJECT IDENTITY
  
