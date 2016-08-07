@@ -4,9 +4,10 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.sync-from-macosforge
-version             5
+version             6
 
-depends_run         port:rsync
+depends_run         port:moreutils \
+                    port:rsync
 
 destroot.keepdirs   ${destroot}${prefix}/var/log/${name} ${destroot}${prefix}/var/rsync/macports
 destroot {

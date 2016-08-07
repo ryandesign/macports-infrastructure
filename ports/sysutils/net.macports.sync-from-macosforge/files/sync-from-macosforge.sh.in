@@ -19,6 +19,7 @@ RSYNC_MODULES="packages distfiles release trunk"
 RSYNC_URL_FORMAT="rsync://sjc.us.rsync.macports.org/%s/"
 
 RSYNC="@PREFIX@/bin/rsync"
+TS="@PREFIX@/bin/ts %Y-%m-%dT%H:%M:%S%z"
 RSYNC_ARGS="--compress --delete-delay --hard-links --links --no-motd --perms --recursive --stats --timeout=600 --times"
 if [ -t 1 ]; then
     RSYNC_ARGS="$RSYNC_ARGS --info=progress2"
@@ -26,7 +27,6 @@ fi
 
 for RSYNC_MODULE in $RSYNC_MODULES; do
     RSYNC_URL="$(printf "$RSYNC_URL_FORMAT" "$RSYNC_MODULE")"
-    echo "Syncing $RSYNC_MODULE from $RSYNC_URL"
-    "$RSYNC" $RSYNC_ARGS "$RSYNC_URL" "$RSYNC_DIR/$RSYNC_MODULE"
-    echo
+    echo "Syncing $RSYNC_MODULE from $RSYNC_URL" | $TS
+    "$RSYNC" $RSYNC_ARGS "$RSYNC_URL" "$RSYNC_DIR/$RSYNC_MODULE" | $TS
 done
