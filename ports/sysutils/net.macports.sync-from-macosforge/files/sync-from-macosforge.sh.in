@@ -5,7 +5,7 @@ set -euo pipefail
 RSYNC_DIR="@PREFIX@/var/rsync/macports"
 RSYNC_MODULES="packages distfiles release trunk"
 
-RSYNC_URL_FORMAT="rsync://rsync-origin.macports.org/%s/"
+#RSYNC_URL_FORMAT="rsync://rsync-origin.macports.org/%s/"
 #RSYNC_URL_FORMAT="rsync://cjj.kr.rsync.macports.org/macports/%s/"
 #RSYNC_URL_FORMAT="rsync://fco.it.rsync.macports.org/macports-%s/"
 #RSYNC_URL_FORMAT="rsync://jnb.za.rsync.macports.org/macports/%s/"
@@ -16,7 +16,7 @@ RSYNC_URL_FORMAT="rsync://rsync-origin.macports.org/%s/"
 #RSYNC_URL_FORMAT="rsync://nue.de.rsync.macports.org/macports/%s/"
 #RSYNC_URL_FORMAT="rsync://osl.no.rsync.macports.org/%s/"
 #RSYNC_URL_FORMAT="rsync://sea.us.rsync.macports.org/%s/"
-#RSYNC_URL_FORMAT="rsync://sjc.us.rsync.macports.org/%s/"
+RSYNC_URL_FORMAT="rsync://sjc.us.rsync.macports.org/%s/"
 
 RSYNC="@PREFIX@/bin/rsync"
 RSYNC_ARGS="--compress --delete-delay --hard-links --links --no-motd --perms --recursive --stats --timeout=600 --times"
