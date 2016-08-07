@@ -62,7 +62,7 @@ Index: master.cfg
      name="clean",
 -    description="clean"))
 +    description=["cleaning"],
-+    description=["clean"]))
++    descriptionDone=["clean"]))
  
  # custom class to make the file list available on the slave...
  class SetPropertyFromCommandWithPortlist(SetPropertyFromCommand):
@@ -98,7 +98,7 @@ Index: master.cfg
          name="checkout",
 -        description="checkout",
 +        description=["syncing", "ports"],
-+        description=["sync", "ports"],
++        descriptionDone=["sync", "ports"],
          haltOnFailure=True))
  
      def extract_subportlist(rc, stdout, stderr):
