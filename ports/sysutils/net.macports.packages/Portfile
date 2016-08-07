@@ -4,11 +4,9 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.packages
-version             8
+version             9
 
 depends_run         port:net.macports.nginx
-
-add_users           packages group=packages realname=packages
 
 destroot {
     xinstall -d ${destroot}${prefix}/etc/nginx/sites-available/ ${destroot}${prefix}/etc/nginx/sites-enabled/
