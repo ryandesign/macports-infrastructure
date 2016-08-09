@@ -49,7 +49,7 @@ Index: master.cfg
 -    dlhost='packages@packages-origin.macports.org'
 -    dlpath='/var/www/html/packages'
 +    dlhost=''
-+    dlpath='@PREFIX@/var/rsync/macports/packages-test'
++    dlpath='@PREFIX@/var/rsync/macports/packages'
  else:
      prefix=slaveprefix
      dlhost=''
