@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.sync-from-macosforge
-version             7
+version             8
 
 depends_run         port:moreutils \
                     port:rsync

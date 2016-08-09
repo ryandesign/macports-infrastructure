@@ -3,7 +3,7 @@
 set -euo pipefail
 
 RSYNC_DIR="@PREFIX@/var/rsync/macports"
-RSYNC_MODULES="packages distfiles release trunk"
+RSYNC_MODULES="distfiles release trunk"
 
 #RSYNC_URL_FORMAT="rsync://rsync-origin.macports.org/%s/"
 #RSYNC_URL_FORMAT="rsync://cjj.kr.rsync.macports.org/macports/%s/"
