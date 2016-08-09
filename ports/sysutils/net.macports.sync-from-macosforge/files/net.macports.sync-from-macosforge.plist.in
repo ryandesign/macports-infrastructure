@@ -15,7 +15,7 @@
         <key>StandardOutPath</key>
         <string>@PREFIX@/var/log/net.macports.sync-from-macosforge/sync.log</string>
         <key>StartInterval</key>
-        <integer>3600</integer>
+        <integer>1800</integer>
         <key>UserName</key>
         <string>_www</string>
     </dict>
