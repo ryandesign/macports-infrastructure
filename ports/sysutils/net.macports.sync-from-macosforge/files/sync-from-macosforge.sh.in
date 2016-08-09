@@ -29,4 +29,5 @@ for RSYNC_MODULE in $RSYNC_MODULES; do
     RSYNC_URL="$(printf "$RSYNC_URL_FORMAT" "$RSYNC_MODULE")"
     echo "Syncing from $RSYNC_URL to $RSYNC_DIR/$RSYNC_MODULE" | $TS
     "$RSYNC" $RSYNC_ARGS "$RSYNC_URL" "$RSYNC_DIR/$RSYNC_MODULE" | $TS
+    echo | $TS
 done
