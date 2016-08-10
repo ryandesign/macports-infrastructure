@@ -1,4 +1,3 @@
-bwlimit = 150KB
 dont compress = 7z ace avi bin bz2 deb distz dmg gem gif gpg gz \
     icns image img iso jar jpeg jpg lz lzma lzo mov mp3 mp4 mpkg msi \
     ogg pdf pkg png rar rmd160 rpm rzip sig sit sitx smi tbz tbz2 \
