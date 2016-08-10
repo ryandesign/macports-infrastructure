@@ -53,7 +53,36 @@ Index: master.cfg
  else:
      prefix=slaveprefix
      dlhost=''
-@@ -488,7 +489,8 @@
+@@ -369,24 +370,18 @@
+ portbuilder_factory = BuildFactory()
+ portbuilder_factory.workdir = '../build'
+ 
+-# XXX: use InfoStep instead of running a dummy command
+-portbuilder_factory.addStep(ShellCommand(
+-    command=["/usr/bin/true"],
+-    description=[WithProperties("Port: %(portname)s")]))
+-#portbuilder_factory.addStep(InfoStep(title=WithProperties("Port %(portname)s")))
+-
+ portbuilder_factory.addStep(Compile(
+     command=['./mpbb/mpbb', 'install-dependencies', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
+     name="install-dependencies",
+-    description=["installing", "dependencies"],
+-    descriptionDone=["install", "dependencies"],
++    description=["installing", "dependencies", WithProperties("of %(portname)s")],
++    descriptionDone=["install", "dependencies", WithProperties("of %(portname)s")],
+     haltOnFailure=True))
+ 
+ portbuilder_factory.addStep(Compile(
+     command=['./mpbb/mpbb', 'install-port', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
+     name="install-port",
+-    description=["installing", "port"],
+-    descriptionDone=["install", "port"],
++    description=["installing", WithProperties("%(portname)s")],
++    descriptionDone=["install", WithProperties("%(portname)s")],
+     haltOnFailure=True))
+ 
+ portbuilder_factory.addStep(ShellCommand(
+@@ -488,7 +483,8 @@
      cancelPendingBuild = 'auth',
  )
  
