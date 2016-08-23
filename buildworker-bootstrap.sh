@@ -85,6 +85,8 @@ if [ "$PREFIX" != "/opt/local" ]; then
   fi
 fi
 
+sed -i '' -E 's/^#?(startupitem_install[[:space:]]+).*$/\1no/' $PREFIX/etc/macports/macports.conf
+
 if [ ! -x $PREFIX/bin/git ]; then
   echo "$UI_PREFIX Installing git"
   sudo $PREFIX/bin/port -N install git
@@ -98,8 +100,6 @@ else
   echo "$UI_PREFIX Updating $EXTRA_PORTS_WC"
   $PREFIX/bin/git -C "$EXTRA_PORTS_WC" pull
 fi
-
-sed -i '' -E 's/^#?(startupitem_install[[:space:]]+).*$/\1no/' $PREFIX/etc/macports/macports.conf
 
 if ! grep -q "file://$EXTRA_PORTS_DIR" $PREFIX/etc/macports/sources.conf; then
   echo "$UI_PREFIX Adding $EXTRA_PORTS_DIR to sources.conf"
