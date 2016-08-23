@@ -106,6 +106,7 @@ fi
 if ! grep -q "file://$EXTRA_PORTS_DIR" $PREFIX/etc/macports/sources.conf; then
   echo "$UI_PREFIX Adding $EXTRA_PORTS_DIR to sources.conf"
   echo "file://$EXTRA_PORTS_DIR" >> $PREFIX/etc/macports/sources.conf
+  sudo $PREFIX/bin/port $NONINTERACTIVE sync
 fi
 
 PROFILE="$HOME/.profile"
