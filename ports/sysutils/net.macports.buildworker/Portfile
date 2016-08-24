@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             11
+version             12
 
 depends_run         port:buildbot-slave \
                     port:subversion
@@ -109,6 +109,7 @@ destroot {
 
     xinstall ${filespath}/host.sh.in ${destroot}${prefix}/share/buildworker/host.sh
     xinstall ${filespath}/update_host.sh.in ${destroot}${prefix}/share/buildworker/update_host.sh
+    reinplace "s|@ARCH@|${build_arch}|g" ${destroot}${prefix}/share/buildworker/host.sh
     reinplace "s|@CXX_LIB@|${cxx_lib}|g" ${destroot}${prefix}/share/buildworker/host.sh
 
     xinstall -m 644 -o buildbot -g buildbot ${filespath}/admin ${destroot}${prefix}/var/buildworker/info

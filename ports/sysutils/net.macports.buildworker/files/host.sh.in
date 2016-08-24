@@ -17,7 +17,7 @@ esac
 echo
 echo "Version: $(sw_vers -productVersion)"
 echo "Build: $(sw_vers -buildVersion)"
-echo "CPU: $(sysctl -n hw.activecpu) ⨉ $(echo "scale=2; $(sysctl -n hw.cpufrequency) / 10 ^ 9" | bc) GHz"
-echo "RAM: $(echo "$(sysctl -n hw.memsize) / 2 ^ 30" | bc) GB"
-echo "Architecture: $(uname -m)"
+echo "CPU: $(sysctl -n hw.activecpu) ⨉ $(echo "scale=2; $(sysctl -n hw.cpufrequency) / 10 ^ 9" | bc | sed -e '/\./s/0*$//' -e 's/\.$//') GHz"
+echo "RAM: $(echo "scale=2; $(sysctl -n hw.memsize) / 2 ^ 30" | bc | sed -e '/\./s/0*$//' -e 's/\.$//') GB"
+echo "Architecture: @ARCH@"
 echo "C++ library: @CXX_LIB@"
