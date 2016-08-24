@@ -104,6 +104,15 @@ Index: master.cfg
      haltOnFailure=True))
  
  portbuilder_factory.addStep(ShellCommand(
+@@ -445,7 +440,7 @@
+                 factory=base_factory,
+                 tags=["base", os],
+                 env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
+-    if 'linux' not in plat:
++    if 'linux' not in plat and '10.5_ppc' != plat:
+         c['builders'] += [
+             BuilderConfig(
+                 name="ports-" + plat + "-watcher",
 @@ -488,7 +483,8 @@
      cancelPendingBuild = 'auth',
  )
