@@ -1,48 +1,16 @@
-Index: master.cfg
-===================================================================
---- master.cfg	(revision 151203)
-+++ master.cfg	(working copy)
-@@ -19,17 +19,17 @@
- # (where /opt/local shouldn't be messed with) and the production server (where
- # it has to be)
- 
--production   = False
-+production   = True
- privkey      = ''
- slaveport    = 9989
- httpport     = 8010
--buildboturl  = "http://localhost:8010/"
-+buildboturl  = "https://build.macports.org/"
- htpasswdfile = "htpasswd"
- mpbbsvnurl   = "https://svn.macports.org/repository/macports/contrib/mp-buildbot"
- svnurl       = "https://svn.macports.org/repository/macports/trunk"
- archivesite  = "https://packages.macports.org"
- slaveprefix  = "/opt/local"
--toolsprefix  = "/opt/mports"
-+toolsprefix  = "/opt/bblocal"
- 
- if os.path.exists(_path('config.json')):
-     with open(_path('config.json')) as f:
-@@ -40,7 +40,7 @@
-             locals[key] = configdata[key]
- 
- # TODO: the following list should be configured in slaves.json
--build_platforms = ["10.6_x86_64", "10.6_x86_64_legacy", "10.6_i386", "10.6_i386_legacy", "10.7_x86_64", "10.7_x86_64_legacy", "10.8_x86_64", "10.8_x86_64_legacy", "10.9_x86_64", "10.10_x86_64", "10.11_x86_64"]
-+build_platforms = ["10.5_ppc", "10.5_ppc_legacy", "10.6_x86_64", "10.6_x86_64_legacy", "10.6_i386", "10.6_i386_legacy", "10.7_x86_64", "10.7_x86_64_legacy", "10.8_x86_64", "10.8_x86_64_legacy", "10.9_x86_64", "10.10_x86_64", "10.11_x86_64"]
- 
- # Allow spaces and tabs in property values
- import re
-@@ -77,7 +77,8 @@
+--- master.cfg.orig	2016-09-11 17:59:09.000000000 -0500
++++ master.cfg	2016-09-11 18:30:47.000000000 -0500
+@@ -84,7 +84,8 @@
  # poller is used for local testing but PBChangeSource (which relies on
  # notifications from a post-commit script) should be used in production
  
--if production:
-+#if production:
+-if config['production']:
++#if config['production']:
 +if False:
      # TODO
      from buildbot.changes.pb import PBChangeSource
      sourcedata = []
-@@ -88,7 +89,7 @@
+@@ -95,7 +96,7 @@
      from buildbot.changes.svnpoller import SVNPoller
      c['change_source'] = (SVNPoller(
          svnurl='https://svn.macports.org/repository/macports/trunk',
@@ -51,8 +19,8 @@ Index: master.cfg
          pollinterval=300,
          category='macports',
          project='ports'))
-@@ -116,9 +117,9 @@
- basefilter = ChangeFilter(filter_fn=change_has_base)
+@@ -137,9 +138,9 @@
+ guidefilter = ChangeFilter(filter_fn=change_has_guide)
  
  base_buildernames = ["base-"+plat for plat in build_platforms if 'legacy' not in plat and '10.6_i386' not in plat]
 -portwatcher_buildernames = ["ports-"+plat+"-watcher" for plat in build_platforms if 'linux' not in plat]
@@ -61,23 +29,23 @@ Index: master.cfg
 +portwatcher_buildernames = ["ports-"+plat+"-watcher" for plat in build_platforms if 'linux' not in plat and '10.5_ppc' != plat]
 +portbuilder_buildernames = ["ports-"+plat+"-builder" for plat in build_platforms if 'linux' not in plat and '10.5_ppc' != plat]
 +portbuilder_triggerables = ["ports-"+plat+"-trigger" for plat in build_platforms if 'linux' not in plat and '10.5_ppc' != plat]
+ docbuilder_buildernames = ["docs-www", "docs-guide"] if "docs" in slavedata['slaves'].keys() else []
  
  from buildbot.schedulers.basic import SingleBranchScheduler
- from buildbot.schedulers.forcesched import ForceScheduler
-@@ -241,8 +242,8 @@
+@@ -279,8 +280,8 @@
  # because archives must be built with prefix=/opt/local
- if production:
+ if config['production']:
      prefix='/opt/local'
 -    dlhost='packages@packages-origin.macports.org'
 -    dlpath='/var/www/html/packages'
 +    dlhost=''
 +    dlpath='@PREFIX@/var/rsync/macports/packages'
  else:
-     prefix=slaveprefix
+     prefix=config['slaveprefix']
      dlhost=''
-@@ -369,24 +370,18 @@
- portbuilder_factory = BuildFactory()
+@@ -408,25 +409,19 @@
  portbuilder_factory.workdir = '../build'
+ logdir = os.path.join(portbuilder_factory.workdir, "logs")
  
 -# XXX: use InfoStep instead of running a dummy command
 -portbuilder_factory.addStep(ShellCommand(
@@ -86,40 +54,41 @@ Index: master.cfg
 -#portbuilder_factory.addStep(InfoStep(title=WithProperties("Port %(portname)s")))
 -
  portbuilder_factory.addStep(Compile(
-     command=['./mpbb/mpbb', 'install-dependencies', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
+     command=['./mpbb/mpbb', 'install-dependencies', '--prefix', WithProperties(prefix), WithProperties('%(portname)s')],
      name="install-dependencies",
 -    description=["installing", "dependencies"],
 -    descriptionDone=["install", "dependencies"],
-+    description=["installing", "dependencies", WithProperties("of %(portname)s")],
-+    descriptionDone=["install", "dependencies", WithProperties("of %(portname)s")],
++    description=["installing", "dependencies", "of", WithProperties("%(portname)s")],
++    descriptionDone=["install", "dependencies", "of", WithProperties("%(portname)s")],
+     logfiles={"dependencies": os.path.join(logdir, "dependencies-progress.txt")},
      haltOnFailure=True))
  
  portbuilder_factory.addStep(Compile(
-     command=['./mpbb/mpbb', 'install-port', '--prefix', WithProperties(prefix), '--port', WithProperties('%(portname)s')],
+     command=['./mpbb/mpbb', 'install-port', '--prefix', WithProperties(prefix), WithProperties('%(portname)s')],
      name="install-port",
 -    description=["installing", "port"],
 -    descriptionDone=["install", "port"],
 +    description=["installing", WithProperties("%(portname)s")],
 +    descriptionDone=["install", WithProperties("%(portname)s")],
-     haltOnFailure=True))
- 
- portbuilder_factory.addStep(ShellCommand(
-@@ -445,7 +440,7 @@
+     logfiles={
+         "files":      os.path.join(logdir, "port-contents.txt"),
+         "statistics": os.path.join(logdir, "port-statistics.txt"),
+@@ -510,7 +505,7 @@
                  factory=base_factory,
-                 tags=["base", os],
-                 env={"PATH": "/usr/bin:/bin:/usr/sbin:/sbin"})]
+                 tags=["base", os_version],
+                 env={"PATH": path_base})]
 -    if 'linux' not in plat:
 +    if 'linux' not in plat and '10.5_ppc' != plat:
          c['builders'] += [
              BuilderConfig(
                  name="ports-" + plat + "-watcher",
-@@ -488,7 +483,8 @@
-     cancelPendingBuild = 'auth',
- )
+@@ -717,7 +712,8 @@
+         'subject' : subject
+     }
  
--if production:
-+#if production:
+-if config['production']:
++#if config['production']:
 +if False:
      # send mail about base failures to users on the blamelist
-     from buildbot.status.mail import MailNotifier
      mn = MailNotifier(
+         fromaddr="noreply@macports.org",
