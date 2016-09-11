@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             12
+version             13
 
 depends_run         port:buildbot-slave \
                     port:subversion
@@ -58,6 +58,10 @@ sudo -H -u buildbot ${prefix}/bin/buildslave\
     build:9989\
     base-${worker_id}\
     ${password_base}"
+    append notes_upgrade "
+sudo -H -u buildbot ${prefix}/bin/buildslave\
+    upgrade-slave\
+    ${prefix}/var/buildworker/base"
     append notes_slaves "
 \"base-${worker_id}\": \"${password_base}\","
     append notes_svn "
@@ -89,6 +93,10 @@ sudo -H ${prefix}/bin/buildslave\
     build:9989\
     ports-${worker_id}\
     ${password_ports}"
+    append notes_upgrade "
+sudo -H ${prefix}/bin/buildslave\
+    upgrade-slave\
+    ${prefix}/var/buildworker/ports"
     append notes_slaves "
 \"ports-${worker_id}\": \"${password_ports}\","
     append notes_svn "
@@ -123,8 +131,11 @@ post-deactivate {
 }
 
 notes "
-To create or update the buildworkers, run:
+To create the buildworkers, run:
 ${notes_create}
+
+To upgrade the buildworkers for a new version of buildbot, run:
+${notes_upgrade}
 
 Add these lines to slaves.json on buildmaster:
 ${notes_slaves}
