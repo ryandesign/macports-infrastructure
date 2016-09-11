@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster
-version             51
+version             52
 
 fetch.type          svn
 svn.url             https://svn.macports.org/repository/macports/contrib/buildbot-test
@@ -47,9 +47,13 @@ destroot {
 # TODO: check config and reload nginx in post-activate and post-deactivate
 
 notes "
-To create or update the buildmaster, run:
+To create the buildmaster, run:
 
 sudo -u buildbot ${prefix}/bin/buildbot create-master ${prefix}/var/buildmaster
+
+To upgrade the buildmaster for a new version of buildbot, run:
+
+sudo -u buildbot ${prefix}/bin/buildbot upgrade-master ${prefix}/var/buildmaster
 
 To start the buildmaster, run:
 
