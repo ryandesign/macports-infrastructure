@@ -1,6 +1,6 @@
 Index: master.cfg
 ===================================================================
---- master.cfg	(revision 152513)
+--- master.cfg	(revision 152525)
 +++ master.cfg	(working copy)
 @@ -84,7 +84,8 @@
  # poller is used for local testing but PBChangeSource (which relies on
@@ -21,19 +21,6 @@ Index: master.cfg
          pollinterval=300,
          category='macports',
          project='ports'))
-@@ -137,9 +138,9 @@
- guidefilter = ChangeFilter(filter_fn=change_has_guide)
- 
- base_buildernames = ["base-"+plat for plat in build_platforms if 'legacy' not in plat and '10.6_i386' not in plat]
--portwatcher_buildernames = ["ports-"+plat+"-watcher" for plat in build_platforms if 'linux' not in plat]
--portbuilder_buildernames = ["ports-"+plat+"-builder" for plat in build_platforms if 'linux' not in plat]
--portbuilder_triggerables = ["ports-"+plat+"-trigger" for plat in build_platforms if 'linux' not in plat]
-+portwatcher_buildernames = ["ports-"+plat+"-watcher" for plat in build_platforms if 'linux' not in plat and '10.5_ppc' != plat]
-+portbuilder_buildernames = ["ports-"+plat+"-builder" for plat in build_platforms if 'linux' not in plat and '10.5_ppc' != plat]
-+portbuilder_triggerables = ["ports-"+plat+"-trigger" for plat in build_platforms if 'linux' not in plat and '10.5_ppc' != plat]
- docbuilder_buildernames = ["docs-www", "docs-guide"] if "docs" in slavedata['slaves'].keys() else []
- 
- from buildbot.schedulers.basic import SingleBranchScheduler
 @@ -279,8 +280,8 @@
  # because archives must be built with prefix=/opt/local
  if config['production']:
@@ -45,20 +32,15 @@ Index: master.cfg
  else:
      prefix=config['slaveprefix']
      dlhost=''
-@@ -392,41 +393,26 @@
+@@ -320,6 +321,7 @@
  
-     return portwatcher_factory
+ def make_portwatcher_factory(triggerable):
+     portwatcher_factory = BuildFactory()
++    portwatcher_factory.useProgress = False
+     portwatcher_factory.workdir = '../build'
  
--from buildbot.process.buildstep import BuildStep
--
--class InfoStep(BuildStep):
--    def __init__(self, title='', **kwargs):
--        BuildStep.__init__(self, **kwargs)
--        self.name            = title
--        self.description     = title
--        self.descriptionDone = title
--        self.doStepIf        = False
--
+     # get mp-buildbot; we'll do the checkout of base and dports via these scripts
+@@ -395,6 +397,7 @@
  # -- Port Builder --
  
  portbuilder_factory = BuildFactory()
@@ -66,42 +48,7 @@ Index: master.cfg
  portbuilder_factory.workdir = '../build'
  logdir = os.path.join(portbuilder_factory.workdir, "logs")
  
--# XXX: use InfoStep instead of running a dummy command
--portbuilder_factory.addStep(ShellCommand(
--    command=["/usr/bin/true"],
--    description=[WithProperties("Port: %(portname)s")]))
--#portbuilder_factory.addStep(InfoStep(title=WithProperties("Port %(portname)s")))
--
- portbuilder_factory.addStep(Compile(
-     command=['./mpbb/mpbb', 'install-dependencies', '--prefix', WithProperties(prefix), WithProperties('%(portname)s')],
-     name="install-dependencies",
--    description=["installing", "dependencies"],
--    descriptionDone=["install", "dependencies"],
-+    description=["installing", "dependencies", "of", WithProperties("%(portname)s")],
-+    descriptionDone=["install", "dependencies", "of", WithProperties("%(portname)s")],
-     logfiles={"dependencies": os.path.join(logdir, "dependencies-progress.txt")},
-     haltOnFailure=True))
- 
- portbuilder_factory.addStep(Compile(
-     command=['./mpbb/mpbb', 'install-port', '--prefix', WithProperties(prefix), WithProperties('%(portname)s')],
-     name="install-port",
--    description=["installing", "port"],
--    descriptionDone=["install", "port"],
-+    description=["installing", WithProperties("%(portname)s")],
-+    descriptionDone=["install", WithProperties("%(portname)s")],
-     logfiles={
-         "files":      os.path.join(logdir, "port-contents.txt"),
-         "statistics": os.path.join(logdir, "port-statistics.txt"),
-@@ -510,7 +496,7 @@
-                 factory=base_factory,
-                 tags=["base", os_version],
-                 env={"PATH": path_base})]
--    if 'linux' not in plat:
-+    if 'linux' not in plat and '10.5_ppc' != plat:
-         c['builders'] += [
-             BuilderConfig(
-                 name="ports-" + plat + "-watcher",
-@@ -717,7 +703,8 @@
+@@ -701,7 +704,8 @@
          'subject' : subject
      }
  
