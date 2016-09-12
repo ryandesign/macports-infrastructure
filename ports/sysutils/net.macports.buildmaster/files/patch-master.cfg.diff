@@ -1,5 +1,7 @@
---- master.cfg.orig	2016-09-11 17:59:09.000000000 -0500
-+++ master.cfg	2016-09-11 18:30:47.000000000 -0500
+Index: master.cfg
+===================================================================
+--- master.cfg	(revision 152513)
++++ master.cfg	(working copy)
 @@ -84,7 +84,8 @@
  # poller is used for local testing but PBChangeSource (which relies on
  # notifications from a post-commit script) should be used in production
@@ -43,7 +45,24 @@
  else:
      prefix=config['slaveprefix']
      dlhost=''
-@@ -408,25 +409,19 @@
+@@ -392,41 +393,26 @@
+ 
+     return portwatcher_factory
+ 
+-from buildbot.process.buildstep import BuildStep
+-
+-class InfoStep(BuildStep):
+-    def __init__(self, title='', **kwargs):
+-        BuildStep.__init__(self, **kwargs)
+-        self.name            = title
+-        self.description     = title
+-        self.descriptionDone = title
+-        self.doStepIf        = False
+-
+ # -- Port Builder --
+ 
+ portbuilder_factory = BuildFactory()
++portbuilder_factory.useProgress = False
  portbuilder_factory.workdir = '../build'
  logdir = os.path.join(portbuilder_factory.workdir, "logs")
  
@@ -73,7 +92,7 @@
      logfiles={
          "files":      os.path.join(logdir, "port-contents.txt"),
          "statistics": os.path.join(logdir, "port-statistics.txt"),
-@@ -510,7 +505,7 @@
+@@ -510,7 +496,7 @@
                  factory=base_factory,
                  tags=["base", os_version],
                  env={"PATH": path_base})]
@@ -82,7 +101,7 @@
          c['builders'] += [
              BuilderConfig(
                  name="ports-" + plat + "-watcher",
-@@ -717,7 +712,8 @@
+@@ -717,7 +703,8 @@
          'subject' : subject
      }
  
