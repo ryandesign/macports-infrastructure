@@ -32,22 +32,6 @@ Index: master.cfg
  else:
      prefix=config['slaveprefix']
      dlhost=''
-@@ -320,6 +321,7 @@
- 
- def make_portwatcher_factory(triggerable):
-     portwatcher_factory = BuildFactory()
-+    portwatcher_factory.useProgress = False
-     portwatcher_factory.workdir = '../build'
- 
-     # get mp-buildbot; we'll do the checkout of base and dports via these scripts
-@@ -395,6 +397,7 @@
- # -- Port Builder --
- 
- portbuilder_factory = BuildFactory()
-+portbuilder_factory.useProgress = False
- portbuilder_factory.workdir = '../build'
- logdir = os.path.join(portbuilder_factory.workdir, "logs")
- 
 @@ -701,7 +704,8 @@
          'subject' : subject
      }
