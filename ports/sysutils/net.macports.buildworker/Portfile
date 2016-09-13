@@ -4,11 +4,12 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             14
+version             15
 
 depends_run         port:buildbot-slave \
                     port:curl \
                     port:getopt \
+                    port:openssl \
                     port:subversion
 
 add_users           buildbot group=buildbot realname=buildbot
@@ -66,8 +67,6 @@ sudo -H -u buildbot ${prefix}/bin/buildslave\
     ${prefix}/var/buildworker/base"
     append notes_slaves "
 \"base-${worker_id}\": \"${password_base}\","
-    append notes_svn "
-sudo -u buildbot svn --config-dir ${prefix}/var/buildworker/base/.subversion info https://svn.macports.org/repository/macports"
     append notes_load "
 sudo launchctl load -w /Library/LaunchDaemons/${name}.base.plist"
     append notes_unload "
@@ -101,8 +100,6 @@ sudo -H ${prefix}/bin/buildslave\
     ${prefix}/var/buildworker/ports"
     append notes_slaves "
 \"ports-${worker_id}\": \"${password_ports}\","
-    append notes_svn "
-sudo svn --config-dir ${prefix}/var/buildworker/ports/.subversion info https://svn.macports.org/repository/macports"
     append notes_load "
 sudo launchctl load -w /Library/LaunchDaemons/${name}.ports.plist"
     append notes_unload "
@@ -141,9 +138,6 @@ ${notes_upgrade}
 
 Add these lines to slaves.json on buildmaster:
 ${notes_slaves}
-
-When initially setting up the buildworkers, or if the SSL certificate changes, run:
-${notes_svn}
 
 To start the buildworkers, run:
 ${notes_load}
