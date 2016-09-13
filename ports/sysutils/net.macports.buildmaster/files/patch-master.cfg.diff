@@ -1,8 +1,8 @@
 Index: master.cfg
 ===================================================================
---- master.cfg	(revision 152525)
+--- master.cfg	(revision 152557)
 +++ master.cfg	(working copy)
-@@ -84,7 +84,8 @@
+@@ -90,7 +90,8 @@
  # poller is used for local testing but PBChangeSource (which relies on
  # notifications from a post-commit script) should be used in production
  
@@ -12,7 +12,7 @@ Index: master.cfg
      # TODO
      from buildbot.changes.pb import PBChangeSource
      sourcedata = []
-@@ -95,7 +96,7 @@
+@@ -101,7 +102,7 @@
      from buildbot.changes.svnpoller import SVNPoller
      c['change_source'] = (SVNPoller(
          svnurl='https://svn.macports.org/repository/macports/trunk',
@@ -21,7 +21,7 @@ Index: master.cfg
          pollinterval=300,
          category='macports',
          project='ports'))
-@@ -279,8 +280,8 @@
+@@ -287,8 +288,8 @@
  # because archives must be built with prefix=/opt/local
  if config['production']:
      prefix='/opt/local'
@@ -32,13 +32,53 @@ Index: master.cfg
  else:
      prefix=config['slaveprefix']
      dlhost=''
-@@ -701,7 +704,8 @@
-         'subject' : subject
-     }
+@@ -690,8 +691,6 @@
  
--if config['production']:
-+#if config['production']:
-+if False:
+         if len(maintainers_to_notify) > 0:
+             text.append("\nResponsible maintainers:\n\t- {}".format("\n\t- ".join(sorted(maintainers_to_notify))))
+-            for user in maintainers_to_notify:
+-                interested_users.add(user)
+ 
+         # links to individual builds
+         text.append("\nLinks to individual build jobs:")
+@@ -720,24 +719,24 @@
+ if config['production']:
      # send mail about base failures to users on the blamelist
      mn = MailNotifier(
-         fromaddr="noreply@macports.org",
+-        fromaddr="noreply@macports.org",
++        fromaddr="ryandesign@macports.org",
+         # unless lookup is defined, users have to be configured locally
+         # maybe a smarter function is needed, but lookup="" does it for now
+         lookup="",
+         mode=("problem"),
+         builders=base_buildernames,
+-        #extraRecipients=["..."],
++        extraRecipients=["ryandesign@macports.org"],
+         #smtpPort=25,
+         #relayhost="localhost",
+         sendToInterestedUsers=True)
+     c['status'].append(mn)
+ 
+     mn = PortsMailNotifier(
+-        fromaddr="noreply@macports.org",
++        fromaddr="ryandesign@macports.org",
+         lookup="",
+         mode=("failing"),
+         builders=portwatcher_buildernames,
+-        #extraRecipients=["..."],
++        extraRecipients=["ryandesign@macports.org"],
+         #smtpPort=25,
+         #relayhost="localhost",
+         sendToInterestedUsers=True,
+@@ -746,9 +745,9 @@
+ 
+     # notifications about exceptions
+     mn = MailNotifier(
+-        fromaddr="noreply@macports.org",
++        fromaddr="ryandesign@macports.org",
+         mode=("exception"),
+-        extraRecipients=["admin@macports.org"],
++        extraRecipients=["ryandesign@macports.org"],
+         sendToInterestedUsers=False)
+     # c['status'].append(mn)
+ 
