@@ -9,7 +9,7 @@ version             64
 fetch.type          svn
 svn.url             https://svn.macports.org/repository/macports/contrib/buildbot-test
 svn.method          checkout
-svn.revision        153314
+svn.revision        153387
 worksrcdir          buildbot-test
 
 depends_run         port:buildbot \
