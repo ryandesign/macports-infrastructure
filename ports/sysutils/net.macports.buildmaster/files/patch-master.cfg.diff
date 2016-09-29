@@ -1,6 +1,6 @@
 Index: master.cfg
 ===================================================================
---- master.cfg	(revision 153038)
+--- master.cfg	(revision 153314)
 +++ master.cfg	(working copy)
 @@ -91,7 +91,8 @@
  # poller is used for local testing but PBChangeSource (which relies on
@@ -32,3 +32,11 @@ Index: master.cfg
  else:
      prefix=config['slaveprefix']
      dlhost=''
+@@ -682,6 +683,7 @@
+ 
+     # same as original, but calls portMessageFormatter with access to interested_users
+     def buildMessageDict(self, name, build, results):
++        self.interested_users.clear()
+         msgdict = self.portMessageFormatter(self.mode, name, build, results,
+                                             self.master_status, self.interested_users)
+         return msgdict
