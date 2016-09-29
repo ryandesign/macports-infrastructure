@@ -32,26 +32,3 @@ Index: master.cfg
  else:
      prefix=config['slaveprefix']
      dlhost=''
-@@ -608,11 +609,9 @@
- from buildbot.status import html
- from buildbot.status.web import auth, authz
- 
--from buildbot.status.web.auth import HTPasswdAuth
-+from buildbot.status.web.auth import HTPasswdAprAuth
- 
--# add new users with crypt, not md5/sha1:
--# htpasswd -d -n $USER
--htauth = HTPasswdAuth(config['htpasswdfile'])
-+htauth = HTPasswdAprAuth(config['htpasswdfile'])
- 
- authz_cfg=authz.Authz(
-     auth               = htauth,
-@@ -747,8 +746,6 @@
- 
-         if len(maintainers_to_notify) > 0:
-             text.append("\nResponsible maintainers:\n\t- {}".format("\n\t- ".join(sorted(maintainers_to_notify))))
--            for user in maintainers_to_notify:
--                interested_users.add(user)
- 
-         # links to individual builds
-         text.append("\nLinks to individual build jobs:")
