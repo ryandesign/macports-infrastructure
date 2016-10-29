@@ -1,19 +1,13 @@
---- config.json.sample	2016-09-14 08:11:16.000000000 -0500
-+++ config.json	2016-09-14 08:23:09.000000000 -0500
-@@ -1,29 +1,15 @@
+--- config.json.orig	2016-10-28 21:35:44.000000000 -0500
++++ config.json	2016-10-28 21:39:27.000000000 -0500
+@@ -1,23 +1,9 @@
  {
--    "production":   0,
+-    "production":   false,
 -    "privkey":      "/var/keys/macports-privkey.pem",
-+    "production":   1,
+-    "buildboturl":  "http://domain.tld:8010/",
++    "production":   true,
 +    "privkey":      "@PREFIX@/var/keys/macports-privkey.pem",
-     "slaveport":    9989,
-     "httpport":     8010,
--    "buildboturl":  "http://localhost:8010/",
 +    "buildboturl":  "https://build.macports.org/",
-     "htpasswdfile": "htpasswd",
-     "mpbbsvnurl":   "https://svn.macports.org/repository/macports/contrib/mp-buildbot",
-     "svnurl":       "https://svn.macports.org/repository/macports/trunk",
-     "archivesite":  "https://packages.macports.org",
      "slaveprefix":  "/opt/local",
 -    "toolsprefix":  "/opt/mports",
 +    "toolsprefix":  "/opt/bblocal",
