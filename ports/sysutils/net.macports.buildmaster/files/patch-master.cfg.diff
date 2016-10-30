@@ -1,24 +1,5 @@
 --- master.cfg.orig	2016-10-28 21:40:53.000000000 -0500
 +++ master.cfg	2016-10-28 21:42:03.000000000 -0500
-@@ -134,7 +134,8 @@
- # poller is used for local testing but PBChangeSource (which relies on
- # notifications from a post-commit script) should be used in production
- 
--if config['production']:
-+#if config['production']:
-+if False:
-     # TODO
-     sourcedata = []
- #    with open(_path('source.json')) as f:
-@@ -143,7 +144,7 @@
- else:
-     c['change_source'] = changes.SVNPoller(
-         svnurl='https://svn.macports.org/repository/macports/trunk',
--        #svnbin='/opt/local/bin/svn',
-+        svnbin='@PREFIX@/bin/svn',
-         pollinterval=300,
-         category='macports',
-         project='ports')
 @@ -312,8 +313,8 @@
  # because archives must be built with prefix=/opt/local
  if config['production']:

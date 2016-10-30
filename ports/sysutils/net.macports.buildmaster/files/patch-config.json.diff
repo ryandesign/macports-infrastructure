@@ -1,6 +1,6 @@
---- config.json.orig	2016-10-28 21:35:44.000000000 -0500
-+++ config.json	2016-10-28 21:39:27.000000000 -0500
-@@ -1,23 +1,9 @@
+--- config.json.orig	2016-10-30 15:43:32.000000000 -0500
++++ config.json	2016-10-30 15:44:19.000000000 -0500
+@@ -1,30 +1,9 @@
  {
 -    "production":   false,
 -    "privkey":      "/var/keys/macports-privkey.pem",
@@ -13,6 +13,13 @@
 +    "toolsprefix":  "/opt/bblocal",
      "deploy": {
 -        "www": {
+-            "host": "",
+-            "user": "",
+-            "sshkeyfile": "",
+-            "sshknownhostsfile": "ssh_known_hosts",
+-            "destpath": ""
+-        },
+-        "portindex": {
 -            "host": "",
 -            "user": "",
 -            "sshkeyfile": "",
