@@ -4,13 +4,13 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster
-version             68
+version             69
 
 fetch.type          svn
-svn.url             https://svn.macports.org/repository/macports/contrib/buildbot-test
+svn.url             https://github.com/macports/macports-infrastructure/trunk/buildbot/
 svn.method          checkout
-svn.revision        154479
-worksrcdir          buildbot-test
+svn.revision        367
+worksrcdir          buildbot
 
 depends_run         port:buildbot \
                     port:net.macports.nginx \
