@@ -1,0 +1,282 @@
+--- mprsyncup.orig	2016-11-14 18:08:55.000000000 -0600
++++ mprsyncup	2016-11-15 20:09:45.000000000 -0600
+@@ -32,27 +32,28 @@
+ set -x
+ 
+ # Commands we need:
+-SVN="/opt/local/bin/svn -q --non-interactive"
+-CLEANUP="/opt/local/bin/svn --non-interactive cleanup"
+-RSYNC="/opt/local/bin/rsync -q"
++SVN="@PREFIX@/bin/svn --non-interactive"
++RSYNC="@PREFIX@/bin/rsync -q"
+ RM="/bin/rm"
+ MKDIR="/bin/mkdir"
++MV="@PREFIX@/bin/gmv"
+ LN="/bin/ln"
+ TAR="/usr/bin/tar"
+ OPENSSL="/usr/bin/openssl"
+ SED="/usr/bin/sed"
++STAT="@PREFIX@/bin/gstat"
+ 
+ # Paths we'll work on:
+-ROOT=/var/tmp/macports
++ROOT=/var/tmp/mprsyncup
+ PREFIX=${ROOT}/opt/local
+-SVNROOT=/var/tmp/macports
++SVNROOT=${ROOT}
+ TBASE=${SVNROOT}/trunk/base
+ RBASE=${SVNROOT}/release/base
+ PORTS=${SVNROOT}/release/ports
+-RSYNCROOT=/rsync/macports
++RSYNCROOT=/tmp/rsync/macports
+ PORTINDEX=${PREFIX}/bin/portindex
+ 
+-PATH=${PREFIX}/bin:/bin:/usr/bin:/usr/sbin:/opt/local/bin
++PATH=${PREFIX}/bin:/bin:/usr/bin:/usr/sbin:@PREFIX@/bin
+ 
+ # platforms we generate indexes for
+ PLATFORMS="8_powerpc 8_i386 9_powerpc 9_i386 10_i386 11_i386 12_i386 13_i386 14_i386 15_i386 16_i386"
+@@ -63,118 +64,177 @@
+ RELEASE_URL_FILE=config/RELEASE_URL
+ 
+ # private key to use for signing
+-# XXX set real path
+-PRIVKEY=""
++PRIVKEY="@PREFIX@/var/keys/macports-privkey.pem"
++
++#
++# Functions
++#
++
++hardlink() {
++    SOURCE="$1"
++    TARGET="$2"
++    [ -f "${SOURCE}" ] && [ -f "${TARGET}" ] && [ "$(${STAT} -c %i "${SOURCE}")" = "$(${STAT} -c %i "${TARGET}")" ] && return
++    printf "Hard linking %s to %s\n" "${SOURCE}" "${TARGET}"
++    TMPTARGET="${ROOT}"/"${TARGET##*/}".$$
++    ${LN} "${SOURCE}" "${TMPTARGET}"
++    ${MV} "${TMPTARGET}" "${TARGET}"
++}
++
++sign() {
++    [ -z "${PRIVKEY}" ] && return
++    for FILE in "$@"; do
++        printf "Signing %s\n" "${FILE}"
++        ${OPENSSL} dgst -ripemd160 -sign "${PRIVKEY}" -out "${FILE}.rmd160" "${FILE}"
++    done
++}
++
++#
++# Update trunk/base
++#
+ 
+-# cleanup up the working copy if it is locked
+ if [ -f ${TBASE}/.svn/lock ]; then
+-    ${CLEANUP} ${TBASE}
++    ${SVN} cleanup ${TBASE}
+ fi
+-
+-# Update/checkout trunk's base, export and rsync it to the rsync repos location (${RSYNCROOT}):
+ if [ -d ${TBASE}/.svn ]; then
+-    ${SVN} update ${TBASE}
++    ${SVN} -q update ${TBASE}
+ else
+-    ${SVN} checkout ${BASEURL} ${TBASE}
++    ${SVN} -q checkout ${BASEURL} ${TBASE}
+ fi
+ 
+-if [ ! -d ${RSYNCROOT}/trunk/base ]; then
+-    ${MKDIR} -p ${RSYNCROOT}/trunk
+-fi
++${MKDIR} -p ${RSYNCROOT}/trunk/base
+ ${RSYNC} -aIC --delete ${TBASE}/ ${RSYNCROOT}/trunk/base
+ 
+-# Read what tag we're releasing from, switch to/checkout a copy, export and rsync it to ${RSYNCROOT}/release/base:
++#
++# Update release/base
++#
++
+ read RELEASE_URL < ${TBASE}/${RELEASE_URL_FILE}
+ if [ ! -n ${RELEASE_URL} ]; then
+     echo "no RELEASE_URL specified in svn trunk, bailing out!"
+     exit 1
+ fi
+-# cleanup up the working copy if it is locked
+ if [ -f ${RBASE}/.svn/lock ]; then
+-    ${CLEANUP} ${RBASE}
++    ${SVN} cleanup ${RBASE}
+ fi
++RBASE_CHANGED=1
+ if [ -d ${RBASE}/.svn ]; then
+-    ${SVN} switch ${RELEASE_URL} ${RBASE}
++    RBASE_OLD_REV="$(${SVN} info ${RBASE} | ${SED} -n 's/^Last Changed Rev: //p')"
++    ${SVN} -q switch ${RELEASE_URL} ${RBASE}
++    RBASE_NEW_REV="$(${SVN} info ${RBASE} | ${SED} -n 's/^Last Changed Rev: //p')"
++    [ "${RBASE_OLD_REV}" = "${RBASE_NEW_REV}" ] && RBASE_CHANGED=0
+ else
+-    ${SVN} checkout ${RELEASE_URL} ${RBASE}
++    ${SVN} -q checkout ${RELEASE_URL} ${RBASE}
+ fi
+ 
+-if [ ! -d ${RSYNCROOT}/release/base ]; then
+-    ${MKDIR} -p ${RSYNCROOT}/release/base
+-fi
++${MKDIR} -p ${RSYNCROOT}/release/base
+ ${RSYNC} -aIC --delete ${RBASE}/ ${RSYNCROOT}/release/base
+ 
+-# clean up the working copy if it is locked
++#
++# Update release/ports
++#
++
+ if [ -f ${PORTS}/.svn/lock ]; then
+-      ${CLEANUP} ${PORTS}
++    ${SVN} cleanup ${PORTS}
+ fi
+-
+-# Update/checkout the ports tree, export it and rsync it to ${RSYNCROOT}/release/ports:
++PORTS_CHANGED=1
+ if [ -d ${PORTS}/.svn ]; then
+-    ${SVN} update ${PORTS}
++    PORTS_OLD_REV="$(${SVN} info ${PORTS} | ${SED} -n 's/^Last Changed Rev: //p')"
++    ${SVN} -q update ${PORTS}
++    PORTS_NEW_REV="$(${SVN} info ${PORTS} | ${SED} -n 's/^Last Changed Rev: //p')"
++    [ "${PORTS_OLD_REV}" = "${PORTS_NEW_REV}" ] && PORTS_CHANGED=0
+ else
+-    ${SVN} checkout ${PORTSURL} ${PORTS}
++    ${SVN} -q checkout ${PORTSURL} ${PORTS}
+ fi
+ 
+-# build MP in a private location for indexing
+-if [[ ! -x ${PREFIX}/bin/port || ! -r ${RBASE}/config/macports_version || "$(<${RBASE}/config/macports_version)" != "$(${PREFIX}/bin/port -q version)" ]]; then
++if [ ${RBASE_CHANGED} -eq 1 ]; then
++    PORTS_CHANGED=1
++    # build MP in a private location for indexing
+     pushd ${RBASE} >> /dev/null
+     ./configure \
+         --prefix=${PREFIX} \
+         --with-install-group="$(id -gn)" \
+         --with-install-user="$(id -un)"
+     make clean
+-    JOBS=""
+-    if [ "$(uname -s)" == "Darwin" ]; then
+-        JOBS="-j$(sysctl -n hw.activecpu)"
++    JOBS=1
++    if [ "$(uname -s)" = "Darwin" ]; then
++        JOBS="$(sysctl -n hw.activecpu)"
+     fi
+-    make $JOBS
++    make -j"$JOBS"
+     make install
+     make distclean
+     popd
+ fi
+ 
+-# generate platform-specific indexes
+-pushd ${PORTS} >> /dev/null
+-PIDS=()
+-for PLATFORM in $PLATFORMS; do
+-    INDEX="PortIndex_darwin_${PLATFORM}"
+-    ${PORTINDEX} -p macosx_${PLATFORM} -o ${INDEX} | ${SED} "s/^/Updating ${INDEX}: /" &
+-    PIDS+=($!)
+-done
+-for PID in ${PIDS[*]}; do
+-    wait ${PID}
+-done
+-popd
+-
+-if [ ! -d ${RSYNCROOT}/release/ports ]; then
+-    ${MKDIR} -p ${RSYNCROOT}/release/ports
++if [ ${PORTS_CHANGED} -eq 1 ]; then
++    # generate platform-specific indexes
++    pushd ${PORTS} >> /dev/null
++    PIDS=()
++    for PLATFORM in $PLATFORMS; do
++        INDEX="PortIndex_darwin_${PLATFORM}"
++        ${PORTINDEX} -p macosx_${PLATFORM} -o ${INDEX} | ${SED} "s/^/Updating ${INDEX}:"$'\t'"/" | expand -t 40,48,56,64,72,80 &
++        PIDS+=($!)
++    done
++    for PID in ${PIDS[*]}; do
++        wait ${PID}
++    done
++    popd
+ fi
++
++${MKDIR} -p ${RSYNCROOT}/release/ports
+ ${RSYNC} -aIC --delete ${PORTS}/ ${RSYNCROOT}/release/ports
+ 
+-# symlink trunk ports to release ports since we only have 1 set of ports
++#
++# Update trunk/dports
++#
++
+ cd ${RSYNCROOT}
+ if [ ! -L trunk/dports ]; then
+     cd trunk
+     ${RM} -rf dports && ${LN} -s ../release/ports dports
+ fi
+ 
+-# generate and sign tarballs of base and dports
+-# the signature always needs to match, so we try to make this look atomic to
+-# clients by switching a symlink target
+-
+-TAR_CURDIR=${RSYNCROOT}/release/tarballs_current
+-${MKDIR} -p ${TAR_CURDIR}
+-cp -pR ${TAR_CURDIR} ${RSYNCROOT}/release/tarballs_old
+-${LN} -sfh tarballs_old ${RSYNCROOT}/release/tarballs
+-${TAR} -C ${RSYNCROOT}/release/ -cf ${TAR_CURDIR}/base.tar base
+-${TAR} --exclude 'PortIndex*' -C ${RSYNCROOT}/release/ -cf ${TAR_CURDIR}/ports.tar ports
+-cp -pR ${RSYNCROOT}/release/ports/PortIndex_* ${TAR_CURDIR}
+-# XXX needs PRIVKEY to be set above
+-#${OPENSSL} dgst -ripemd160 -sign ${PRIVKEY} -out ${TAR_CURDIR}/base.tar.rmd160 ${TAR_CURDIR}/base.tar
+-#${OPENSSL} dgst -ripemd160 -sign ${PRIVKEY} -out ${TAR_CURDIR}/ports.tar.rmd160 ${TAR_CURDIR}/ports.tar
+-for index in ${TAR_CURDIR}/PortIndex_*/PortIndex; do
+-    #${OPENSSL} dgst -ripemd160 -sign ${PRIVKEY} -out ${index}.rmd160 ${index}
+-done
+-${LN} -sfh tarballs_current ${RSYNCROOT}/release/tarballs
+-${RM} -rf ${RSYNCROOT}/release/tarballs_old
++#
++# Update release/tarballs
++#
++
++# Generate and sign tarballs of base and ports and the PortIndex files.
++if [ ${RBASE_CHANGED} -eq 1 ]; then
++    ${TAR} -C "${RSYNCROOT}"/release/ -cf "${ROOT}"/base.tar base
++    sign "${ROOT}"/base.tar
++fi
++if [ ${PORTS_CHANGED} -eq 1 ]; then
++    ${TAR} -C "${RSYNCROOT}"/release/ -czf "${ROOT}"/ports.tar.gz ports
++
++    ${TAR} --exclude 'PortIndex*' -C "${RSYNCROOT}"/release/ -cf "${ROOT}"/ports.tar ports
++    for INDEX_DIR in "${RSYNCROOT}"/release/ports/PortIndex_*; do
++        INDEX_LINK_DIR="${ROOT}"/"${INDEX_DIR##*/}"
++        ${MKDIR} -p "${INDEX_LINK_DIR}"
++        hardlink "${INDEX_DIR}"/PortIndex "${INDEX_LINK_DIR}"/PortIndex
++    done
++    sign "${ROOT}"/ports.tar "${ROOT}"/PortIndex_*/PortIndex
++fi
++
++# Tarballs used to be a symlink to the real directory tarballs_current.
++# Clean up this situation if found. This should only happen once.
++[ -L "${RSYNCROOT}"/release/tarballs ] && ${RM} -f "${RSYNCROOT}"/release/tarballs
++[ -d "${RSYNCROOT}"/release/tarballs_current ] && ${MV} "${RSYNCROOT}"/release/tarballs_current "${RSYNCROOT}"/release/tarballs
++
++# Replace files on rsync server as quickly as possible.
++# This is not atomic but doing it atomically is difficult.
++${MKDIR} -p "${RSYNCROOT}"/release/tarballs "${RSYNCROOT}"/distfiles
++if [ ${RBASE_CHANGED} -eq 1 ]; then
++    ${MV} "${ROOT}"/base.tar* "${RSYNCROOT}"/release/tarballs
++fi
++if [ ${PORTS_CHANGED} -eq 1 ]; then
++    ${MV} "${ROOT}"/ports.tar.gz "${RSYNCROOT}"/release
++    hardlink "${RSYNCROOT}"/release/ports.tar.gz "${RSYNCROOT}"/distfiles/ports.tar.gz
++    ${MV} "${ROOT}"/ports.tar* "${RSYNCROOT}"/release/tarballs
++    for INDEX_DIR in "${RSYNCROOT}"/release/ports/PortIndex_*; do
++        INDEX_LINK_DIR="${RSYNCROOT}"/release/tarballs/${INDEX_DIR##*/}
++        ${MKDIR} -p "${INDEX_LINK_DIR}"
++        hardlink "${INDEX_DIR}"/PortIndex "${INDEX_LINK_DIR}"/PortIndex
++        hardlink "${INDEX_DIR}"/PortIndex.quick "${INDEX_LINK_DIR}"/PortIndex.quick
++        hardlink "${ROOT}"/"${INDEX_DIR##*/}"/PortIndex.rmd160 "${INDEX_LINK_DIR}"/PortIndex.rmd160
++    done
++    ${RM} -rf "${ROOT}"/PortIndex_*
++fi

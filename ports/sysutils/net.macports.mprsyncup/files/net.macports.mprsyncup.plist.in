@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>GroupName</key>
+        <string>buildbot</string>
+        <key>Label</key>
+        <string>net.macports.mprsyncup</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>@PREFIX@/bin/mprsyncup</string>
+        </array>
+        <key>StandardErrorPath</key>
+        <string>@PREFIX@/var/log/net.macports.mprsyncup/mprsyncup.log</string>
+        <key>StandardOutPath</key>
+        <string>@PREFIX@/var/log/net.macports.mprsyncup/mprsyncup.log</string>
+        <key>StartInterval</key>
+        <integer>1800</integer>
+        <key>UserName</key>
+        <string>buildbot</string>
+    </dict>
+</plist>
