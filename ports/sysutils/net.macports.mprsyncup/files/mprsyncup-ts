@@ -1,0 +1,3 @@
+#!/bin/sh
+
+@PREFIX@/bin/mprsyncup 2>&1 | @PREFIX@/bin/ts %Y-%m-%dT%H:%M:%S%z
