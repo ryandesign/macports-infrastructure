@@ -8,7 +8,7 @@
         <string>net.macports.mprsyncup</string>
         <key>ProgramArguments</key>
         <array>
-            <string>@PREFIX@/bin/mprsyncup</string>
+            <string>@PREFIX@/bin/mprsyncup-ts</string>
         </array>
         <key>StandardErrorPath</key>
         <string>@PREFIX@/var/log/net.macports.mprsyncup/mprsyncup.log</string>
