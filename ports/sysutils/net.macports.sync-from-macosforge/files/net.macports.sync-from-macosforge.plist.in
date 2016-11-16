@@ -3,7 +3,7 @@
 <plist version="1.0">
     <dict>
         <key>GroupName</key>
-        <string>_www</string>
+        <string>buildbot</string>
         <key>Label</key>
         <string>net.macports.sync-from-macosforge</string>
         <key>ProgramArguments</key>
@@ -17,6 +17,6 @@
         <key>StartInterval</key>
         <integer>1800</integer>
         <key>UserName</key>
-        <string>_www</string>
+        <string>buildbot</string>
     </dict>
 </plist>
