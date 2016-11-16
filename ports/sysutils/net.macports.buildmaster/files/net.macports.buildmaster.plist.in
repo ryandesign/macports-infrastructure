@@ -6,6 +6,8 @@
         <dict>
             <key>HOME</key>
             <string>@PREFIX@/var/buildmaster</string>
+            <key>TZ</key>
+            <string>UTC</string>
         </dict>
         <key>KeepAlive</key>
         <dict>
