@@ -1,6 +1,6 @@
---- master.cfg.orig	2016-10-28 21:40:53.000000000 -0500
-+++ master.cfg	2016-10-28 21:42:03.000000000 -0500
-@@ -312,8 +313,8 @@
+--- master.cfg.orig	2017-05-01 20:27:51.000000000 -0500
++++ master.cfg	2017-05-01 20:27:52.000000000 -0500
+@@ -360,8 +360,8 @@
  # because archives must be built with prefix=/opt/local
  if config['production']:
      prefix = '/opt/local'
