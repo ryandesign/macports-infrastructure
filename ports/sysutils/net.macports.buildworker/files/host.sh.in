@@ -12,6 +12,7 @@ case $(sw_vers -productVersion | cut -d . -f 2) in
     10) echo "OS X Yosemite";;
     11) echo "OS X El Capitan";;
     12) echo "macOS Sierra";;
+    13) echo "macOS High Sierra";;
     *)  echo "unknown"
 esac
 echo
