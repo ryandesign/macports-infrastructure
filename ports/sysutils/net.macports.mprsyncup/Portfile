@@ -4,11 +4,11 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.mprsyncup
-version             5
+version             6
 
 fetch.type          svn
 svn.url             https://github.com/macports/macports-infrastructure/trunk/jobs/mprsyncup
-svn.revision        430
+svn.revision        431
 svn.dir             ${worksrcpath}
 
 depends_run         port:coreutils \
