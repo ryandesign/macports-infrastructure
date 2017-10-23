@@ -14,7 +14,7 @@
         <key>ProgramArguments</key>
         <array>
             <string>@PREFIX@/bin/rsync</string>
-            <string>--bwlimit=156</string>
+            <string>--bwlimit=1280</string>
             <string>--config=@PREFIX@/etc/rsyncd/rsyncd.conf</string>
             <string>--daemon</string>
             <string>--no-detach</string>
