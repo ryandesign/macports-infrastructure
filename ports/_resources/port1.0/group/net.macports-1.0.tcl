@@ -24,3 +24,6 @@ post-destroot {
 default destroot.keepdirs   {${destroot}${prefix}/share}
 
 default livecheck.type      {none}
+
+options PlistBuddy
+default PlistBuddy          {/usr/libexec/PlistBuddy}

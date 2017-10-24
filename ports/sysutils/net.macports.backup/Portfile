@@ -1,0 +1,51 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           net.macports 1.0
+
+name                net.macports.backup
+version             1
+
+set plist           /Library/LaunchDaemons/${name}.plist
+set backups_per_day 4
+
+destroot {
+    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}${plist}
+
+    set seconds_between_backups [expr {int(86400 / ${backups_per_day})}]
+    set seconds [expr {443750400 + int(rand() * ${seconds_between_backups})}]
+    list calendar
+    for {set backup 0} {${backup} < ${backups_per_day}} {incr backup} {
+        set hour [scan [clock format ${seconds} -gmt yes -format "%H"] %d]
+        set minute [scan [clock format ${seconds} -gmt yes -format "%M"] %d]
+        set second [scan [clock format ${seconds} -gmt yes -format "%S"] %d]
+        lappend calendar "<dict><key>Hour</key><integer>${hour}</integer><key>Minute</key><integer>${minute}</integer><key>Second</key><integer>${second}</integer></dict>"
+        incr seconds ${seconds_between_backups}
+    }
+    set glue "\\\n            "
+    reinplace "s|@CALENDAR@|[join ${calendar} ${glue}]|g" ${destroot}${plist}
+}
+
+startupitem.autostart   yes
+
+proc make_notes {plist} {
+    if {![file readable ${plist}]} {
+        return
+    }
+    global PlistBuddy
+    set backups_in_plist [exec ${PlistBuddy} -c "Print StartCalendarInterval" ${plist} | grep "Dict " | wc -l]
+    list times
+    for {set backup 0} {${backup} < ${backups_in_plist}} {incr backup} {
+        set hour [exec ${PlistBuddy} -c "Print StartCalendarInterval:${backup}:Hour" ${plist}]
+        set minute [exec ${PlistBuddy} -c "Print StartCalendarInterval:${backup}:Minute" ${plist}]
+        set second [exec ${PlistBuddy} -c "Print StartCalendarInterval:${backup}:Second" ${plist}]
+        lappend times [format "%02d:%02d:%02d" ${hour} ${minute} ${second}]
+    }
+    notes "Backups will start daily at [join ${times} {, }]"
+}
+
+post-activate {
+    make_notes ${plist}
+}
+
+make_notes ${plist}
