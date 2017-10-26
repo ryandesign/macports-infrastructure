@@ -6,9 +6,7 @@
         <string>net.macports.backup</string>
         <key>ProgramArguments</key>
         <array>
-            <string>/usr/bin/tmutil</string>
-            <string>startbackup</string>
-            <string>--block</string>
+            <string>/System/Library/CoreServices/backupd.bundle/Contents/Resources/backupd-helper</string>
         </array>
         <key>StartCalendarInterval</key>
         <array>

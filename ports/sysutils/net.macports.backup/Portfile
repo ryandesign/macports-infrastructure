@@ -4,13 +4,20 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.backup
-version             1
+version             2
 
 set plist           /Library/LaunchDaemons/${name}.plist
 set backups_per_day 4
 
 destroot {
-    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}${plist}
+    if {${os.major} == 9} {
+        set source_plist ${name}-10.5.plist.in
+    } elif {${os.major} == 10} {
+        set source_plist ${name}-10.6.plist.in
+    } else {
+        set source_plist ${name}.plist.in
+    }
+    xinstall -m 644 ${filespath}/${source_plist} ${destroot}${plist}
 
     set seconds_between_backups [expr {int(86400 / ${backups_per_day})}]
     set seconds [expr {443750400 + int(rand() * ${seconds_between_backups})}]
