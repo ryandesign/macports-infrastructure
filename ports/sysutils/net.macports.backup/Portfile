@@ -12,7 +12,7 @@ set backups_per_day 4
 destroot {
     if {${os.major} == 9} {
         set source_plist ${name}-10.5.plist.in
-    } elif {${os.major} == 10} {
+    } elseif {${os.major} == 10} {
         set source_plist ${name}-10.6.plist.in
     } else {
         set source_plist ${name}.plist.in
