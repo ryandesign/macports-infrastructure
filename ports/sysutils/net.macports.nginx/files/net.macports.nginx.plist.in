@@ -4,8 +4,11 @@
     <dict>
         <key>KeepAlive</key>
         <dict>
-            <key>SuccessfulExit</key>
-            <false/>
+            <key>PathState</key>
+            <dict>
+                <key>/Volumes/RAID@PREFIX@/var/rsync/macports</key>
+                <true/>
+            </dict>
         </dict>
         <key>Label</key>
         <string>net.macports.nginx</string>
@@ -13,7 +16,5 @@
         <array>
             <string>@PREFIX@/sbin/nginx</string>
         </array>
-        <key>RunAtLoad</key>
-        <true/>
     </dict>
 </plist>

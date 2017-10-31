@@ -1,5 +1,5 @@
---- mprsyncup.orig	2017-08-15 05:50:43.000000000 -0500
-+++ mprsyncup	2017-08-22 14:53:17.000000000 -0500
+--- mprsyncup.orig	2017-10-06 11:47:02.000000000 -0500
++++ mprsyncup	2017-10-30 11:41:43.000000000 -0500
 @@ -28,34 +28,33 @@
  ####
  
@@ -27,7 +27,7 @@
  
  # Paths we'll work on:
 -ROOT=/var/tmp/macports
-+ROOT=/var/tmp/mprsyncup
++ROOT=/Volumes/RAID/var/tmp/mprsyncup
  PREFIX=${ROOT}/opt/local
 -GITROOT=/var/tmp/macports
 +GITROOT=${ROOT}
@@ -35,7 +35,7 @@
  RBASE=${GITROOT}/release/base
  PORTS=${GITROOT}/release/ports
 -RSYNCROOT=/rsync/macports
-+RSYNCROOT=@PREFIX@/var/rsync/macports
++RSYNCROOT=/Volumes/RAID@PREFIX@/var/rsync/macports
  PORTINDEX=${PREFIX}/bin/portindex
  
 -PATH=${PREFIX}/bin:/bin:/usr/bin:/usr/sbin:/opt/local/bin
@@ -53,7 +53,22 @@
  
  #
  # Functions
-@@ -239,3 +237,5 @@
+@@ -93,6 +91,14 @@
+ }
+ 
+ #
++# Wait for rsync root to exist (may be on a filesystem still being mounted)
++#
++
++while [ ! -d "${RSYNCROOT}" ]; do
++    sleep 1
++done
++
++#
+ # Update trunk/base
+ #
+ 
+@@ -239,3 +245,5 @@
      done
      ${RM} -rf "${ROOT}"/PortIndex_*
  fi

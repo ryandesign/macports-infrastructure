@@ -38,7 +38,7 @@ server {
     access_log @PREFIX@/var/log/nginx/distfiles-access.log main;
     error_log @PREFIX@/var/log/nginx/distfiles-error.log;
 
-    root @PREFIX@/var/rsync/macports/distfiles;
+    root /Volumes/RAID@PREFIX@/var/rsync/macports/distfiles;
     autoindex on;
 
     add_header Cache-Control "max-age=2592000, public";
@@ -90,7 +90,7 @@ server {
     access_log @PREFIX@/var/log/nginx/distfiles-access.log main;
     error_log @PREFIX@/var/log/nginx/distfiles-error.log;
 
-    root @PREFIX@/var/rsync/macports/distfiles-test;
+    root /Volumes/RAID@PREFIX@/var/rsync/macports/distfiles-test;
     autoindex on;
 
     add_header Cache-Control "max-age=2592000, public";

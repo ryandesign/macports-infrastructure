@@ -11,8 +11,11 @@
         </dict>
         <key>KeepAlive</key>
         <dict>
-            <key>SuccessfulExit</key>
-            <false/>
+            <key>PathState</key>
+            <dict>
+                <key>/Volumes/RAID@PREFIX@/var/rsync/macports</key>
+                <true/>
+            </dict>
         </dict>
         <key>Label</key>
         <string>net.macports.buildmaster</string>
@@ -23,8 +26,6 @@
             <string>--no_save</string>
             <string>--python=buildbot.tac</string>
         </array>
-        <key>RunAtLoad</key>
-        <true/>
         <key>UserName</key>
         <string>buildbot</string>
         <key>WorkingDirectory</key>

@@ -15,24 +15,24 @@ use chroot = no
 
 [macports]
     comment = MacPorts release, trunk, distfiles and packages
-    path = @PREFIX@/var/rsync/macports
+    path = /Volumes/RAID@PREFIX@/var/rsync/macports
 
 [release]
     comment = MacPorts release (deprecated; use "macports/release" instead)
-    path = @PREFIX@/var/rsync/macports/release
+    path = /Volumes/RAID@PREFIX@/var/rsync/macports/release
 
 [trunk]
     comment = MacPorts trunk (deprecated; use "macports/trunk" instead)
-    path = @PREFIX@/var/rsync/macports/trunk
+    path = /Volumes/RAID@PREFIX@/var/rsync/macports/trunk
 
 [distfiles]
     comment = MacPorts distfiles (deprecated; use "macports/distfiles" instead)
-    path = @PREFIX@/var/rsync/macports/distfiles
+    path = /Volumes/RAID@PREFIX@/var/rsync/macports/distfiles
 
 [mpdistfiles]
     comment = MacPorts distfiles (deprecated; use "macports/distfiles" instead)
-    path = @PREFIX@/var/rsync/macports/distfiles
+    path = /Volumes/RAID@PREFIX@/var/rsync/macports/distfiles
 
 [packages]
     comment = MacPorts packages (deprecated; use "macports/packages" instead)
-    path = @PREFIX@/var/rsync/macports/packages
+    path = /Volumes/RAID@PREFIX@/var/rsync/macports/packages

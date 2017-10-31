@@ -7,7 +7,7 @@
 -    dlhost = 'packages@packages-origin.macports.org'
 -    dlpath = '/var/www/html/packages'
 +    dlhost = ''
-+    dlpath = '@PREFIX@/var/rsync/macports/packages'
++    dlpath = '/Volumes/RAID@PREFIX@/var/rsync/macports/packages'
  else:
      prefix = config['slaveprefix']
      dlhost = ''
