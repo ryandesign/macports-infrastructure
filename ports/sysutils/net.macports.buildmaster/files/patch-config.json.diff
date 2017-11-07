@@ -1,6 +1,6 @@
---- config.json.orig	2017-01-01 21:57:27.000000000 -0600
-+++ config.json	2017-01-01 21:59:01.000000000 -0600
-@@ -1,29 +1,9 @@
+--- config.json.orig	2017-11-06 17:42:22.000000000 -0600
++++ config.json	2017-11-06 17:43:49.000000000 -0600
+@@ -1,42 +1,9 @@
  {
 -    "production":   false,
 -    "privkey":      "/var/keys/macports-privkey.pem",
@@ -12,12 +12,17 @@
 -    "toolsprefix":  "/opt/mports",
 +    "toolsprefix":  "/opt/bblocal",
      "deploy": {
+-        "maxcdn": {
+-            "key": "",
+-            "secret": ""
+-        },
 -        "www": {
 -            "host": "",
 -            "user": "",
 -            "sshkeyfile": "",
 -            "sshknownhostsfile": "ssh_known_hosts",
--            "destpath": ""
+-            "destpath": "",
+-            "maxcdnzoneid": 0
 -        },
 -        "portindex": {
 -            "host": "",
@@ -26,6 +31,14 @@
 -            "sshknownhostsfile": "ssh_known_hosts",
 -        },
 -        "guide": {
+-            "host": "",
+-            "user": "",
+-            "sshkeyfile": "",
+-            "sshknownhostsfile": "ssh_known_hosts",
+-            "destpath": "",
+-            "maxcdnzoneid": 0
+-        },
+-        "man": {
 -            "host": "",
 -            "user": "",
 -            "sshkeyfile": "",

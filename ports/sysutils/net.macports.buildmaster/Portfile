@@ -4,19 +4,19 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster
-version             75
+version             76
 
 fetch.type          svn
 svn.url             https://github.com/macports/macports-infrastructure/trunk/buildbot/
-svn.method          checkout
-svn.revision        409
+svn.revision        434
 worksrcdir          buildbot
 
 depends_run         port:buildbot \
+                    port:git \
                     port:net.macports.nginx \
                     port:net.macports.packages \
                     port:net.macports.rsyncd \
-                    port:git
+                    port:py27-requests-oauthlib
 
 post-extract {
     copy ${worksrcpath}/config.json.sample ${worksrcpath}/config.json
@@ -25,14 +25,17 @@ post-extract {
 patchfiles          patch-config.json.diff \
                     patch-master.cfg.diff
 
+post-patch {
+    reinplace "s|^#!/usr/bin/env python$|#!${prefix}/bin/python2.7|" ${worksrcpath}/maxcdn-purge/maxcdn-purge.py
+}
+
 add_users           buildbot group=buildbot realname=buildbot
 
 destroot.keepdirs   ${destroot}${prefix}/var/keys
 destroot {
     xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildmaster ${destroot}${prefix}/var/keys
 
-    xinstall -W ${worksrcpath} -m 644 config.json master.cfg slaves.json.sample ${destroot}${prefix}/var/buildmaster
-    xinstall -W ${worksrcpath} -m 755 deploy_archives.sh ${destroot}${prefix}/var/buildmaster
+    copy {*}[glob ${worksrcpath}/*] ${destroot}${prefix}/var/buildmaster
 
     xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
 
