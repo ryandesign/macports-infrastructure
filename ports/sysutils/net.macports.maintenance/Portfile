@@ -1,0 +1,23 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           net.macports 1.0
+
+name                net.macports.maintenance
+version             1
+
+depends_run         port:net.macports.nginx
+
+destroot {
+    xinstall -d ${destroot}${prefix}/etc/nginx/sites-available/ ${destroot}${prefix}/etc/nginx/sites-enabled/ ${destroot}${prefix}/share/nginx/maintenance/
+    xinstall -m 644 ${filespath}/maintenance.html ${destroot}${prefix}/share/nginx/maintenance/
+    xinstall -m 644 ${filespath}/build.conf.in ${destroot}${prefix}/etc/nginx/sites-available/build.conf
+    xinstall -m 644 ${filespath}/distfiles.conf.in ${destroot}${prefix}/etc/nginx/sites-available/distfiles.conf
+    xinstall -m 644 ${filespath}/packages.conf.in ${destroot}${prefix}/etc/nginx/sites-available/packages.conf
+    reinplace -W ${destroot}${prefix}/etc/nginx/sites-available/ "s|@PREFIX@|${prefix}|g" build.conf distfiles.conf packages.conf
+    ln -s ../sites-available/build.conf ${destroot}${prefix}/etc/nginx/sites-enabled/
+    ln -s ../sites-available/distfiles.conf ${destroot}${prefix}/etc/nginx/sites-enabled/
+    ln -s ../sites-available/packages.conf ${destroot}${prefix}/etc/nginx/sites-enabled/
+}
+
+# TODO: check config and reload nginx in post-activate and post-deactivate
