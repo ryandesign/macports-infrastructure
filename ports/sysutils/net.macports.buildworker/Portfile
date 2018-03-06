@@ -31,7 +31,6 @@ proc random_password {} {
 }
 
 set password_base   [random_password]
-set password_ports  [random_password]
 
 variant base description {Use a base worker} {
     post-destroot {
@@ -67,6 +66,8 @@ sudo launchctl load -w /Library/LaunchDaemons/${name}.base.plist"
     append notes_unload "
 sudo launchctl unload -w /Library/LaunchDaemons/${name}.base.plist"
 }
+
+set password_ports  [random_password]
 
 variant ports description {Use a ports worker} {
     post-destroot {
@@ -108,6 +109,39 @@ if {[variant_isset base] || [variant_isset ports]} {
                     port:getopt \
                     port:git \
                     port:openssl
+}
+
+set password_jobs   [random_password]
+
+variant jobs description {Use a jobs worker} {
+    post-destroot {
+        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker/jobs
+
+        ln -s ../info ${destroot}${prefix}/var/buildworker/jobs/info
+
+        xinstall -m 644 ${filespath}/${name}.jobs.plist.in ${destroot}/Library/LaunchDaemons/${name}.jobs.plist
+        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/LaunchDaemons/${name}.jobs.plist
+    }
+}
+
+if {[variant_isset jobs]} {
+    append notes_create "
+sudo -H ${prefix}/bin/buildslave\
+    create-slave --umask 022\
+    ${prefix}/var/buildworker/jobs\
+    build:9989\
+    jobs\
+    ${password_jobs}"
+    append notes_upgrade "
+sudo -H ${prefix}/bin/buildslave\
+    upgrade-slave\
+    ${prefix}/var/buildworker/jobs"
+    append notes_slaves "
+\"jobs\": \"${password_jobs}\","
+    append notes_load "
+sudo launchctl load -w /Library/LaunchDaemons/${name}.jobs.plist"
+    append notes_unload "
+sudo launchctl unload -w /Library/LaunchDaemons/${name}.jobs.plist"
 }
 
 # This only handles automatically updating the host info.
