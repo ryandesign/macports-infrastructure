@@ -126,14 +126,14 @@ variant jobs description {Use a jobs worker} {
 
 if {[variant_isset jobs]} {
     append notes_create "
-sudo -H ${prefix}/bin/buildslave\
+sudo -H -u buildbot ${prefix}/bin/buildslave\
     create-slave --umask 022\
     ${prefix}/var/buildworker/jobs\
     build:9989\
     jobs\
     ${password_jobs}"
     append notes_upgrade "
-sudo -H ${prefix}/bin/buildslave\
+sudo -H -u buildbot ${prefix}/bin/buildslave\
     upgrade-slave\
     ${prefix}/var/buildworker/jobs"
     append notes_slaves "
