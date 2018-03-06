@@ -6,11 +6,7 @@ PortGroup           net.macports 1.0
 name                net.macports.buildworker
 version             19
 
-depends_run         port:buildbot-slave \
-                    port:curl \
-                    port:getopt \
-                    port:git \
-                    port:openssl
+depends_run         port:buildbot-slave
 
 add_users           buildbot group=buildbot realname=buildbot
 
@@ -103,6 +99,15 @@ sudo -H ${prefix}/bin/buildslave\
 sudo launchctl load -w /Library/LaunchDaemons/${name}.ports.plist"
     append notes_unload "
 sudo launchctl unload -w /Library/LaunchDaemons/${name}.ports.plist"
+}
+
+if {[variant_isset base] || [variant_isset ports]} {
+    # For mpbb
+    depends_run-append \
+                    port:curl \
+                    port:getopt \
+                    port:git \
+                    port:openssl
 }
 
 # This only handles automatically updating the host info.
