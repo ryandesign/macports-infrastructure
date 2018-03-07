@@ -1,16 +1,17 @@
---- config.json.orig	2018-03-07 09:03:01.000000000 -0600
-+++ config.json	2018-03-07 09:06:22.000000000 -0600
-@@ -1,44 +1,12 @@
+--- config.json.orig	2018-03-07 11:17:06.000000000 -0600
++++ config.json	2018-03-07 11:23:31.000000000 -0600
+@@ -1,45 +1,13 @@
  {
--    "production":   false,
--    "privkey":      "/var/keys/macports-privkey.pem",
--    "buildboturl":  "http://domain.tld:8010/",
-+    "production":   true,
-+    "privkey":      "@PREFIX@/var/keys/macports-privkey.pem",
-+    "buildboturl":  "https://build.macports.org/",
-     "slaveprefix":  "/opt/local",
--    "toolsprefix":  "/opt/mports",
-+    "toolsprefix":  "/opt/bblocal",
+-    "production":       false,
+-    "privkey":          "/var/keys/macports-privkey.pem",
+-    "buildboturl":      "http://domain.tld:8010/",
++    "production":       true,
++    "privkey":          "@PREFIX@/var/keys/macports-privkey.pem",
++    "buildboturl":      "https://build.macports.org/",
+     "slaveprefix":      "/opt/local",
+-    "toolsprefix":      "/opt/mports",
++    "toolsprefix":      "/opt/bblocal",
+     "jobstoolsprefix":  "/opt/local",
      "deploy": {
 -        "maxcdn": {
 -            "secrets": "/var/keys/maxcdn-secrets.json",
@@ -45,8 +46,8 @@
 -            "destpath": ""
 -        },
          "mirror": {
--            "distfilesdir": "",
-+            "distfilesdir": "/Volumes/RAID@PREFIX@/var/rsync/macports/distfiles",
+-            "distfilesdir": ""
++            "distfilesdir": "/Volumes/RAID@PREFIX@/var/rsync/macports/distfiles"
          }
      }
  }
