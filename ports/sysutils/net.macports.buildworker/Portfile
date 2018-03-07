@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             19
+version             20
 
 depends_run         port:buildbot-slave
 
@@ -103,17 +103,22 @@ sudo launchctl unload -w /Library/LaunchDaemons/${name}.ports.plist"
 }
 
 if {[variant_isset base] || [variant_isset ports]} {
-    # For mpbb
-    depends_run-append \
-                    port:curl \
-                    port:getopt \
-                    port:git \
-                    port:openssl
+    # mpbb gather-archives
+    depends_run-append  port:curl
+    # mpbb parseopt
+    depends_run-append  port:getopt
+    # mpbb checkout
+    depends_run-append  port:git
+    # mpbb compute_failcache_hash
+    depends_run-append  port:openssl
 }
 
 set password_jobs   [random_password]
 
 variant jobs description {Use a jobs worker} {
+    # mpbb parseopt
+    depends_run-append  port:getopt
+
     post-destroot {
         xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker/jobs
 
