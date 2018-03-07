@@ -1,6 +1,6 @@
---- config.json.orig	2018-03-06 03:40:28.000000000 -0600
-+++ config.json	2018-03-06 04:39:02.000000000 -0600
-@@ -1,41 +1,10 @@
+--- config.json.orig	2018-03-07 09:03:01.000000000 -0600
++++ config.json	2018-03-07 09:06:22.000000000 -0600
+@@ -1,44 +1,12 @@
  {
 -    "production":   false,
 -    "privkey":      "/var/keys/macports-privkey.pem",
@@ -43,7 +43,10 @@
 -            "sshkeyfile": "",
 -            "sshknownhostsfile": "ssh_known_hosts",
 -            "destpath": ""
--        }
-+        "mirror":   true
+-        },
+         "mirror": {
+-            "distfilesdir": "",
++            "distfilesdir": "/Volumes/RAID@PREFIX@/var/rsync/macports/distfiles",
+         }
      }
  }
