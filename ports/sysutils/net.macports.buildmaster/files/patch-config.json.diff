@@ -1,6 +1,6 @@
---- config.json.orig	2018-03-07 11:17:06.000000000 -0600
-+++ config.json	2018-03-07 11:23:31.000000000 -0600
-@@ -1,45 +1,13 @@
+--- config.json.orig	2018-03-12 16:25:30.000000000 -0500
++++ config.json	2018-03-12 16:36:39.000000000 -0500
+@@ -1,45 +1,46 @@
  {
 -    "production":       false,
 -    "privkey":          "/var/keys/macports-privkey.pem",
@@ -13,38 +13,58 @@
 +    "toolsprefix":      "/opt/bblocal",
      "jobstoolsprefix":  "/opt/local",
      "deploy": {
--        "maxcdn": {
--            "secrets": "/var/keys/maxcdn-secrets.json",
--        },
--        "www": {
+         "maxcdn": {
+-            "secrets": "/var/keys/maxcdn-secrets.json"
++            "secrets": "@PREFIX@/var/keys/maxcdn-secrets.json"
+         },
+         "www": {
 -            "host": "",
 -            "user": "",
 -            "sshkeyfile": "",
--            "sshknownhostsfile": "ssh_known_hosts",
++            "host": "braeburn.macports.org",
++            "user": "www",
++            "sshkeyfile": "www.id_rsa",
+             "sshknownhostsfile": "ssh_known_hosts",
 -            "destpath": "",
 -            "maxcdnzoneid": 0
--        },
--        "portindex": {
++            "destpath": ".",
++            "maxcdnzoneid": 481116
+         },
+         "portindex": {
 -            "host": "",
 -            "user": "",
 -            "sshkeyfile": "",
--            "sshknownhostsfile": "ssh_known_hosts",
--        },
--        "guide": {
+-            "sshknownhostsfile": "ssh_known_hosts"
++            "host": "braeburn.macports.org",
++            "user": "www",
++            "sshkeyfile": "portindex.id_rsa",
++            "sshknownhostsfile": "ssh_known_hosts",
++            "destpath": "portindex"
+         },
+         "guide": {
 -            "host": "",
 -            "user": "",
 -            "sshkeyfile": "",
--            "sshknownhostsfile": "ssh_known_hosts",
++            "host": "braeburn.macports.org",
++            "user": "guide",
++            "sshkeyfile": "guide.id_rsa",
+             "sshknownhostsfile": "ssh_known_hosts",
 -            "destpath": "",
 -            "maxcdnzoneid": 0
--        },
--        "man": {
++            "destpath": ".",
++            "maxcdnzoneid": 481120
+         },
+         "man": {
 -            "host": "",
 -            "user": "",
 -            "sshkeyfile": "",
--            "sshknownhostsfile": "ssh_known_hosts",
++            "host": "braeburn.macports.org",
++            "user": "manpages",
++            "sshkeyfile": "manpages.id_rsa",
+             "sshknownhostsfile": "ssh_known_hosts",
 -            "destpath": ""
--        },
++            "destpath": "."
+         },
          "mirror": {
 -            "distfilesdir": ""
 +            "distfilesdir": "/Volumes/RAID@PREFIX@/var/rsync/macports/distfiles"
