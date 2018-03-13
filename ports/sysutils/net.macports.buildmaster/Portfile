@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster
-version             86
+version             87
 
 fetch.type          svn
 svn.url             https://github.com/macports/macports-infrastructure/trunk/buildbot/
@@ -16,7 +16,8 @@ depends_run         port:buildbot \
                     port:net.macports.nginx \
                     port:net.macports.packages \
                     port:net.macports.rsyncd \
-                    port:py27-requests-oauthlib
+                    port:py27-requests-oauthlib \
+                    port:py27-txgithub
 
 post-extract {
     copy ${worksrcpath}/config.json.sample ${worksrcpath}/config.json
