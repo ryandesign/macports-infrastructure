@@ -4,11 +4,11 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.mprsyncup
-version             8
+version             9
 
 fetch.type          svn
 svn.url             https://github.com/macports/macports-infrastructure/trunk/jobs/mprsyncup
-svn.revision        431
+svn.revision        467
 svn.dir             ${worksrcpath}
 
 depends_run         port:coreutils \
@@ -24,6 +24,6 @@ destroot.keepdirs   ${destroot}${prefix}/var/log/${name} ${destroot}/Volumes/RAI
 destroot {
     xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/log/${name} ${destroot}/Volumes/RAID${prefix}/var/rsync/macports
     xinstall ${worksrcpath}/mprsyncup ${filespath}/mprsyncup-ts ${destroot}${prefix}/bin
-    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
+    xinstall -m 0644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
     reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/bin/mprsyncup ${destroot}${prefix}/bin/mprsyncup-ts ${destroot}/Library/LaunchDaemons/${name}.plist
 }
