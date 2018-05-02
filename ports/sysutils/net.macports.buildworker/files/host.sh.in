@@ -20,7 +20,7 @@ case ${MACOS_VERSION%.*} in
     10.4)   MACOS_NAME="Mac OS X Tiger";;
     10.5)   MACOS_NAME="Mac OS X Leopard";;
     10.6)   MACOS_NAME="Mac OS X Snow Leopard";;
-    10.7)   MACOS_NAME="OS X Lion";;
+    10.7)   MACOS_NAME="Mac OS X Lion";;
     10.8)   MACOS_NAME="OS X Mountain Lion";;
     10.9)   MACOS_NAME="OS X Mavericks";;
     10.10)  MACOS_NAME="OS X Yosemite";;
