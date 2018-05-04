@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             24
+version             25
 
 depends_run         port:buildbot-slave
 
@@ -119,11 +119,9 @@ variant jobs description {Use a jobs worker} {
     # mpbb parseopt
     depends_run-append  port:getopt
     # jobs-guide
-    depends_run-append  port:asciidoctor port:docbook-xml
+    depends_run-append  port:asciidoctor port:docbook-xml port:docbook-xsl-ns
     # jobs-man
-    depends_run-append  port:asciidoc port:libxslt
-    # jobs-guide and jobs-man
-    depends_run-append  port:docbook-xsl-ns
+    depends_run-append  port:asciidoc port:libxslt port:docbook-xsl-nons
 
     post-destroot {
         xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker/jobs
