@@ -4,11 +4,11 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster
-version             90
+version             91
 
 fetch.type          svn
 svn.url             https://github.com/macports/macports-infrastructure/trunk/buildbot/
-svn.revision        468
+svn.revision        469
 worksrcdir          buildbot
 
 depends_run         port:buildbot \
