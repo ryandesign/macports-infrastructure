@@ -27,6 +27,7 @@ case ${MACOS_VERSION%.*} in
     10.11)  MACOS_NAME="OS X El Capitan";;
     10.12)  MACOS_NAME="macOS Sierra";;
     10.13)  MACOS_NAME="macOS High Sierra";;
+    10.14)  MACOS_NAME="macOS Mojave";;
     *)      MACOS_NAME="macOS"
 esac
 
