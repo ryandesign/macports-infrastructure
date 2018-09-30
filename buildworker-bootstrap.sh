@@ -13,12 +13,12 @@ SOURCE_URL=https://github.com/macports/macports-base/tags/v2.5.3/
 SOURCE_DIR=/opt/macports-base
 EXTRA_PORTS_URL=https://github.com/ryandesign/macports-infrastructure
 EXTRA_PORTS_WC=/opt/macports-infrastructure
-EXTRA_PORTS_DIR="$EXTRA_PORTS_WC/ports"
+EXTRA_PORTS_DIR="$EXTRA_PORTS_WC"/ports
 
 if [ "$PREFIX" = "/opt/local" ]; then
-  APPLICATIONS_DIR="/Applications/MacPorts"
+  APPLICATIONS_DIR=/Applications/MacPorts
 else
-  APPLICATIONS_DIR="$PREFIX/Applications"
+  APPLICATIONS_DIR="$PREFIX"/Applications
 fi
 
 USER=$(id -n -u)
@@ -27,15 +27,15 @@ GROUP=$(id -n -g)
 ORIG_USER=$(logname)
 ORIG_GROUP=$(id -n -g "$ORIG_USER")
 
-if [ ! -x $PREFIX/bin/port ]; then
+if [ ! -x "$PREFIX"/bin/port ]; then
   JOBS=$(sysctl -n hw.activecpu)
 
   MACOSX_DEPLOYMENT_TARGET=$(sw_vers -productVersion | cut -d . -f 1-2)
   export MACOSX_DEPLOYMENT_TARGET
 
-  export PATH="/bin:/sbin:/usr/bin:/usr/sbin"
+  export PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
-  export GREP_OPTIONS=""
+  export GREP_OPTIONS=
 
   if [ ! -d "$SOURCE_DIR" ]; then
     echo "$UI_PREFIX Checking out MacPorts source code"
@@ -47,14 +47,14 @@ if [ ! -x $PREFIX/bin/port ]; then
     svn up "$SOURCE_DIR"
   fi
 
-  cd $SOURCE_DIR
+  cd "$SOURCE_DIR"
 
   echo "$UI_PREFIX Configuring MacPorts"
   ./configure \
-  --prefix=$PREFIX \
+  --prefix="$PREFIX" \
   --enable-readline \
-  --with-applications-dir=$APPLICATIONS_DIR \
-  --with-frameworks-dir=$PREFIX/Library/Frameworks \
+  --with-applications-dir="$APPLICATIONS_DIR" \
+  --with-frameworks-dir="$PREFIX"/Library/Frameworks \
   --with-install-group="$GROUP" \
   --with-install-user="$USER" \
   --with-macports-user=macports
@@ -72,45 +72,45 @@ if [ ! -x $PREFIX/bin/port ]; then
   make distclean
 fi
 
-$PREFIX/bin/port -N file git >/dev/null 2>&1 && NONINTERACTIVE="-N" || NONINTERACTIVE=""
+"$PREFIX"/bin/port -N file git >/dev/null 2>&1 && NONINTERACTIVE=-N || NONINTERACTIVE=
 
 echo "$UI_PREFIX Updating MacPorts"
-sudo $PREFIX/bin/port $NONINTERACTIVE selfupdate
+sudo "$PREFIX"/bin/port $NONINTERACTIVE selfupdate
 
 if [ "$PREFIX" != "/opt/local" ]; then
-  if [ ! -d $PREFIX/var/macports/distfiles ]; then
+  if [ ! -d "$PREFIX"/var/macports/distfiles ]; then
     echo "$UI_PREFIX Linking distfiles to main distfiles"
-    mkdir -p $PREFIX/var/macports
-    [ -d $PREFIX/var/macports ] || exit 1
+    mkdir -p "$PREFIX"/var/macports
+    [ -d "$PREFIX"/var/macports ] || exit 1
     mkdir -p /opt/local/var/macports/distfiles
     [ -d /opt/local/var/macports ] || exit 1
-    ln -s /opt/local/var/macports/distfiles $PREFIX/var/macports/distfiles
+    ln -s /opt/local/var/macports/distfiles "$PREFIX"/var/macports/distfiles
   fi
 fi
 
-sed -i '' -E 's/^#?(startupitem_install[[:space:]]+).*$/\1no/' $PREFIX/etc/macports/macports.conf
+sed -i '' -E 's/^#?(startupitem_install[[:space:]]+).*$/\1no/' "$PREFIX"/etc/macports/macports.conf
 
-if [ ! -x $PREFIX/bin/git ]; then
+if [ ! -x "$PREFIX"/bin/git ]; then
   echo "$UI_PREFIX Installing git"
-  sudo $PREFIX/bin/port $NONINTERACTIVE install git
+  sudo "$PREFIX"/bin/port $NONINTERACTIVE install git
 fi
 
 if [ ! -d "$EXTRA_PORTS_WC" ]; then
   echo "$UI_PREFIX Cloning $EXTRA_PORTS_URL to $EXTRA_PORTS_WC"
-  $PREFIX/bin/git clone "$EXTRA_PORTS_URL" "$EXTRA_PORTS_WC"
+  "$PREFIX"/bin/git clone "$EXTRA_PORTS_URL" "$EXTRA_PORTS_WC"
   [ -d "$EXTRA_PORTS_WC" ] || exit 1
 else
   echo "$UI_PREFIX Updating $EXTRA_PORTS_WC"
-  $PREFIX/bin/git -C "$EXTRA_PORTS_WC" pull
+  "$PREFIX"/bin/git -C "$EXTRA_PORTS_WC" pull
 fi
 
-if ! grep -q "file://$EXTRA_PORTS_DIR" $PREFIX/etc/macports/sources.conf; then
+if ! grep -q "file://$EXTRA_PORTS_DIR" "$PREFIX"/etc/macports/sources.conf; then
   echo "$UI_PREFIX Adding $EXTRA_PORTS_DIR to sources.conf"
-  echo "file://$EXTRA_PORTS_DIR" >> $PREFIX/etc/macports/sources.conf
-  sudo $PREFIX/bin/port $NONINTERACTIVE sync
+  echo "file://$EXTRA_PORTS_DIR" >> "$PREFIX"/etc/macports/sources.conf
+  sudo "$PREFIX"/bin/port $NONINTERACTIVE sync
 fi
 
-PROFILE="$HOME/.profile"
+PROFILE="$HOME"/.profile
 
 #if ! echo $PATH | tr : "\n" | grep -q "^$PREFIX/bin$"; then
 if [ ! -f "$PROFILE" ]; then
