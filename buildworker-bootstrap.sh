@@ -106,7 +106,6 @@ fi
 if [ ! -d "$EXTRA_PORTS_WC" ]; then
   echo "$UI_PREFIX Cloning $EXTRA_PORTS_URL to $EXTRA_PORTS_WC"
   "$PREFIX"/bin/git clone "$EXTRA_PORTS_URL" "$EXTRA_PORTS_WC"
-  [ -d "$EXTRA_PORTS_WC" ] || exit 1
 else
   echo "$UI_PREFIX Updating $EXTRA_PORTS_WC"
   "$PREFIX"/bin/git -C "$EXTRA_PORTS_WC" pull
