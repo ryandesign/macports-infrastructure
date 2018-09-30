@@ -12,7 +12,7 @@ BOOT_DATE=$(date -u -j -f "%b %d %H:%M:%S" "$(LC_TIME=C TZ=Z who -b | sed -E -e 
 
 MACOS_VERSION=$(sw_vers -productVersion)
 MACOS_BUILD=$(sw_vers -buildVersion)
-case ${MACOS_VERSION%.*} in
+case "$(cut -d. -f1-2 <<< "$MACOS_VERSION")" in
     10.0)   MACOS_NAME="Mac OS X Cheetah";;
     10.1)   MACOS_NAME="Mac OS X Puma";;
     10.2)   MACOS_NAME="Mac OS X Jaguar";;

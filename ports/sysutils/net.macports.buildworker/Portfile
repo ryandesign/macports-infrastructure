@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             26
+version             27
 
 depends_run         port:buildbot-slave
 
