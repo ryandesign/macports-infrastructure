@@ -3,7 +3,7 @@
 default categories          {sysutils}
 default platforms           {darwin}
 default license             {BSD}
-default maintainers         {portmgr}
+default maintainers         {admin}
 default supported_archs     {noarch}
 default homepage            {https://www.macports.org}
 default archive_sites       {}
