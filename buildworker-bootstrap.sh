@@ -72,10 +72,8 @@ if [ ! -x "$PREFIX"/bin/port ]; then
   make distclean
 fi
 
-"$PREFIX"/bin/port -N file git >/dev/null 2>&1 && NONINTERACTIVE=-N || NONINTERACTIVE=
-
 echo "$UI_PREFIX Updating MacPorts"
-"$PREFIX"/bin/port $NONINTERACTIVE selfupdate
+"$PREFIX"/bin/port -N selfupdate
 
 if [ "$PREFIX" != "/opt/local" ]; then
   if [ ! -d "$PREFIX"/var/macports/distfiles ]; then
@@ -92,7 +90,7 @@ sed -i '' -E 's/^#?(startupitem_install[[:space:]]+).*$/\1no/' "$PREFIX"/etc/mac
 
 if [ ! -x "$PREFIX"/bin/git ]; then
   echo "$UI_PREFIX Installing git"
-  "$PREFIX"/bin/port $NONINTERACTIVE install git
+  "$PREFIX"/bin/port -N install git
 fi
 
 if [ ! -d "$EXTRA_PORTS_WC" ]; then
@@ -107,7 +105,7 @@ fi
 if ! grep -q "file://$EXTRA_PORTS_DIR" "$PREFIX"/etc/macports/sources.conf; then
   echo "$UI_PREFIX Adding $EXTRA_PORTS_DIR to sources.conf"
   echo "file://$EXTRA_PORTS_DIR" >> "$PREFIX"/etc/macports/sources.conf
-  "$PREFIX"/bin/port $NONINTERACTIVE sync
+  "$PREFIX"/bin/port -N sync
 fi
 
 PROFILE="$HOME"/.profile
