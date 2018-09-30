@@ -9,7 +9,7 @@ fi
 
 UI_PREFIX="---> "
 PREFIX=/opt/bblocal
-SOURCE_URL=https://github.com/macports/macports-base/tags/v2.4.1/
+SOURCE_URL=https://github.com/macports/macports-base/tags/v2.5.3/
 SOURCE_DIR=/opt/macports-base
 EXTRA_PORTS_URL=https://github.com/ryandesign/macports-infrastructure
 EXTRA_PORTS_WC=/opt/macports-infrastructure
