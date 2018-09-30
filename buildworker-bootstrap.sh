@@ -21,16 +21,17 @@ else
   APPLICATIONS_DIR="$PREFIX/Applications"
 fi
 
-USER="$(id -n -u)"
-GROUP="$(id -n -g)"
+USER=$(id -n -u)
+GROUP=$(id -n -g)
 
-ORIG_USER="$(logname)"
-ORIG_GROUP="$(id -n -g $ORIG_USER)"
+ORIG_USER=$(logname)
+ORIG_GROUP=$(id -n -g "$ORIG_USER")
 
 if [ ! -x $PREFIX/bin/port ]; then
-  JOBS="$(sysctl -n hw.activecpu)"
+  JOBS=$(sysctl -n hw.activecpu)
 
-  export MACOSX_DEPLOYMENT_TARGET="$(sw_vers -productVersion | cut -d . -f 1-2)"
+  MACOSX_DEPLOYMENT_TARGET=$(sw_vers -productVersion | cut -d . -f 1-2)
+  export MACOSX_DEPLOYMENT_TARGET
 
   export PATH="/bin:/sbin:/usr/bin:/usr/sbin"
 
@@ -59,7 +60,7 @@ if [ ! -x $PREFIX/bin/port ]; then
   --with-macports-user=macports
 
   echo "$UI_PREFIX Building MacPorts"
-  make -j$JOBS
+  make -j"$JOBS"
 
   echo "$UI_PREFIX Installing MacPorts"
   make install
