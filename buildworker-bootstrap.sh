@@ -82,12 +82,16 @@ echo "$UI_PREFIX Updating MacPorts"
 "$PREFIX"/bin/port -N selfupdate
 
 if [ "$PREFIX" != "/opt/local" ]; then
-  if [ ! -d "$PREFIX"/var/macports/distfiles ]; then
+  if [ ! -L "$PREFIX"/var/macports/distfiles ]; then
     echo "$UI_PREFIX Linking distfiles to main distfiles"
     mkdir -p "$PREFIX"/var/macports
-    [ -d "$PREFIX"/var/macports ] || exit 1
+    test -d "$PREFIX"/var/macports
     mkdir -p /opt/local/var/macports/distfiles
-    [ -d /opt/local/var/macports ] || exit 1
+    test -d /opt/local/var/macports/distfiles
+    if [ -d "$PREFIX"/var/macports/distfiles ]; then
+      tar -C "$PREFIX"/var/macports -cf - distfiles | tar -C /opt/local/var/macports -xkf - || true
+      rm -rf "$PREFIX"/var/macports/distfiles
+    fi
     ln -s /opt/local/var/macports/distfiles "$PREFIX"/var/macports/distfiles
   fi
 fi
