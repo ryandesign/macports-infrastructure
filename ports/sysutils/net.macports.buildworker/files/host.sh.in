@@ -5,13 +5,13 @@ set -euo pipefail
 ARCH="@ARCH@"
 CXX_LIB="@CXX_LIB@"
 
-CPU_COUNT="$(sysctl -n hw.activecpu)"
-CPU_GHZ="$(echo "scale=2; $(sysctl -n hw.cpufrequency) / 10 ^ 9" | bc | sed -e '/\./s/0*$//' -e 's/\.$//')"
-RAM_GB="$(echo "scale=2; $(sysctl -n hw.memsize) / 2 ^ 30" | bc | sed -e '/\./s/0*$//' -e 's/\.$//')"
-BOOT_DATE="$(date -u -j -f "%b %d %H:%M:%S" "$(LC_TIME=C TZ=Z who -b | sed -E -e 's/ +$//' -e 's/^([^ ]+ +){2}//'):00" "+%Y-%m-%dT%H:%M:%SZ")"
+CPU_COUNT=$(sysctl -n hw.activecpu)
+CPU_GHZ=$(echo "scale=2; $(sysctl -n hw.cpufrequency) / 10 ^ 9" | bc | sed -e '/\./s/0*$//' -e 's/\.$//')
+RAM_GB=$(echo "scale=2; $(sysctl -n hw.memsize) / 2 ^ 30" | bc | sed -e '/\./s/0*$//' -e 's/\.$//')
+BOOT_DATE=$(date -u -j -f "%b %d %H:%M:%S" "$(LC_TIME=C TZ=Z who -b | sed -E -e 's/ +$//' -e 's/^([^ ]+ +){2}//'):00" "+%Y-%m-%dT%H:%M:%SZ")
 
-MACOS_VERSION="$(sw_vers -productVersion)"
-MACOS_BUILD="$(sw_vers -buildVersion)"
+MACOS_VERSION=$(sw_vers -productVersion)
+MACOS_BUILD=$(sw_vers -buildVersion)
 case ${MACOS_VERSION%.*} in
     10.0)   MACOS_NAME="Mac OS X Cheetah";;
     10.1)   MACOS_NAME="Mac OS X Puma";;
@@ -31,13 +31,13 @@ case ${MACOS_VERSION%.*} in
     *)      MACOS_NAME="macOS"
 esac
 
-XCODE_VERSION="$(xcodebuild -version | sed -E -n 's/^Xcode //p')"
-XCODE_BUILD="$(xcodebuild -version | sed -E -n 's/^[Bb]uild ?[Vv]ersion:? //p')"
+XCODE_VERSION=$(xcodebuild -version | sed -E -n 's/^Xcode //p')
+XCODE_BUILD=$(xcodebuild -version | sed -E -n 's/^[Bb]uild ?[Vv]ersion:? //p')
 
 if [ -x /usr/bin/clang ]; then
-  CLANG_VERSION="$(/usr/bin/clang --version | head -n 1)"
+  CLANG_VERSION=$(/usr/bin/clang --version | head -n 1)
 else
-  CLANG_VERSION=""
+  CLANG_VERSION=
 fi
 
 echo "$MACOS_NAME v$MACOS_VERSION ($MACOS_BUILD)"
