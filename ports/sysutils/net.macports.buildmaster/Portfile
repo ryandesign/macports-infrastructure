@@ -38,11 +38,11 @@ destroot {
 
     copy {*}[glob ${worksrcpath}/*] ${destroot}${prefix}/var/buildmaster
 
-    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
+    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
 
     xinstall -d ${destroot}${prefix}/etc/nginx/sites-available/ ${destroot}${prefix}/etc/nginx/sites-enabled/
     xinstall -m 644 ${filespath}/buildmaster.conf.in ${destroot}${prefix}/etc/nginx/sites-available/buildmaster.conf
-    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/etc/nginx/sites-available/buildmaster.conf ${destroot}${prefix}/var/buildmaster/config.json ${destroot}${prefix}/var/buildmaster/master.cfg ${destroot}/Library/LaunchDaemons/${name}.plist
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/etc/nginx/sites-available/buildmaster.conf ${destroot}${prefix}/var/buildmaster/config.json ${destroot}${prefix}/var/buildmaster/master.cfg ${destroot}/Library/${startupitem.location}/${name}.plist
     ln -s ../sites-available/buildmaster.conf ${destroot}${prefix}/etc/nginx/sites-enabled/
 }
 

@@ -38,8 +38,8 @@ variant base description {Use a base worker} {
 
         ln -s ../info ${destroot}${prefix}/var/buildworker/base/info
 
-        xinstall -m 644 ${filespath}/${name}.base.plist.in ${destroot}/Library/LaunchDaemons/${name}.base.plist
-        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/LaunchDaemons/${name}.base.plist
+        xinstall -m 644 ${filespath}/${name}.base.plist.in ${destroot}/Library/${startupitem.location}/${name}.base.plist
+        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.base.plist
     }
 }
 
@@ -62,9 +62,9 @@ sudo -H -u buildbot ${prefix}/bin/buildslave\
     append notes_slaves "
 \"base-${worker_id}\": \"${password_base}\","
     append notes_load "
-sudo launchctl load -w /Library/LaunchDaemons/${name}.base.plist"
+sudo launchctl load -w /Library/${startupitem.location}/${name}.base.plist"
     append notes_unload "
-sudo launchctl unload -w /Library/LaunchDaemons/${name}.base.plist"
+sudo launchctl unload -w /Library/${startupitem.location}/${name}.base.plist"
 }
 
 set password_ports  [random_password]
@@ -75,8 +75,8 @@ variant ports description {Use a ports worker} {
 
         ln -s ../info ${destroot}${prefix}/var/buildworker/ports/info
 
-        xinstall -m 644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/LaunchDaemons/${name}.ports.plist
-        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/LaunchDaemons/${name}.ports.plist
+        xinstall -m 644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/${startupitem.location}/${name}.ports.plist
+        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.ports.plist
     }
 }
 
@@ -97,9 +97,9 @@ sudo -H ${prefix}/bin/buildslave\
     append notes_slaves "
 \"ports-${worker_id}\": \"${password_ports}\","
     append notes_load "
-sudo launchctl load -w /Library/LaunchDaemons/${name}.ports.plist"
+sudo launchctl load -w /Library/${startupitem.location}/${name}.ports.plist"
     append notes_unload "
-sudo launchctl unload -w /Library/LaunchDaemons/${name}.ports.plist"
+sudo launchctl unload -w /Library/${startupitem.location}/${name}.ports.plist"
 }
 
 if {[variant_isset base] || [variant_isset ports]} {
@@ -128,8 +128,8 @@ variant jobs description {Use a jobs worker} {
 
         ln -s ../info ${destroot}${prefix}/var/buildworker/jobs/info
 
-        xinstall -m 644 ${filespath}/${name}.jobs.plist.in ${destroot}/Library/LaunchDaemons/${name}.jobs.plist
-        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/LaunchDaemons/${name}.jobs.plist
+        xinstall -m 644 ${filespath}/${name}.jobs.plist.in ${destroot}/Library/${startupitem.location}/${name}.jobs.plist
+        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.jobs.plist
     }
 }
 
@@ -148,9 +148,9 @@ sudo -H -u buildbot ${prefix}/bin/buildslave\
     append notes_slaves "
 \"jobs\": \"${password_jobs}\","
     append notes_load "
-sudo launchctl load -w /Library/LaunchDaemons/${name}.jobs.plist"
+sudo launchctl load -w /Library/${startupitem.location}/${name}.jobs.plist"
     append notes_unload "
-sudo launchctl unload -w /Library/LaunchDaemons/${name}.jobs.plist"
+sudo launchctl unload -w /Library/${startupitem.location}/${name}.jobs.plist"
 }
 
 # This only handles automatically updating the host info.
@@ -168,8 +168,8 @@ destroot {
 
     xinstall -m 644 -o buildbot -g buildbot ${filespath}/admin ${destroot}${prefix}/var/buildworker/info
 
-    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
-    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/share/buildworker/update_host.sh ${destroot}/Library/LaunchDaemons/${name}.plist
+    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/share/buildworker/update_host.sh ${destroot}/Library/${startupitem.location}/${name}.plist
 }
 
 post-deactivate {

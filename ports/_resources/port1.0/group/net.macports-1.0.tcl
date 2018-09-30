@@ -13,12 +13,12 @@ default distfiles           {}
 use_configure               no
 build {}
 pre-destroot {
-    xinstall -d ${destroot}/Library/LaunchDaemons
+    xinstall -d ${destroot}/Library/${startupitem.location}
 }
 destroot {}
 post-destroot {
-    foreach f [glob -nocomplain -tails -directory ${destroot}/Library/LaunchDaemons net.macports.*.plist] {
-        ln -s ${f} ${destroot}/Library/LaunchDaemons/org.macports.${f}
+    foreach f [glob -nocomplain -tails -directory ${destroot}/Library/${startupitem.location} net.macports.*.plist] {
+        ln -s ${f} ${destroot}/Library/${startupitem.location}/org.macports.${f}
     }
 }
 default destroot.keepdirs   {${destroot}${prefix}/share}

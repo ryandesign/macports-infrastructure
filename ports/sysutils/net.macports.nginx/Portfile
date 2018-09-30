@@ -17,8 +17,8 @@ destroot {
     xinstall -d -o _www -g _www ${destroot}${prefix}/var/log/nginx ${destroot}${prefix}/var/run/nginx
     xinstall -m 644 ${filespath}/nginx.conf.in ${destroot}${prefix}/etc/nginx/nginx.conf
     xinstall -m 644 -W ${filespath} fastcgi.conf mime.types ${destroot}${prefix}/etc/nginx/
-    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/LaunchDaemons/${name}.plist
-    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/etc/nginx/nginx.conf ${destroot}/Library/LaunchDaemons/${name}.plist
+    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/etc/nginx/nginx.conf ${destroot}/Library/${startupitem.location}/${name}.plist
 }
 
 startupitem.autostart   yes
