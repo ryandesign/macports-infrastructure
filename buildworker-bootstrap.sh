@@ -7,10 +7,16 @@ if [ "$(id -u)" != 0 ]; then
   exit 1
 fi
 
+: "${TMPDIR:=/tmp}"
+
 UI_PREFIX="---> "
 PREFIX=/opt/bblocal
-SOURCE_URL=https://github.com/macports/macports-base/tags/v2.5.3/
-SOURCE_DIR=/opt/macports-base
+MACPORTS_VERSION=2.5.3
+MACPORTS_BASENAME=MacPorts-"$MACPORTS_VERSION"
+MACPORTS_FILENAME="$MACPORTS_BASENAME".tar.bz2
+SOURCE_URL=http://distfiles.macports.org/MacPorts/"$MACPORTS_FILENAME"
+SOURCE_FILE="$TMPDIR"/"$MACPORTS_FILENAME"
+SOURCE_DIR="$TMPDIR"/"$MACPORTS_BASENAME"
 EXTRA_PORTS_URL=https://github.com/ryandesign/macports-infrastructure
 EXTRA_PORTS_WC=/opt/macports-infrastructure
 EXTRA_PORTS_DIR="$EXTRA_PORTS_WC"/ports
@@ -38,13 +44,13 @@ if [ ! -x "$PREFIX"/bin/port ]; then
   export GREP_OPTIONS=
 
   if [ ! -d "$SOURCE_DIR" ]; then
-    echo "$UI_PREFIX Checking out MacPorts source code"
-    mkdir -p "$SOURCE_DIR"
-    [ -d "$SOURCE_DIR" ] || exit 1
-    svn co "$SOURCE_URL" "$SOURCE_DIR"
-  else
-    echo "$UI_PREFIX Updating MacPorts source code"
-    svn up "$SOURCE_DIR"
+    if [ ! -f "$SOURCE_FILE" ]; then
+      echo "$UI_PREFIX Downloading MacPorts"
+      curl -L -o "$SOURCE_FILE" "$SOURCE_URL"
+    fi
+
+    echo "$UI_PREFIX Extracting MacPorts"
+    tar -C "$(dirname "$SOURCE_DIR")" -xjf "$SOURCE_FILE"
   fi
 
   cd "$SOURCE_DIR"
