@@ -33,7 +33,7 @@ server {
 
     #resolver <IP DNS resolver>;
 
-    server_name distfiles.macports.org distfiles;
+    server_name distfiles.macports.org distfiles.internal.macports.net distfiles;
     server_name_in_redirect on;
     access_log @PREFIX@/var/log/nginx/distfiles-access.log main;
     error_log @PREFIX@/var/log/nginx/distfiles-error.log;
