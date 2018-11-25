@@ -38,7 +38,7 @@ variant base description {Use a base worker} {
 
         ln -s ../info ${destroot}${prefix}/var/buildworker/base/info
 
-        xinstall -m 644 ${filespath}/${name}.base.plist.in ${destroot}/Library/${startupitem.location}/${name}.base.plist
+        xinstall -m 0644 ${filespath}/${name}.base.plist.in ${destroot}/Library/${startupitem.location}/${name}.base.plist
         reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.base.plist
     }
 }
@@ -75,7 +75,7 @@ variant ports description {Use a ports worker} {
 
         ln -s ../info ${destroot}${prefix}/var/buildworker/ports/info
 
-        xinstall -m 644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/${startupitem.location}/${name}.ports.plist
+        xinstall -m 0644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/${startupitem.location}/${name}.ports.plist
         reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.ports.plist
     }
 }
@@ -128,7 +128,7 @@ variant jobs description {Use a jobs worker} {
 
         ln -s ../info ${destroot}${prefix}/var/buildworker/jobs/info
 
-        xinstall -m 644 ${filespath}/${name}.jobs.plist.in ${destroot}/Library/${startupitem.location}/${name}.jobs.plist
+        xinstall -m 0644 ${filespath}/${name}.jobs.plist.in ${destroot}/Library/${startupitem.location}/${name}.jobs.plist
         reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.jobs.plist
     }
 }
@@ -166,9 +166,9 @@ destroot {
     reinplace "s|@ARCH@|${build_arch}|g" ${destroot}${prefix}/share/buildworker/host.sh
     reinplace "s|@CXX_LIB@|${cxx_lib}|g" ${destroot}${prefix}/share/buildworker/host.sh
 
-    xinstall -m 644 -o buildbot -g buildbot ${filespath}/admin ${destroot}${prefix}/var/buildworker/info
+    xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin ${destroot}${prefix}/var/buildworker/info
 
-    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
+    xinstall -m 0644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
     reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/share/buildworker/update_host.sh ${destroot}/Library/${startupitem.location}/${name}.plist
 }
 

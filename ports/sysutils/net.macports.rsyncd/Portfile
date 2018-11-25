@@ -12,8 +12,8 @@ destroot.keepdirs   ${destroot}${prefix}/var/log/rsyncd
 destroot {
     xinstall -d ${destroot}${prefix}/etc/rsyncd
     xinstall -d -o _www -g _www ${destroot}${prefix}/var/log/rsyncd
-    xinstall -m 644 ${filespath}/rsyncd.conf.in ${destroot}${prefix}/etc/rsyncd/rsyncd.conf
-    xinstall -m 644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
+    xinstall -m 0644 ${filespath}/rsyncd.conf.in ${destroot}${prefix}/etc/rsyncd/rsyncd.conf
+    xinstall -m 0644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
     reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/etc/rsyncd/rsyncd.conf ${destroot}/Library/${startupitem.location}/${name}.plist
 }
 

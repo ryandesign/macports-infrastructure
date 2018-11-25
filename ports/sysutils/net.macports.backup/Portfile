@@ -17,7 +17,7 @@ destroot {
     } else {
         set source_plist ${name}.plist.in
     }
-    xinstall -m 644 ${filespath}/${source_plist} ${destroot}${plist}
+    xinstall -m 0644 ${filespath}/${source_plist} ${destroot}${plist}
 
     set seconds_between_backups [expr {int(86400 / ${backups_per_day})}]
     set seconds [expr {443750400 + int(rand() * ${seconds_between_backups})}]

@@ -10,7 +10,7 @@ depends_run         port:net.macports.nginx
 
 destroot {
     xinstall -d ${destroot}${prefix}/etc/nginx/sites-available/ ${destroot}${prefix}/etc/nginx/sites-enabled/
-    xinstall -m 644 ${filespath}/distfiles.conf.in ${destroot}${prefix}/etc/nginx/sites-available/distfiles.conf
+    xinstall -m 0644 ${filespath}/distfiles.conf.in ${destroot}${prefix}/etc/nginx/sites-available/distfiles.conf
     reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/etc/nginx/sites-available/distfiles.conf
     ln -s ../sites-available/distfiles.conf ${destroot}${prefix}/etc/nginx/sites-enabled/
 }

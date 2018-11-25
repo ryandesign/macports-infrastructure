@@ -10,10 +10,10 @@ depends_run         port:net.macports.nginx
 
 destroot {
     xinstall -d ${destroot}${prefix}/etc/nginx/sites-available/ ${destroot}${prefix}/etc/nginx/sites-enabled/ ${destroot}${prefix}/share/nginx/maintenance/
-    xinstall -m 644 ${filespath}/maintenance.html ${destroot}${prefix}/share/nginx/maintenance/
-    xinstall -m 644 ${filespath}/build.conf.in ${destroot}${prefix}/etc/nginx/sites-available/build.conf
-    xinstall -m 644 ${filespath}/distfiles.conf.in ${destroot}${prefix}/etc/nginx/sites-available/distfiles.conf
-    xinstall -m 644 ${filespath}/packages.conf.in ${destroot}${prefix}/etc/nginx/sites-available/packages.conf
+    xinstall -m 0644 ${filespath}/maintenance.html ${destroot}${prefix}/share/nginx/maintenance/
+    xinstall -m 0644 ${filespath}/build.conf.in ${destroot}${prefix}/etc/nginx/sites-available/build.conf
+    xinstall -m 0644 ${filespath}/distfiles.conf.in ${destroot}${prefix}/etc/nginx/sites-available/distfiles.conf
+    xinstall -m 0644 ${filespath}/packages.conf.in ${destroot}${prefix}/etc/nginx/sites-available/packages.conf
     reinplace -W ${destroot}${prefix}/etc/nginx/sites-available/ "s|@PREFIX@|${prefix}|g" build.conf distfiles.conf packages.conf
     ln -s ../sites-available/build.conf ${destroot}${prefix}/etc/nginx/sites-enabled/
     ln -s ../sites-available/distfiles.conf ${destroot}${prefix}/etc/nginx/sites-enabled/
