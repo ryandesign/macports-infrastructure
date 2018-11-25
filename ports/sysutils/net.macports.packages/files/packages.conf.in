@@ -29,7 +29,7 @@ server {
     ssl_stapling_verify on;
 
     ## verify chain of trust of OCSP response using Root CA and Intermediate certs
-    ssl_trusted_certificate @PREFIX@/etc/nginx/ssl/globalsign_intermediate_and_root.pem;
+    ssl_trusted_certificate @PREFIX@/etc/letsencrypt/live/packages.macports.org/chain.pem;
 
     server_name packages.macports.org packages.internal.macports.net packages;
     server_name_in_redirect on;
