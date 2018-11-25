@@ -43,6 +43,12 @@ server {
 
     #resolver <IP DNS resolver>;
 
+    allow 10.0.0.0/8;
+    allow 127.0.0.0/8;
+    allow 172.16.0.0/12;
+    allow 192.168.0.0/16;
+    deny all;
+
     server_name distfiles-private-origin.macports.org;
     server_name_in_redirect on;
     access_log @PREFIX@/var/log/nginx/distfiles-private-access.log main;
@@ -60,6 +66,12 @@ server {
 server {
     listen 80;
     listen [::]:80;
+
+    allow 10.0.0.0/8;
+    allow 127.0.0.0/8;
+    allow 172.16.0.0/12;
+    allow 192.168.0.0/16;
+    deny all;
 
     server_name distfiles-private.internal.macports.net distfiles-private;
     server_name_in_redirect on;
