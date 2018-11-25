@@ -2,14 +2,13 @@ server {
     listen 80;
     listen [::]:80;
 
-    server_name build.macports.org build;
+    server_name build.macports.org;
     server_name_in_redirect on;
     access_log @PREFIX@/var/log/nginx/build-access.log main;
     error_log @PREFIX@/var/log/nginx/build-error.log;
 
     return 301 https://$host$request_uri;
 }
-
 
 server {
     listen 443 ssl http2;
@@ -45,6 +44,37 @@ server {
     #resolver <IP DNS resolver>;
 
     server_name build.macports.org build;
+    server_name_in_redirect on;
+    access_log @PREFIX@/var/log/nginx/build-access.log main;
+    error_log @PREFIX@/var/log/nginx/build-error.log;
+
+    location / {
+        proxy_pass http://localhost:8010/;
+        proxy_connect_timeout 75s;
+        proxy_read_timeout 900s;
+        proxy_send_timeout 900s;
+    }
+    location /sse/ {
+        # proxy buffering will prevent sse to work
+        proxy_buffering off;
+        proxy_pass http://localhost:8010/sse/;
+    }
+    # required for websocket
+    location /ws {
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection "upgrade";
+          proxy_pass http://localhost:8010/ws;
+          # raise the proxy timeout for the websocket
+          proxy_read_timeout 6000s;
+    }
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name build.internal.macports.net build;
     server_name_in_redirect on;
     access_log @PREFIX@/var/log/nginx/build-access.log main;
     error_log @PREFIX@/var/log/nginx/build-error.log;
