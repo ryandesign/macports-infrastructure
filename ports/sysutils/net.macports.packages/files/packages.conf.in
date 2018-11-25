@@ -31,8 +31,6 @@ server {
     ## verify chain of trust of OCSP response using Root CA and Intermediate certs
     ssl_trusted_certificate @PREFIX@/etc/nginx/ssl/globalsign_intermediate_and_root.pem;
 
-    #resolver <IP DNS resolver>;
-
     server_name packages.macports.org packages.internal.macports.net packages;
     server_name_in_redirect on;
     access_log @PREFIX@/var/log/nginx/packages-access.log main;

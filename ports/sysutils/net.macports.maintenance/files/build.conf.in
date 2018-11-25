@@ -28,8 +28,6 @@ server {
     ssl_stapling on;
     ssl_stapling_verify on;
 
-    #resolver <IP DNS resolver>;
-
     server_name build.macports.org build;
     server_name_in_redirect on;
     root share/nginx/maintenance;
