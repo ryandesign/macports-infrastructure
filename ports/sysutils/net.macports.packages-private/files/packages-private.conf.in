@@ -101,6 +101,11 @@ server {
     root /Volumes/RAID@PREFIX@/var/www/macports/packages-private;
     autoindex on;
 
+    location /robots.txt {
+        allow all;
+        return 200 "User-agent: *\nDisallow: /\n";
+    }
+
     add_header Cache-Control "max-age=2592000, public";
     location ~ /$ {
         add_header Cache-Control "max-age=300, public";
