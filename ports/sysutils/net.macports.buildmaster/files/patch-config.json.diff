@@ -1,6 +1,6 @@
---- config.json.orig	2018-03-12 16:25:30.000000000 -0500
-+++ config.json	2018-03-12 16:36:39.000000000 -0500
-@@ -1,45 +1,46 @@
+--- config.json.orig	2018-12-07 04:35:11.000000000 -0600
++++ config.json	2018-12-07 04:53:21.000000000 -0600
+@@ -1,45 +1,48 @@
  {
 -    "production":       false,
 -    "privkey":          "/var/keys/macports-privkey.pem",
@@ -12,6 +12,8 @@
 -    "toolsprefix":      "/opt/mports",
 +    "toolsprefix":      "/opt/bblocal",
      "jobstoolsprefix":  "/opt/local",
++    "archivesite":      "http://packages.internal.macports.net",
++    "archivesiteprivate": "http://packages-private.internal.macports.net",
      "deploy": {
          "maxcdn": {
 -            "secrets": "/var/keys/maxcdn-secrets.json"
