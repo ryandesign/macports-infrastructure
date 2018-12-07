@@ -1,17 +1,20 @@
---- master.cfg.orig	2018-08-28 18:56:28.000000000 -0500
-+++ master.cfg	2018-09-30 05:10:04.000000000 -0500
-@@ -442,8 +442,8 @@
+--- master.cfg.orig	2018-12-07 04:35:11.000000000 -0600
++++ master.cfg	2018-12-07 04:37:30.000000000 -0600
+@@ -443,10 +443,10 @@
  # because archives must be built with prefix=/opt/local
  if config['production']:
      prefix = '/opt/local'
 -    dlhost = 'packages@packages-origin.macports.org'
--    dlpath = '/var/www/html/packages'
 +    dlhost = ''
+     dlhost_private = dlhost
+-    dlpath = '/var/www/html/packages'
+-    dlpath_private = '/var/www/html/packages-private'
 +    dlpath = '/Volumes/RAID@PREFIX@/var/rsync/macports/packages'
++    dlpath_private = '/Volumes/RAID@PREFIX@/var/www/macports/packages-private'
  else:
      prefix = config['slaveprefix']
      dlhost = ''
-@@ -839,6 +839,7 @@
+@@ -857,6 +857,7 @@
          haltOnFailure=True))
      jobs_man_factory.addStep(steps.Configure(
          command="./standard_configure.sh",
