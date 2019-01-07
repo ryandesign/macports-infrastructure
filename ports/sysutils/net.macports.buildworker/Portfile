@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             27
+version             28
 
 depends_run         port:buildbot-slave
 
@@ -83,6 +83,9 @@ variant ports description {Use a ports worker} {
 default_variants +ports
 
 if {[variant_isset ports]} {
+    # mpbb checkout sets binpath to use this
+    depends_run-append  port:libarchive
+
     append notes_create "
 sudo -H ${prefix}/bin/buildslave\
     create-slave --umask 022\
