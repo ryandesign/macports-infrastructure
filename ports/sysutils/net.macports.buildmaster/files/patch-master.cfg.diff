@@ -1,5 +1,5 @@
---- master.cfg.orig	2018-12-07 04:35:11.000000000 -0600
-+++ master.cfg	2018-12-07 04:37:30.000000000 -0600
+--- master.cfg.orig	2019-01-07 09:06:51.000000000 -0600
++++ master.cfg	2019-01-07 09:16:39.000000000 -0600
 @@ -443,10 +443,10 @@
  # because archives must be built with prefix=/opt/local
  if config['production']:
@@ -14,7 +14,7 @@
  else:
      prefix = config['slaveprefix']
      dlhost = ''
-@@ -857,6 +857,7 @@
+@@ -858,6 +858,7 @@
          haltOnFailure=True))
      jobs_man_factory.addStep(steps.Configure(
          command="./standard_configure.sh",
