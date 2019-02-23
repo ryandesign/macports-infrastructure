@@ -106,6 +106,10 @@ server {
         return 200 "User-agent: *\nDisallow: /\n";
     }
 
+    location ^~ /.well-known/ {
+        allow all;
+    }
+
     add_header Cache-Control "max-age=2592000, public";
     location ~ /$ {
         add_header Cache-Control "max-age=300, public";
