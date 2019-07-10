@@ -18,7 +18,7 @@ server {
     ssl_certificate @PREFIX@/etc/letsencrypt/live/build.macports.org/fullchain.pem;
     ssl_certificate_key @PREFIX@/etc/letsencrypt/live/build.macports.org/privkey.pem;
     ssl_session_timeout 1d;
-    ssl_session_cache shared:buildbot_SSL:1440m;
+    ssl_session_cache shared:SSL:50m;
     ssl_session_tickets off;
 
     # Diffie-Hellman parameter for DHE ciphersuites, recommended 2048 bits
