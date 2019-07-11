@@ -28,6 +28,7 @@ case "$(cut -d. -f1-2 <<< "$MACOS_VERSION")" in
     10.12)  MACOS_NAME="macOS Sierra";;
     10.13)  MACOS_NAME="macOS High Sierra";;
     10.14)  MACOS_NAME="macOS Mojave";;
+    10.15)  MACOS_NAME="macOS Catalina";;
     *)      MACOS_NAME="macOS"
 esac
 
