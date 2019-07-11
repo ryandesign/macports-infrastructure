@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.build2
-version             1
+version             2
 
 depends_run         port:net.macports.nginx
 
