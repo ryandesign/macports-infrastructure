@@ -36,9 +36,9 @@ XCODE_VERSION=$(xcodebuild -version | sed -E -n 's/^Xcode //p')
 XCODE_BUILD=$(xcodebuild -version | sed -E -n 's/^[Bb]uild ?[Vv]ersion:? //p')
 
 if [ -x /usr/bin/clang ]; then
-  CLANG_VERSION=$(/usr/bin/clang --version | head -n 1)
+    CLANG_VERSION=$(/usr/bin/clang --version | head -n 1)
 else
-  CLANG_VERSION=
+    CLANG_VERSION=
 fi
 
 echo "$MACOS_NAME v$MACOS_VERSION ($MACOS_BUILD)"
