@@ -117,9 +117,19 @@ if ! grep -q "file://$EXTRA_PORTS_DIR" "$PREFIX"/etc/macports/sources.conf; then
   "$PREFIX"/bin/port -N sync
 fi
 
-PROFILE="$HOME"/.profile
+case "$(basename "$SHELL")" in
+  bash)
+    PROFILE=.profile
+    ;;
+  zsh)
+    PROFILE=.zprofile
+    ;;
+  *)
+    echo "Don't know how to set up profile for shell $SHELL" 1>&2
+    exit
+esac
+PROFILE="$HOME"/"$PROFILE"
 
-#if ! echo $PATH | tr : "\n" | grep -q "^$PREFIX/bin$"; then
 if [ ! -f "$PROFILE" ]; then
   touch "$PROFILE"
   chown "$ORIG_USER":"$ORIG_GROUP" "$PROFILE"
