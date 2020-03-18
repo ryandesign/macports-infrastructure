@@ -32,6 +32,8 @@ case "$(cut -d. -f1-2 <<< "$MACOS_VERSION")" in
     *)      MACOS_NAME="macOS"
 esac
 
+[ -f /System/Library/CoreServices/ServerVersion.plist ] && MACOS_NAME="$MACOS_NAME Server"
+
 XCODE_VERSION=$(xcodebuild -version | sed -E -n 's/^Xcode //p')
 XCODE_BUILD=$(xcodebuild -version | sed -E -n 's/^[Bb]uild ?[Vv]ersion:? //p')
 
