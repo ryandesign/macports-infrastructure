@@ -45,9 +45,3 @@
  # Update trunk/base
  #
  
-@@ -264,3 +271,5 @@
-     done
-     ${RM} -rf "${ROOT}"/PortIndex_*
- fi
-+
-+printf "Done\n"
