@@ -1,0 +1,64 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           net.macports 1.0
+
+name                net.macports.buildmaster2
+version             1
+
+fetch.type          svn
+svn.url             https://github.com/macports-gsoc/macports-buildbot/trunk/
+svn.revision        18
+worksrcdir          trunk
+
+depends_run         port:buildbot-2 \
+                    port:git \
+                    port:py38-requests-oauthlib \
+                    port:py38-txgithub
+
+post-extract {
+    copy ${worksrcpath}/config.sample.yml ${worksrcpath}/config.yml
+}
+
+patchfiles          patch-config.yml.diff
+
+post-patch {
+    reinplace "s|^#!/usr/bin/env python$|#!${prefix}/bin/python3.8|" ${worksrcpath}/maxcdn-purge/maxcdn-purge.py
+}
+
+add_users           buildbot group=buildbot realname=buildbot
+
+destroot.keepdirs   ${destroot}${prefix}/var/keys
+destroot {
+    xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildmaster ${destroot}${prefix}/var/keys
+
+    copy {*}[glob ${worksrcpath}/*] ${destroot}${prefix}/var/buildmaster
+
+    xinstall -m 0644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
+
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/var/buildmaster/config.yml ${destroot}${prefix}/var/buildmaster/master.cfg ${destroot}/Library/${startupitem.location}/${name}.plist
+}
+
+#startupitem.autostart   yes
+
+notes "
+To create the buildmaster, run:
+
+sudo -u buildbot ${prefix}/bin/buildbot create-master ${prefix}/var/buildmaster
+
+To upgrade the buildmaster for a new version of buildbot, run:
+
+sudo -u buildbot ${prefix}/bin/buildbot upgrade-master ${prefix}/var/buildmaster
+
+To start the buildmaster, run:
+
+sudo port load ${name}
+
+To stop the buildmaster, run:
+
+sudo port unload ${name}
+
+To make the buildmaster re-read its config file, run:
+
+sudo -u buildbot ${prefix}/bin/buildbot reconfig ${prefix}/var/buildmaster
+"
