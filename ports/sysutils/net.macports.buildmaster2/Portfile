@@ -22,9 +22,9 @@ post-extract {
 
 patchfiles          patch-config.yml.diff
 
-post-patch {
-    reinplace "s|^#!/usr/bin/env python$|#!${prefix}/bin/python3.8|" ${worksrcpath}/maxcdn-purge/maxcdn-purge.py
-}
+#post-patch {
+#    reinplace "s|^#!/usr/bin/env python$|#!${prefix}/bin/python3.8|" ${worksrcpath}/maxcdn-purge/maxcdn-purge.py
+#}
 
 add_users           buildbot group=buildbot realname=buildbot
 
