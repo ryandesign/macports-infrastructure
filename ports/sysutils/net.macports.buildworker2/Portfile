@@ -12,7 +12,7 @@ add_users           buildbot group=buildbot realname=buildbot
 
 set hostname        [lindex [split [info hostname] .] 0]
 set legacy          [string match {*-legacy*} ${hostname}]
-set worker_id       [join [lrange [split ${macosx_version} .] 0 1] .]_${build_arch}
+append worker_id    ${os.platform}_${os.major}_${build_arch}
 set cxx_lib         libc++
 
 if {[vercmp ${macosx_version} 10.9] < 0} {
