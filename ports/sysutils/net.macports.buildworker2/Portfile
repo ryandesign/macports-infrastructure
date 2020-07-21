@@ -1,0 +1,205 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           net.macports 1.0
+
+name                net.macports.buildworker2
+version             1
+
+depends_run         port:buildbot-worker
+
+add_users           buildbot group=buildbot realname=buildbot
+
+set hostname        [lindex [split [info hostname] .] 0]
+set legacy          [string match {*-legacy*} ${hostname}]
+set worker_id       [join [lrange [split ${macosx_version} .] 0 1] .]_${build_arch}
+set cxx_lib         libc++
+
+if {[vercmp ${macosx_version} 10.9] < 0} {
+    variant legacy description {Use libstdc++ instead of libc++} {}
+    if {${legacy}} {
+        default_variants +legacy
+    }
+    if {[variant_isset legacy]} {
+        append worker_id _legacy
+        set cxx_lib     libstdc++
+    }
+}
+
+proc random_password {} {
+    set len 32
+    set chars {0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz}
+    set range [string length ${chars}]
+    set password {}
+    while {${len} > 0} {
+       append password [string index ${chars} [expr {int(rand() * ${range})}]]
+       incr len -1
+    }
+    return ${password}
+}
+
+set password_base   [random_password]
+
+variant base description {Use a base worker} {
+    post-destroot {
+        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker/base
+
+        ln -s ../info ${destroot}${prefix}/var/buildworker/base/info
+
+        xinstall -m 0644 ${filespath}/${name}.base.plist.in ${destroot}/Library/${startupitem.location}/${name}.base.plist
+        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.base.plist
+    }
+}
+
+if {!([variant_isset legacy] || ([vercmp ${macosx_version} 10.6] == 0 && ${build_arch} eq "i386"))} {
+    default_variants +base
+}
+
+if {[variant_isset base]} {
+    append notes_create "
+sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
+    create-worker --umask 022\
+    ${prefix}/var/buildworker/base\
+    build2:9989\
+    base-${worker_id}\
+    ${password_base}"
+    append notes_upgrade "
+sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
+    upgrade-worker\
+    ${prefix}/var/buildworker/base"
+    append notes_workers "
+\"base-${worker_id}\": \"${password_base}\","
+    append notes_load "
+sudo launchctl load -w /Library/${startupitem.location}/${name}.base.plist"
+    append notes_unload "
+sudo launchctl unload -w /Library/${startupitem.location}/${name}.base.plist"
+}
+
+set password_ports  [random_password]
+
+variant ports description {Use a ports worker} {
+    post-destroot {
+        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker/ports
+
+        ln -s ../info ${destroot}${prefix}/var/buildworker/ports/info
+
+        xinstall -m 0644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/${startupitem.location}/${name}.ports.plist
+        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.ports.plist
+    }
+}
+
+default_variants +ports
+
+if {[variant_isset ports]} {
+    # mpbb checkout sets binpath to use this
+    depends_run-append  port:libarchive
+
+    append notes_create "
+sudo -H ${prefix}/bin/buildbot-worker\
+    create-worker --umask 022\
+    ${prefix}/var/buildworker/ports\
+    build2:9989\
+    ports-${worker_id}\
+    ${password_ports}"
+    append notes_upgrade "
+sudo -H ${prefix}/bin/buildbot-worker\
+    upgrade-worker\
+    ${prefix}/var/buildworker/ports"
+    append notes_workers "
+\"ports-${worker_id}\": \"${password_ports}\","
+    append notes_load "
+sudo launchctl load -w /Library/${startupitem.location}/${name}.ports.plist"
+    append notes_unload "
+sudo launchctl unload -w /Library/${startupitem.location}/${name}.ports.plist"
+}
+
+if {[variant_isset base] || [variant_isset ports]} {
+    # mpbb gather-archives
+    depends_run-append  port:curl
+    # mpbb parseopt
+    depends_run-append  port:getopt
+    # mpbb checkout
+    depends_run-append  port:git
+    # mpbb compute_failcache_hash
+    depends_run-append  port:openssl
+}
+
+set password_jobs   [random_password]
+
+variant jobs description {Use a jobs worker} {
+    # mpbb parseopt
+    depends_run-append  port:getopt
+    # jobs-guide
+    depends_run-append  port:asciidoctor port:docbook-xml port:docbook-xsl-ns
+    # jobs-man
+    depends_run-append  port:asciidoc port:libxslt port:docbook-xsl-nons
+
+    post-destroot {
+        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker/jobs
+
+        ln -s ../info ${destroot}${prefix}/var/buildworker/jobs/info
+
+        xinstall -m 0644 ${filespath}/${name}.jobs.plist.in ${destroot}/Library/${startupitem.location}/${name}.jobs.plist
+        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.jobs.plist
+    }
+}
+
+if {[variant_isset jobs]} {
+    append notes_create "
+sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
+    create-worker --umask 022\
+    ${prefix}/var/buildworker/jobs\
+    build2:9989\
+    jobs\
+    ${password_jobs}"
+    append notes_upgrade "
+sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
+    upgrade-worker\
+    ${prefix}/var/buildworker/jobs"
+    append notes_workers "
+\"jobs\": \"${password_jobs}\","
+    append notes_load "
+sudo launchctl load -w /Library/${startupitem.location}/${name}.jobs.plist"
+    append notes_unload "
+sudo launchctl unload -w /Library/${startupitem.location}/${name}.jobs.plist"
+}
+
+# This only handles automatically updating the host info.
+startupitem.autostart   yes
+
+destroot {
+    xinstall -d -o buildbot -g buildbot \
+        ${destroot}${prefix}/share/buildworker \
+        ${destroot}${prefix}/var/buildworker/info \
+
+    xinstall ${filespath}/host.sh.in ${destroot}${prefix}/share/buildworker/host.sh
+    xinstall ${filespath}/update_host.sh.in ${destroot}${prefix}/share/buildworker/update_host.sh
+    reinplace "s|@ARCH@|${build_arch}|g" ${destroot}${prefix}/share/buildworker/host.sh
+    reinplace "s|@CXX_LIB@|${cxx_lib}|g" ${destroot}${prefix}/share/buildworker/host.sh
+
+    xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin ${destroot}${prefix}/var/buildworker/info
+
+    xinstall -m 0644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/share/buildworker/update_host.sh ${destroot}/Library/${startupitem.location}/${name}.plist
+}
+
+post-deactivate {
+    delete ${prefix}/var/buildworker/info/host
+}
+
+notes "
+To create the buildworkers, run:
+${notes_create}
+
+To upgrade the buildworkers for a new version of buildbot, run:
+${notes_upgrade}
+
+Add these lines to workers.json on buildmaster:
+${notes_workers}
+
+To start the buildworkers, run:
+${notes_load}
+
+To stop the buildworkers, run:
+${notes_unload}
+"
