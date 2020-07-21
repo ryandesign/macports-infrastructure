@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster2
-version             1
+version             2
 
 fetch.type          svn
 svn.url             https://github.com/macports-gsoc/macports-buildbot/trunk/
@@ -13,6 +13,9 @@ worksrcdir          trunk
 
 depends_run         port:buildbot-2 \
                     port:git \
+                    port:postgresql12-server \
+                    port:py38-buildbot-macports-custom-views \
+                    port:py38-psycopg2 \
                     port:py38-requests-oauthlib \
                     port:py38-txgithub
 
