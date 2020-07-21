@@ -57,7 +57,7 @@ if {!(([variant_exists legacy] && [variant_isset legacy]) || (${os.platform} eq 
 if {[variant_isset base]} {
     append notes_create "
 sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
-    create-worker --umask 022\
+    create-worker --umask 0o022\
     ${prefix}/var/buildworker/base\
     build2:9989\
     base-${worker_id}\
@@ -95,7 +95,7 @@ if {[variant_isset ports]} {
 
     append notes_create "
 sudo -H ${prefix}/bin/buildbot-worker\
-    create-worker --umask 022\
+    create-worker --umask 0o022\
     ${prefix}/var/buildworker/ports\
     build2:9989\
     ports-${worker_id}\
@@ -146,7 +146,7 @@ variant jobs description {Use a jobs worker} {
 if {[variant_isset jobs]} {
     append notes_create "
 sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
-    create-worker --umask 022\
+    create-worker --umask 0o022\
     ${prefix}/var/buildworker/jobs\
     build2:9989\
     jobs\
