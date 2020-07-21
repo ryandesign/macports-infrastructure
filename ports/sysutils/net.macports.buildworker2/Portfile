@@ -11,13 +11,12 @@ depends_run         port:buildbot-worker
 add_users           buildbot group=buildbot realname=buildbot
 
 set hostname        [lindex [split [info hostname] .] 0]
-set legacy          [string match {*-legacy*} ${hostname}]
 append worker_id    ${os.platform}_${os.major}_${build_arch}
 set cxx_lib         libc++
 
 if {[vercmp ${macosx_version} 10.9] < 0} {
     variant legacy description {Use libstdc++ instead of libc++} {}
-    if {${legacy}} {
+    if {[string match {*-legacy*} ${hostname}]} {
         default_variants +legacy
     }
     if {[variant_isset legacy]} {
