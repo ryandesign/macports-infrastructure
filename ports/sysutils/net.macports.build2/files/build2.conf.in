@@ -46,6 +46,8 @@ server {
     access_log @PREFIX@/var/log/nginx/build2-access.log main;
     error_log @PREFIX@/var/log/nginx/build2-error.log;
 
+    root @PREFIX@/var/www;
+
     location /.well-known {
     }
     location / {

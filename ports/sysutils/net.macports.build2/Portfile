@@ -4,10 +4,11 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.build2
-version             2
+version             3
 
 depends_run         port:net.macports.nginx
 
+destroot.keepdirs   ${destroot}${prefix}/var/www
 destroot {
     xinstall -d ${destroot}${prefix}/etc/nginx/sites-available/ ${destroot}${prefix}/etc/nginx/sites-enabled/
     xinstall -m 0644 ${filespath}/build2.conf.in ${destroot}${prefix}/etc/nginx/sites-available/build2.conf
