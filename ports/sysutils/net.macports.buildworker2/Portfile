@@ -67,7 +67,7 @@ sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
     upgrade-worker\
     ${prefix}/var/buildworker/base"
     append notes_workers "
-\"base-${worker_id}\": \"${password_base}\","
+base-${worker_id}: '${password_base}'"
     append notes_load "
 sudo launchctl load -w /Library/${startupitem.location}/${name}.base.plist"
     append notes_unload "
@@ -105,7 +105,7 @@ sudo -H ${prefix}/bin/buildbot-worker\
     upgrade-worker\
     ${prefix}/var/buildworker/ports"
     append notes_workers "
-\"ports-${worker_id}\": \"${password_ports}\","
+ports-${worker_id}: '${password_ports}'"
     append notes_load "
 sudo launchctl load -w /Library/${startupitem.location}/${name}.ports.plist"
     append notes_unload "
@@ -156,7 +156,7 @@ sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
     upgrade-worker\
     ${prefix}/var/buildworker/jobs"
     append notes_workers "
-\"jobs\": \"${password_jobs}\","
+jobs: '${password_jobs}'"
     append notes_load "
 sudo launchctl load -w /Library/${startupitem.location}/${name}.jobs.plist"
     append notes_unload "
@@ -193,7 +193,7 @@ ${notes_create}
 To upgrade the buildworkers for a new version of buildbot, run:
 ${notes_upgrade}
 
-Add these lines to workers.json on buildmaster:
+Add these lines to workers.yml on buildmaster:
 ${notes_workers}
 
 To start the buildworkers, run:
