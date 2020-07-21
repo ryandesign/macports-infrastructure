@@ -27,7 +27,15 @@ if {[vercmp ${macosx_version} 10.9] < 0} {
 }
 
 proc random_password {} {
-    return some-random-password
+    set len 32
+    set chars {0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz}
+    set range [string length ${chars}]
+    set password {}
+    while {${len} > 0} {
+       append password [string index ${chars} [expr {int(rand() * ${range})}]]
+       incr len -1
+    }
+    return ${password}
 }
 
 set password_base   [random_password]
