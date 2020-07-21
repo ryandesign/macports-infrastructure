@@ -14,7 +14,7 @@ set hostname        [lindex [split [info hostname] .] 0]
 append worker_id    ${os.platform}_${os.major}_${build_arch}
 set cxx_lib         libc++
 
-if {[vercmp ${macosx_version} 10.9] < 0} {
+if {${os.platform} eq "darwin" && ${os.major} < 13} {
     variant legacy description {Use libstdc++ instead of libc++} {}
     if {[string match {*-legacy*} ${hostname}]} {
         default_variants +legacy
@@ -50,7 +50,7 @@ variant base description {Use a base worker} {
     }
 }
 
-if {!([variant_isset legacy] || ([vercmp ${macosx_version} 10.6] == 0 && ${build_arch} eq "i386"))} {
+if {!([variant_isset legacy] || (${os.platform} eq "darwin" && ${os.major} == 10 && ${build_arch} eq "i386"))} {
     default_variants +base
 }
 
