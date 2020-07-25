@@ -4,12 +4,12 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster2
-version             2
+version             3
 
 fetch.type          svn
-svn.url             https://github.com/macports-gsoc/macports-buildbot/trunk/
-svn.revision        18
-worksrcdir          trunk
+svn.url             https://github.com/ryandesign/macports-buildbot/branches/ryan/
+svn.revision        29
+worksrcdir          [file tail ${svn.url}]
 
 depends_run         port:buildbot-2 \
                     port:git \
@@ -33,13 +33,13 @@ add_users           buildbot group=buildbot realname=buildbot
 
 destroot.keepdirs   ${destroot}${prefix}/var/keys
 destroot {
-    xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildmaster ${destroot}${prefix}/var/keys
+    xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildmaster2 ${destroot}${prefix}/var/keys
 
-    copy {*}[glob ${worksrcpath}/*] ${destroot}${prefix}/var/buildmaster
+    copy {*}[glob ${worksrcpath}/*] ${destroot}${prefix}/var/buildmaster2
 
     xinstall -m 0644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
 
-    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/var/buildmaster/config.yml ${destroot}${prefix}/var/buildmaster/master.cfg ${destroot}/Library/${startupitem.location}/${name}.plist
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/var/buildmaster2/config.yml ${destroot}${prefix}/var/buildmaster2/master.cfg ${destroot}/Library/${startupitem.location}/${name}.plist
 }
 
 #startupitem.autostart   yes
@@ -47,11 +47,11 @@ destroot {
 notes "
 To create the buildmaster, run:
 
-sudo -u buildbot ${prefix}/bin/buildbot create-master ${prefix}/var/buildmaster
+sudo -u buildbot ${prefix}/bin/buildbot create-master ${prefix}/var/buildmaster2
 
 To upgrade the buildmaster for a new version of buildbot, run:
 
-sudo -u buildbot ${prefix}/bin/buildbot upgrade-master ${prefix}/var/buildmaster
+sudo -u buildbot ${prefix}/bin/buildbot upgrade-master ${prefix}/var/buildmaster2
 
 To start the buildmaster, run:
 
@@ -63,5 +63,5 @@ sudo port unload ${name}
 
 To make the buildmaster re-read its config file, run:
 
-sudo -u buildbot ${prefix}/bin/buildbot reconfig ${prefix}/var/buildmaster
+sudo -u buildbot ${prefix}/bin/buildbot reconfig ${prefix}/var/buildmaster2
 "

@@ -5,7 +5,7 @@
         <key>EnvironmentVariables</key>
         <dict>
             <key>HOME</key>
-            <string>@PREFIX@/var/buildmaster</string>
+            <string>@PREFIX@/var/buildmaster2</string>
             <key>TZ</key>
             <string>UTC</string>
         </dict>
@@ -26,6 +26,6 @@
         <key>UserName</key>
         <string>buildbot</string>
         <key>WorkingDirectory</key>
-        <string>@PREFIX@/var/buildmaster</string>
+        <string>@PREFIX@/var/buildmaster2</string>
     </dict>
 </plist>
