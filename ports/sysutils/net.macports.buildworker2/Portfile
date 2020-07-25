@@ -50,7 +50,7 @@ variant base description {Use a base worker} {
     }
 }
 
-if {!(([variant_exists legacy] && [variant_isset legacy]) || (${os.platform} eq "darwin" && ${os.major} == 10 && ${build_arch} eq "i386"))} {
+if {!([variant_exists legacy] && [variant_isset legacy])} {
     default_variants +base
 }
 
