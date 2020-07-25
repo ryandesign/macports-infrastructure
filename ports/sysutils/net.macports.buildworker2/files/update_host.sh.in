@@ -4,4 +4,4 @@ set -euo pipefail
 
 DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-"$DIR/host.sh" > @PREFIX@/var/buildworker/info/host
+"$DIR/host.sh" > @PREFIX@/var/buildworker2/info/host

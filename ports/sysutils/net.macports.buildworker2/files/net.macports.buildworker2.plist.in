@@ -6,7 +6,7 @@
         <string>net.macports.buildworker2</string>
         <key>ProgramArguments</key>
         <array>
-            <string>@PREFIX@/share/buildworker/update_host.sh</string>
+            <string>@PREFIX@/share/buildworker2/update_host.sh</string>
         </array>
         <key>RunAtLoad</key>
         <true/>

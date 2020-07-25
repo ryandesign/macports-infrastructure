@@ -5,7 +5,7 @@
         <key>EnvironmentVariables</key>
         <dict>
             <key>HOME</key>
-            <string>@PREFIX@/var/buildworker/base</string>
+            <string>@PREFIX@/var/buildworker2/base</string>
         </dict>
         <key>KeepAlive</key>
         <dict>
@@ -26,6 +26,6 @@
         <key>UserName</key>
         <string>buildbot</string>
         <key>WorkingDirectory</key>
-        <string>@PREFIX@/var/buildworker/base</string>
+        <string>@PREFIX@/var/buildworker2/base</string>
     </dict>
 </plist>

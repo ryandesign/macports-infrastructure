@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker2
-version             1
+version             2
 
 depends_run         port:buildbot-worker
 
@@ -41,9 +41,9 @@ set password_base   [random_password]
 
 variant base description {Use a base worker} {
     post-destroot {
-        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker/base
+        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker2/base
 
-        ln -s ../info ${destroot}${prefix}/var/buildworker/base/info
+        ln -s ../info ${destroot}${prefix}/var/buildworker2/base/info
 
         xinstall -m 0644 ${filespath}/${name}.base.plist.in ${destroot}/Library/${startupitem.location}/${name}.base.plist
         reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.base.plist
@@ -58,14 +58,14 @@ if {[variant_isset base]} {
     append notes_create "
 sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
     create-worker --umask 0o022\
-    ${prefix}/var/buildworker/base\
+    ${prefix}/var/buildworker2/base\
     build2:9989\
     base-${worker_id}\
     ${password_base}"
     append notes_upgrade "
 sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
     upgrade-worker\
-    ${prefix}/var/buildworker/base"
+    ${prefix}/var/buildworker2/base"
     append notes_workers "
 base-${worker_id}: '${password_base}'"
     append notes_load "
@@ -78,9 +78,9 @@ set password_ports  [random_password]
 
 variant ports description {Use a ports worker} {
     post-destroot {
-        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker/ports
+        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker2/ports
 
-        ln -s ../info ${destroot}${prefix}/var/buildworker/ports/info
+        ln -s ../info ${destroot}${prefix}/var/buildworker2/ports/info
 
         xinstall -m 0644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/${startupitem.location}/${name}.ports.plist
         reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.ports.plist
@@ -96,14 +96,14 @@ if {[variant_isset ports]} {
     append notes_create "
 sudo -H ${prefix}/bin/buildbot-worker\
     create-worker --umask 0o022\
-    ${prefix}/var/buildworker/ports\
+    ${prefix}/var/buildworker2/ports\
     build2:9989\
     ports-${worker_id}\
     ${password_ports}"
     append notes_upgrade "
 sudo -H ${prefix}/bin/buildbot-worker\
     upgrade-worker\
-    ${prefix}/var/buildworker/ports"
+    ${prefix}/var/buildworker2/ports"
     append notes_workers "
 ports-${worker_id}: '${password_ports}'"
     append notes_load "
@@ -134,9 +134,9 @@ variant jobs description {Use a jobs worker} {
     depends_run-append  port:asciidoc port:libxslt port:docbook-xsl-nons
 
     post-destroot {
-        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker/jobs
+        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker2/jobs
 
-        ln -s ../info ${destroot}${prefix}/var/buildworker/jobs/info
+        ln -s ../info ${destroot}${prefix}/var/buildworker2/jobs/info
 
         xinstall -m 0644 ${filespath}/${name}.jobs.plist.in ${destroot}/Library/${startupitem.location}/${name}.jobs.plist
         reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.jobs.plist
@@ -147,14 +147,14 @@ if {[variant_isset jobs]} {
     append notes_create "
 sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
     create-worker --umask 0o022\
-    ${prefix}/var/buildworker/jobs\
+    ${prefix}/var/buildworker2/jobs\
     build2:9989\
     jobs\
     ${password_jobs}"
     append notes_upgrade "
 sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
     upgrade-worker\
-    ${prefix}/var/buildworker/jobs"
+    ${prefix}/var/buildworker2/jobs"
     append notes_workers "
 jobs: '${password_jobs}'"
     append notes_load "
@@ -168,22 +168,22 @@ startupitem.autostart   yes
 
 destroot {
     xinstall -d -o buildbot -g buildbot \
-        ${destroot}${prefix}/share/buildworker \
-        ${destroot}${prefix}/var/buildworker/info \
+        ${destroot}${prefix}/share/buildworker2 \
+        ${destroot}${prefix}/var/buildworker2/info \
 
-    xinstall ${filespath}/host.sh.in ${destroot}${prefix}/share/buildworker/host.sh
-    xinstall ${filespath}/update_host.sh.in ${destroot}${prefix}/share/buildworker/update_host.sh
-    reinplace "s|@ARCH@|${build_arch}|g" ${destroot}${prefix}/share/buildworker/host.sh
-    reinplace "s|@CXX_LIB@|${cxx_lib}|g" ${destroot}${prefix}/share/buildworker/host.sh
+    xinstall ${filespath}/host.sh.in ${destroot}${prefix}/share/buildworker2/host.sh
+    xinstall ${filespath}/update_host.sh.in ${destroot}${prefix}/share/buildworker2/update_host.sh
+    reinplace "s|@ARCH@|${build_arch}|g" ${destroot}${prefix}/share/buildworker2/host.sh
+    reinplace "s|@CXX_LIB@|${cxx_lib}|g" ${destroot}${prefix}/share/buildworker2/host.sh
 
-    xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin ${destroot}${prefix}/var/buildworker/info
+    xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin ${destroot}${prefix}/var/buildworker2/info
 
     xinstall -m 0644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
-    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/share/buildworker/update_host.sh ${destroot}/Library/${startupitem.location}/${name}.plist
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/share/buildworker2/update_host.sh ${destroot}/Library/${startupitem.location}/${name}.plist
 }
 
 post-deactivate {
-    delete ${prefix}/var/buildworker/info/host
+    delete ${prefix}/var/buildworker2/info/host
 }
 
 notes "

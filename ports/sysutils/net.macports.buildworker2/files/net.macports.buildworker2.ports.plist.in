@@ -5,7 +5,7 @@
         <key>EnvironmentVariables</key>
         <dict>
             <key>HOME</key>
-            <string>@PREFIX@/var/buildworker/ports</string>
+            <string>@PREFIX@/var/buildworker2/ports</string>
         </dict>
         <key>KeepAlive</key>
         <dict>
@@ -24,6 +24,6 @@
         <key>RunAtLoad</key>
         <true/>
         <key>WorkingDirectory</key>
-        <string>@PREFIX@/var/buildworker/ports</string>
+        <string>@PREFIX@/var/buildworker2/ports</string>
     </dict>
 </plist>
