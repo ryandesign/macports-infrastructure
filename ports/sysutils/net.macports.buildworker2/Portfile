@@ -60,14 +60,14 @@ sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
     create-worker --umask 0o022\
     ${prefix}/var/buildworker2/base\
     build2:9989\
-    base-${worker_id}\
+    base_${worker_id}\
     ${password_base}"
     append notes_upgrade "
 sudo -H -u buildbot ${prefix}/bin/buildbot-worker\
     upgrade-worker\
     ${prefix}/var/buildworker2/base"
     append notes_workers "
-base-${worker_id}: '${password_base}'"
+base_${worker_id}: '${password_base}'"
     append notes_load "
 sudo launchctl load -w /Library/${startupitem.location}/${name}.base.plist"
     append notes_unload "
@@ -98,14 +98,14 @@ sudo -H ${prefix}/bin/buildbot-worker\
     create-worker --umask 0o022\
     ${prefix}/var/buildworker2/ports\
     build2:9989\
-    ports-${worker_id}\
+    ports_${worker_id}\
     ${password_ports}"
     append notes_upgrade "
 sudo -H ${prefix}/bin/buildbot-worker\
     upgrade-worker\
     ${prefix}/var/buildworker2/ports"
     append notes_workers "
-ports-${worker_id}: '${password_ports}'"
+ports_${worker_id}: '${password_ports}'"
     append notes_load "
 sudo launchctl load -w /Library/${startupitem.location}/${name}.ports.plist"
     append notes_unload "
