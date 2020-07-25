@@ -1,16 +1,17 @@
---- config.yml.orig	2019-09-27 07:38:24.000000000 -0500
-+++ config.yml	2020-07-16 18:45:43.000000000 -0500
-@@ -8,23 +8,23 @@
+--- config.yml.orig	2020-07-24 21:46:48.000000000 -0500
++++ config.yml	2020-07-25 01:07:38.000000000 -0500
+@@ -7,24 +7,22 @@
+ guideurl: 'https://github.com/macports/macports-guide.git'
  infraurl: 'https://github.com/macports/macports-infrastructure.git'
  
- workerprefix: /opt/local
+-workerprefix: /opt/local
 -toolsprefix: /opt/macports-test
++workerprefix: /opt/local2
 +toolsprefix: /opt/bblocal
  jobstoolsprefix: /opt/local
  
 -statusPushUrl: 'http://ec2-52-34-234-111.us-west-2.compute.amazonaws.com'
-+statusPushUrl: ''
- 
+-
  title: 'MacPorts'
  titleURL: 'https://www.macports.org'
 -buildbotURL: 'http://localhost:8010/'
