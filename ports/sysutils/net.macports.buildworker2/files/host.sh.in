@@ -6,7 +6,12 @@ ARCH="@ARCH@"
 CXX_LIB="@CXX_LIB@"
 
 CPU_COUNT=$(sysctl -n hw.activecpu)
-CPU_GHZ=$(echo "scale=2; $(sysctl -n hw.cpufrequency) / 10 ^ 9" | bc | sed -e '/\./s/0*$//' -e 's/\.$//')
+CPU_FREQ=$(sysctl -n hw.cpufrequency || true)
+if [ -n "$CPU_FREQ" ]; then
+    CPU_GHZ=$(echo "scale=2; $CPU_FREQ / 10 ^ 9" | bc | sed -e '/\./s/0*$//' -e 's/\.$//')
+else
+    CPU_GHZ="?"
+fi
 RAM_GB=$(echo "scale=2; $(sysctl -n hw.memsize) / 2 ^ 30" | bc | sed -e '/\./s/0*$//' -e 's/\.$//')
 BOOT_DATE=$(date -u -j -f "%b %d %H:%M:%S" "$(LC_TIME=C TZ=Z who -b | sed -E -e 's/ +$//' -e 's/^([^ ]+ +){2}//'):00" "+%Y-%m-%dT%H:%M:%SZ")
 
