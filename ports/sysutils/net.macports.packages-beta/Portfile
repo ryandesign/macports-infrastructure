@@ -1,0 +1,20 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           net.macports 1.0
+
+name                net.macports.packages-beta
+version             1
+
+depends_run         port:net.macports.nginx
+
+destroot.keepdirs   ${destroot}/Volumes/RAID${prefix}/var/www/macports/packages-beta
+destroot {
+    xinstall -d -o buildbot -g buildbot ${destroot}/Volumes/RAID${prefix}/var/www/macports/packages-beta
+    xinstall -d ${destroot}${prefix}/etc/nginx/sites-available/ ${destroot}${prefix}/etc/nginx/sites-enabled/
+    xinstall -m 0644 ${filespath}/packages-beta.conf.in ${destroot}${prefix}/etc/nginx/sites-available/packages-beta.conf
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/etc/nginx/sites-available/packages-beta.conf
+    ln -s ../sites-available/packages-beta.conf ${destroot}${prefix}/etc/nginx/sites-enabled/
+}
+
+# TODO: check config and reload nginx in post-activate and post-deactivate
