@@ -1,0 +1,102 @@
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name packages-private-beta.macports.org;
+    server_name_in_redirect on;
+    access_log @PREFIX@/var/log/nginx/packages-private-beta-access.log main;
+    error_log @PREFIX@/var/log/nginx/packages-private-beta-error.log;
+
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+
+    # certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
+    ssl_certificate @PREFIX@/etc/letsencrypt/live/packages-private-beta.macports.org/fullchain.pem;
+    ssl_certificate_key @PREFIX@/etc/letsencrypt/live/packages-private-beta.macports.org/privkey.pem;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    ssl_session_tickets off;
+
+    # Diffie-Hellman parameter for DHE ciphersuites, recommended 2048 bits
+    # openssl dhparam -out dhparam.pem 2048
+    ssl_dhparam @PREFIX@/etc/nginx/ssl/dhparam.pem;
+
+    # intermediate configuration. tweak to your needs.
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers 'ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS';
+    ssl_prefer_server_ciphers on;
+
+    # HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
+    add_header Strict-Transport-Security max-age=15768000;
+
+    # OCSP Stapling ---
+    # fetch OCSP records from URL in ssl_certificate and cache them
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    ## verify chain of trust of OCSP response using Root CA and Intermediate certs
+    ssl_trusted_certificate @PREFIX@/etc/letsencrypt/live/packages-private-beta.macports.org/chain.pem;
+
+    allow 199.7.163.5/32;
+
+    allow 10.0.0.0/8;
+    allow 127.0.0.0/8;
+    allow 172.16.0.0/12;
+    allow 192.168.0.0/16;
+    deny all;
+
+    server_name packages-private-beta.macports.org;
+    server_name_in_redirect on;
+    access_log @PREFIX@/var/log/nginx/packages-private-beta-access.log main;
+    error_log @PREFIX@/var/log/nginx/packages-private-beta-error.log;
+
+    root /Volumes/RAID@PREFIX@/var/www/macports/packages-private-beta;
+    autoindex on;
+
+    location /robots.txt {
+        allow all;
+        return 200 "User-agent: *\nDisallow: /\n";
+    }
+
+    location ^~ /.well-known/ {
+        allow all;
+    }
+
+    add_header Cache-Control "max-age=2592000, public";
+    location ~ /$ {
+        add_header Cache-Control "max-age=300, public";
+    }
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    allow 10.0.0.0/8;
+    allow 127.0.0.0/8;
+    allow 172.16.0.0/12;
+    allow 192.168.0.0/16;
+    deny all;
+
+    server_name packages-private-beta.internal.macports.net packages-private-beta;
+    server_name_in_redirect on;
+    access_log @PREFIX@/var/log/nginx/packages-private-beta-access.log main;
+    error_log @PREFIX@/var/log/nginx/packages-private-beta-error.log;
+
+    root /Volumes/RAID@PREFIX@/var/www/macports/packages-private-beta;
+    autoindex on;
+
+    location /robots.txt {
+        allow all;
+        return 200 "User-agent: *\nDisallow: /\n";
+    }
+
+    add_header Cache-Control "max-age=2592000, public";
+    location ~ /$ {
+        add_header Cache-Control "max-age=300, public";
+    }
+}
