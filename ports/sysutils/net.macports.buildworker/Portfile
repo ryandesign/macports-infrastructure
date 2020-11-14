@@ -4,18 +4,14 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             31
+version             32
 
 depends_run         port:buildbot-slave-0.8
 
 add_users           buildbot group=buildbot realname=buildbot
 
 set hostname        [lindex [split [info hostname] .] 0]
-if {[vercmp ${macosx_version} 11] < 0} {
-    set worker_id   [join [lrange [split ${macosx_version} .] 0 1] .]
-} else {
-    set worker_id   [lindex [split ${macosx_version} .] 0]
-}
+set worker_id       [join [lrange [split ${macosx_version} .] 0 1] .]
 append worker_id    _${build_arch}
 set cxx_lib         libc++
 
