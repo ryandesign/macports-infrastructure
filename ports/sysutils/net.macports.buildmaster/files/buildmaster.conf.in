@@ -47,6 +47,10 @@ server {
     error_log @PREFIX@/var/log/nginx/build-error.log;
 
     location / {
+        # Rewrite macOS Big Sur "11.0" URLs to "11".
+        location ~ ^(.*/(base|ports)-11)\.0(_.*)$ {
+            return 301 $1$3;
+        }
         proxy_pass http://localhost:8010/;
         proxy_connect_timeout 75s;
         proxy_read_timeout 900s;
