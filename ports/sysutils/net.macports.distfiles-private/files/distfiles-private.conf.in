@@ -2,7 +2,7 @@ server {
     listen 80;
     listen [::]:80;
 
-    server_name distfiles-private-origin.macports.org;
+    server_name distfiles-private.macports.org distfiles-private-origin.macports.org;
     server_name_in_redirect on;
     access_log @PREFIX@/var/log/nginx/distfiles-private-access.log main;
     error_log @PREFIX@/var/log/nginx/distfiles-private-error.log;
@@ -87,13 +87,23 @@ server {
     allow 103.228.104.0/22;
     allow 108.168.175.204/32;
 
+    # Travis CI
+    allow 207.254.16.35;
+    allow 207.254.16.36;
+    allow 207.254.16.37;
+    allow 207.254.16.38;
+    allow 207.254.16.39;
+
+    # Azure Pipelines
+    allow 208.83.5.226
+
     allow 10.0.0.0/8;
     allow 127.0.0.0/8;
     allow 172.16.0.0/12;
     allow 192.168.0.0/16;
     deny all;
 
-    server_name distfiles-private-origin.macports.org;
+    server_name distfiles-private.macports.org distfiles-private-origin.macports.org;
     server_name_in_redirect on;
     access_log @PREFIX@/var/log/nginx/distfiles-private-access.log main;
     error_log @PREFIX@/var/log/nginx/distfiles-private-error.log;
@@ -101,12 +111,12 @@ server {
     root /Volumes/RAID@PREFIX@/var/www/macports/distfiles-private;
     autoindex on;
 
-    location /robots.txt {
+    location = /robots.txt {
         allow all;
         return 200 "User-agent: *\nDisallow: /\n";
     }
 
-    location ^~ /.well-known/ {
+    location /.well-known/ {
         allow all;
     }
 
@@ -134,7 +144,7 @@ server {
     root /Volumes/RAID@PREFIX@/var/www/macports/distfiles-private;
     autoindex on;
 
-    location /robots.txt {
+    location = /robots.txt {
         allow all;
         return 200 "User-agent: *\nDisallow: /\n";
     }
