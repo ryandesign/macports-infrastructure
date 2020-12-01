@@ -3,8 +3,8 @@
 PortSystem          1.0
 PortGroup           net.macports 1.0
 
-name                net.macports.packages-private
-version             7
+name                net.macports.packages-private-origin
+version             1
 
 depends_run         port:net.macports.nginx
 
@@ -12,9 +12,9 @@ destroot.keepdirs   ${destroot}/Volumes/RAID${prefix}/var/www/macports/packages-
 destroot {
     xinstall -d -o buildbot -g buildbot ${destroot}/Volumes/RAID${prefix}/var/www/macports/packages-private
     xinstall -d ${destroot}${prefix}/etc/nginx/sites-available/ ${destroot}${prefix}/etc/nginx/sites-enabled/
-    xinstall -m 0644 ${filespath}/packages-private.conf.in ${destroot}${prefix}/etc/nginx/sites-available/packages-private.conf
-    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/etc/nginx/sites-available/packages-private.conf
-    ln -s ../sites-available/packages-private.conf ${destroot}${prefix}/etc/nginx/sites-enabled/
+    xinstall -m 0644 ${filespath}/packages-private-origin.conf.in ${destroot}${prefix}/etc/nginx/sites-available/packages-private-origin.conf
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/etc/nginx/sites-available/packages-private-origin.conf
+    ln -s ../sites-available/packages-private-origin.conf ${destroot}${prefix}/etc/nginx/sites-enabled/
 }
 
 # TODO: check config and reload nginx in post-activate and post-deactivate

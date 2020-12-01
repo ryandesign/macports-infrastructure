@@ -2,7 +2,7 @@ server {
     listen 80;
     listen [::]:80;
 
-    server_name packages-private.macports.org;
+    server_name packages-private-origin.macports.org;
     server_name_in_redirect on;
     access_log @PREFIX@/var/log/nginx/packages-private-access.log main;
     error_log @PREFIX@/var/log/nginx/packages-private-error.log;
@@ -15,8 +15,8 @@ server {
     listen [::]:443 ssl http2;
 
     # certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
-    ssl_certificate @PREFIX@/etc/letsencrypt/live/packages-private.macports.org/fullchain.pem;
-    ssl_certificate_key @PREFIX@/etc/letsencrypt/live/packages-private.macports.org/privkey.pem;
+    ssl_certificate @PREFIX@/etc/letsencrypt/live/packages-private-origin.macports.org/fullchain.pem;
+    ssl_certificate_key @PREFIX@/etc/letsencrypt/live/packages-private-origin.macports.org/privkey.pem;
     ssl_session_timeout 1d;
     ssl_session_cache shared:SSL:50m;
     ssl_session_tickets off;
@@ -39,17 +39,53 @@ server {
     ssl_stapling_verify on;
 
     ## verify chain of trust of OCSP response using Root CA and Intermediate certs
-    ssl_trusted_certificate @PREFIX@/etc/letsencrypt/live/packages-private.macports.org/chain.pem;
+    ssl_trusted_certificate @PREFIX@/etc/letsencrypt/live/packages-private-origin.macports.org/chain.pem;
 
-    # Travis CI
-    allow 207.254.16.35;
-    allow 207.254.16.36;
-    allow 207.254.16.37;
-    allow 207.254.16.38;
-    allow 207.254.16.39;
-
-    # Azure Pipelines
-    allow 208.83.5.226;
+    # https://www.maxcdn.com/one/tutorial/ip-blocks/
+    allow 108.161.176.0/20;
+    allow 94.46.144.0/20;
+    allow 146.88.128.0/20;
+    allow 198.232.124.0/22;
+    allow 23.111.8.0/22;
+    allow 217.22.28.0/22;
+    allow 64.125.76.64/27;
+    allow 64.125.76.96/27;
+    allow 64.125.78.96/27;
+    allow 64.125.78.192/27;
+    allow 64.125.78.224/27;
+    allow 64.125.102.32/27;
+    allow 64.125.102.64/27;
+    allow 64.125.102.96/27;
+    allow 94.31.27.64/27;
+    allow 94.31.33.128/27;
+    allow 94.31.33.160/27;
+    allow 94.31.33.192/27;
+    allow 94.31.56.160/27;
+    allow 177.54.148.0/24;
+    allow 185.18.207.64/26;
+    allow 50.31.249.224/27;
+    allow 50.31.251.32/28;
+    allow 119.81.42.192/27;
+    allow 119.81.104.96/28;
+    allow 119.81.67.8/29;
+    allow 119.81.0.104/30;
+    allow 119.81.1.144/30;
+    allow 27.50.77.226/32;
+    allow 27.50.79.130/32;
+    allow 119.81.131.130/32;
+    allow 119.81.131.131/32;
+    allow 216.12.211.59/32;
+    allow 216.12.211.60/32;
+    allow 37.58.110.67/32;
+    allow 37.58.110.68/32;
+    allow 158.85.206.228/32;
+    allow 158.85.206.231/32;
+    allow 174.36.204.195/32;
+    allow 174.36.204.196/32;
+    allow 151.139.0.0/19;
+    allow 103.66.28.0/22;
+    allow 103.228.104.0/22;
+    allow 108.168.175.204/32;
 
     allow 10.0.0.0/8;
     allow 127.0.0.0/8;
@@ -57,7 +93,7 @@ server {
     allow 192.168.0.0/16;
     deny all;
 
-    server_name packages-private.macports.org;
+    server_name packages-private-origin.macports.org;
     server_name_in_redirect on;
     access_log @PREFIX@/var/log/nginx/packages-private-access.log main;
     error_log @PREFIX@/var/log/nginx/packages-private-error.log;
@@ -72,6 +108,35 @@ server {
 
     location /.well-known/ {
         allow all;
+    }
+
+    add_header Cache-Control "max-age=2592000, public";
+    location ~ /$ {
+        add_header Cache-Control "max-age=300, public";
+    }
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    allow 10.0.0.0/8;
+    allow 127.0.0.0/8;
+    allow 172.16.0.0/12;
+    allow 192.168.0.0/16;
+    deny all;
+
+    server_name packages-private.internal.macports.net packages-private;
+    server_name_in_redirect on;
+    access_log @PREFIX@/var/log/nginx/packages-private-access.log main;
+    error_log @PREFIX@/var/log/nginx/packages-private-error.log;
+
+    root /Volumes/RAID@PREFIX@/var/www/macports/packages-private;
+    autoindex on;
+
+    location = /robots.txt {
+        allow all;
+        return 200 "User-agent: *\nDisallow: /\n";
     }
 
     add_header Cache-Control "max-age=2592000, public";
