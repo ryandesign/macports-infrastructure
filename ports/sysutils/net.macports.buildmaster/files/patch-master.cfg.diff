@@ -1,6 +1,6 @@
---- master.cfg.orig	2019-01-07 09:06:51.000000000 -0600
-+++ master.cfg	2019-01-07 09:16:39.000000000 -0600
-@@ -443,10 +443,10 @@
+--- master.cfg.orig	2021-03-20 01:01:54.000000000 -0500
++++ master.cfg	2021-03-20 01:06:14.000000000 -0500
+@@ -444,10 +444,10 @@
  # because archives must be built with prefix=/opt/local
  if config['production']:
      prefix = '/opt/local'
@@ -14,7 +14,7 @@
  else:
      prefix = config['slaveprefix']
      dlhost = ''
-@@ -858,6 +858,7 @@
+@@ -863,6 +863,7 @@
          haltOnFailure=True))
      jobs_man_factory.addStep(steps.Configure(
          command="./standard_configure.sh",
