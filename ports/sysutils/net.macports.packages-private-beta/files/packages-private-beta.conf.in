@@ -41,8 +41,7 @@ server {
     ## verify chain of trust of OCSP response using Root CA and Intermediate certs
     ssl_trusted_certificate @PREFIX@/etc/letsencrypt/live/packages-private-beta.macports.org/chain.pem;
 
-    allow 199.7.163.5/32;
-
+    # Local
     allow 10.0.0.0/8;
     allow 127.0.0.0/8;
     allow 172.16.0.0/12;
@@ -76,6 +75,7 @@ server {
     listen 80;
     listen [::]:80;
 
+    # Local
     allow 10.0.0.0/8;
     allow 127.0.0.0/8;
     allow 172.16.0.0/12;
