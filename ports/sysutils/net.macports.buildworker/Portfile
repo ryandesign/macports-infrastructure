@@ -51,14 +51,14 @@ variant base description {Use a base worker} {
     }
 }
 
-if {!(([variant_exists legacy] && [variant_isset legacy]) || ([vercmp ${macosx_version} 10.6] == 0 && ${build_arch} eq "i386"))} {
+if {!([variant_exists legacy] && [variant_isset legacy])} {
     default_variants +base
 }
 
 if {[variant_isset base]} {
     append notes_create "
 sudo -H -u buildbot ${prefix}/bin/buildslave\
-    create-slave --umask 022\
+    create-slave --allow-shutdown=file --umask 022\
     ${prefix}/var/buildworker/base\
     build:9989\
     base-${worker_id}\
@@ -96,7 +96,7 @@ if {[variant_isset ports]} {
 
     append notes_create "
 sudo -H ${prefix}/bin/buildslave\
-    create-slave --umask 022\
+    create-slave --allow-shutdown=file --umask 022\
     ${prefix}/var/buildworker/ports\
     build:9989\
     ports-${worker_id}\
