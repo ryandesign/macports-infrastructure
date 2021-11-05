@@ -58,7 +58,7 @@ if {!([variant_exists legacy] && [variant_isset legacy])} {
 if {[variant_isset base]} {
     append notes_create "
 sudo -H -u buildbot ${prefix}/bin/buildslave\
-    create-slave --allow-shutdown=file --umask 022\
+    create-slave --allow-shutdown=signal --umask=022\
     ${prefix}/var/buildworker/base\
     build:9989\
     base-${worker_id}\
@@ -96,7 +96,7 @@ if {[variant_isset ports]} {
 
     append notes_create "
 sudo -H ${prefix}/bin/buildslave\
-    create-slave --allow-shutdown=file --umask 022\
+    create-slave --allow-shutdown=signal --umask=022\
     ${prefix}/var/buildworker/ports\
     build:9989\
     ports-${worker_id}\
@@ -147,7 +147,7 @@ variant jobs description {Use a jobs worker} {
 if {[variant_isset jobs]} {
     append notes_create "
 sudo -H -u buildbot ${prefix}/bin/buildslave\
-    create-slave --umask 022\
+    create-slave --umask=022\
     ${prefix}/var/buildworker/jobs\
     build:9989\
     jobs\
