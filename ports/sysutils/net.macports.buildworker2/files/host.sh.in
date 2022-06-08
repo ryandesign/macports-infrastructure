@@ -35,6 +35,8 @@ case "$MACOS_VERSION" in
     10.14|10.14.*)          MACOS_NAME="macOS Mojave";;
     10.15|10.15.*)          MACOS_NAME="macOS Catalina";;
     10.16|10.16.*|11|11.*)  MACOS_NAME="macOS Big Sur";;
+    12|12.*)                MACOS_NAME="macOS Monterey";;
+    13|13.*)                MACOS_NAME="macOS Ventura";;
     *)                      MACOS_NAME="macOS"
 esac
 
