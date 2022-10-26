@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker2
-version             4
+version             5
 
 depends_run         port:buildbot-worker
 
@@ -116,7 +116,7 @@ if {[variant_isset base] || [variant_isset ports]} {
     # mpbb gather-archives
     depends_run-append  port:curl
     # mpbb parseopt
-    depends_run-append  port:getopt
+    depends_run-append  port:util-linux
     # mpbb checkout
     depends_run-append  port:git
     # mpbb compute_failcache_hash

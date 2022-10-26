@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             34
+version             35
 
 depends_run         port:buildbot-slave-0.8
 
@@ -117,7 +117,7 @@ if {[variant_isset base] || [variant_isset ports]} {
     # mpbb gather-archives
     depends_run-append  port:curl
     # mpbb parseopt
-    depends_run-append  port:getopt
+    depends_run-append  port:util-linux
     # mpbb checkout
     depends_run-append  port:git
     # mpbb compute_failcache_hash
