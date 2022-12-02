@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             35
+version             36
 
 depends_run         port:buildbot-slave-0.8
 
@@ -128,7 +128,7 @@ set password_jobs   [random_password]
 
 variant jobs description {Use a jobs worker} {
     # mpbb parseopt
-    depends_run-append  port:getopt
+    depends_run-append  port:util-linux
     # jobs-guide
     depends_run-append  port:asciidoctor port:docbook-xml port:docbook-xsl-ns
     # jobs-man
