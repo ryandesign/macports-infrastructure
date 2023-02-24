@@ -13,7 +13,7 @@ else
     CPU_GHZ="?"
 fi
 RAM_GB=$(echo "scale=2; $(sysctl -n hw.memsize) / 2 ^ 30" | bc | sed -e '/\./s/0*$//' -e 's/\.$//')
-BOOT_DATE=$(date -u -j -f "%b %d %H:%M:%S" "$(LC_TIME=C TZ=Z who -b | sed -E -e 's/ +$//' -e 's/^([^ ]+ +){2}//'):00" "+%Y-%m-%dT%H:%M:%SZ")
+BOOT_DATE=$(date -u -j -f "%b %d %H:%M:%S" "$(LC_TIME=C TZ=Z who -b | awk '{print $(NF-2)" "$(NF-1)" "$NF}'):00" "+%Y-%m-%dT%H:%M:%SZ")
 
 MACOS_VERSION=$(sw_vers -productVersion)
 MACOS_BUILD=$(sw_vers -buildVersion)
