@@ -10,7 +10,7 @@ checksums           rmd160  475165644f466b4885d171893c80e7e4b5d92d95 \
                     size    42068
 
 name                net.macports.mprsyncup
-version             19
+version             20
 revision            0
 
 github.tarball_from archive
