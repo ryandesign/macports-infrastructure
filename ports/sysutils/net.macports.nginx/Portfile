@@ -8,6 +8,8 @@ name                net.macports.nginx
 version             11
 revision            0
 
+distfiles
+
 depends_run         port:nginx
 
 require_active_variants port:nginx {http2}

@@ -7,8 +7,6 @@ default maintainers         {admin}
 default supported_archs     {noarch}
 default homepage            {https://www.macports.org}
 default archive_sites       {}
-default master_sites        {}
-default distfiles           {}
 default startupitem.uniquename \
                             {${startupitem.name}}
 

@@ -7,6 +7,8 @@ name                net.macports.rsyncd
 version             15
 revision            0
 
+distfiles
+
 depends_run         port:rsync
 
 destroot.keepdirs   ${destroot}${prefix}/var/log/rsyncd
