@@ -1,0 +1,32 @@
+--- delete_old_archives.py.orig	2023-01-07 12:01:07.000000000 -0600
++++ delete_old_archives.py	2023-05-16 04:18:09.000000000 -0500
+@@ -39,8 +39,11 @@
+ else:
+     fd = open(versionFile, 'r')
+ for line in fd:
+-    name, version = line.split()
+-    currentVersions[name] = re.compile(name+'-'+version+'[.+]')
++    os_suffix, name, version = line.split()
++    os_platform, os_major, os_arch = os_suffix.split('_')
++    if name not in currentVersions:
++        currentVersions[name] = {}
++    currentVersions[name][os_suffix] = re.compile('^'+re.escape(name+'-'+version)+'(?:\+[^+]+)*\\.(any|'+re.escape(os_platform)+')_(any|'+re.escape(os_major)+')\\.')
+ fd.close()
+ 
+ import time
+@@ -53,7 +56,14 @@
+     if os.path.isdir(portDirPath):
+         for archiveFilename in os.listdir(portDirPath):
+             try:
+-                if archiveFilename.endswith('.rmd160') or currentVersions[portdir].match(archiveFilename):
++                if archiveFilename.endswith('.rmd160'):
++                    continue
++                skip = False
++                for flavor in currentVersions[portdir]:
++                    if currentVersions[portdir][flavor].match(archiveFilename):
++                        skip = True
++                        break
++                if skip:
+                     continue
+             except KeyError:
+                 pass

@@ -1,3 +1,24 @@
-#!/bin/sh
+#!/bin/bash
 
-@PREFIX@/bin/mprsyncup 2>&1 | @PREFIX@/bin/ts %Y-%m-%dT%H:%M:%S%z
+set -euo pipefail
+
+root=/Volumes/RAID/var/tmp/mprsyncup
+timestamp_file="$root/delete_archives.timestamp"
+ts_args="%Y-%m-%dT%H:%M:%S%z"
+
+echo "Running mprsyncup" | @PREFIX@/bin/ts "$ts_args"
+@PREFIX@/bin/mprsyncup 2>&1 | @PREFIX@/bin/ts "$ts_args"
+
+if [[ ! -f "$timestamp_file" || ("$(date +%w)" = "0" && $(($(date +%s) - $(stat -f %m "$timestamp_file"))) -gt 90000) ]]; then
+    #trap 'rm -f -- "$root/current_versions.txt.gz"' EXIT INT TERM
+    echo "Finding current archives" | @PREFIX@/bin/ts "$ts_args"
+    @PREFIX@/bin/current_versions_for_each_portindex.sh | gzip > "$root/current_versions.txt.gz"
+    #echo "Deleting old archives" | @PREFIX@/bin/ts "$ts_args"
+    gzcat "$root/current_versions.txt.gz" | @PREFIX@/bin/delete_old_archives.py /Volumes/RAID@PREFIX@/var/www/macports/packages-private - > "$root/old_archives.private.txt" 2> "$root/old_archives.private.stats.txt"
+    #gzcat "$root/current_versions.txt.gz" | @PREFIX@/bin/delete_old_archives.py /Volumes/RAID@PREFIX@/var/rsync/macports/packages - > "$root/old_archives.txt" 2> "$root/old_archives.stats.txt"
+    #xargs rm -fv < "$root/old_archives.private.txt" | @PREFIX@/bin/ts "$ts_args"
+    #xargs rm -fv < "$root/old_archives.txt" | @PREFIX@/bin/ts "$ts_args"
+    touch "$timestamp_file"
+fi
+
+echo "Done" | @PREFIX@/bin/ts "$ts_args"

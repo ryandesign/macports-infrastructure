@@ -1,30 +1,39 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
+PortGroup           github 1.0
 PortGroup           net.macports 1.0
 
+github.setup        macports macports-infrastructure 08cff68ae7d61144cfdfe25586d70d9fbb4a7ef9
+checksums           rmd160  475165644f466b4885d171893c80e7e4b5d92d95 \
+                    sha256  e4a2aa55171096e62153b3f12cf4dc05f0943dbefae4d9d9e24b87361eaf4a7e \
+                    size    42068
+
 name                net.macports.mprsyncup
-version             18
+version             19
 revision            0
 
-fetch.type          svn
-svn.url             https://github.com/macports/macports-infrastructure/trunk/jobs/mprsyncup
-svn.revision        527
-svn.dir             ${worksrcpath}
+github.tarball_from archive
+dist_subdir         ${github.project}
 
 depends_run         port:coreutils \
                     port:git \
                     port:moreutils \
                     port:rsync
 
-extract.mkdir       yes
+worksrcdir          ${worksrcdir}/jobs
 
-patchfiles          mprsyncup.patch
+extract.post_args-append \
+                    ${worksrcdir}
+
+patchfiles          delete_old_archives.py.patch \
+                    mprsyncup.patch
 
 destroot.keepdirs   ${destroot}${prefix}/var/log/${name} ${destroot}/Volumes/RAID${prefix}/var/rsync/macports
 destroot {
     xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/log/${name} ${destroot}/Volumes/RAID${prefix}/var/rsync/macports
-    xinstall ${worksrcpath}/mprsyncup ${filespath}/mprsyncup-ts ${destroot}${prefix}/bin
+    xinstall -W ${worksrcpath} current_versions.tcl delete_old_archives.py mprsyncup ${destroot}${prefix}/bin
+    xinstall -W ${filespath} current_versions_for_each_portindex.sh mprsyncup-ts ${destroot}${prefix}/bin
     xinstall -m 0644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
-    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/bin/mprsyncup ${destroot}${prefix}/bin/mprsyncup-ts ${destroot}/Library/${startupitem.location}/${name}.plist
+    reinplace -W ${destroot}${prefix}/bin "s|@PREFIX@|${prefix}|g" current_versions_for_each_portindex.sh mprsyncup mprsyncup-ts ${destroot}/Library/${startupitem.location}/${name}.plist
 }
