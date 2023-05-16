@@ -5,6 +5,7 @@ PortGroup           net.macports 1.0
 
 name                net.macports.buildworker2
 version             7
+revision            0
 
 depends_run         port:buildbot-worker
 

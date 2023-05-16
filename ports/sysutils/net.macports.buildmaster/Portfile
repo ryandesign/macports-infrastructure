@@ -5,6 +5,7 @@ PortGroup           net.macports 1.0
 
 name                net.macports.buildmaster
 version             107
+revision            0
 
 fetch.type          svn
 svn.url             https://github.com/macports/macports-infrastructure/trunk/buildbot/

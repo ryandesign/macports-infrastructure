@@ -5,6 +5,7 @@ PortGroup           net.macports 1.0
 
 name                net.macports.backup
 version             3
+revision            0
 
 set plist           /Library/${startupitem.location}/${startupitem.name}.plist
 set backups_per_day 4

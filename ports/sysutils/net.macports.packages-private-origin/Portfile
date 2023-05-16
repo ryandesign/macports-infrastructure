@@ -5,6 +5,7 @@ PortGroup           net.macports 1.0
 
 name                net.macports.packages-private-origin
 version             2
+revision            0
 
 depends_run         port:net.macports.nginx
 

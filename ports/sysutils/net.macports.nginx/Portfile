@@ -6,6 +6,7 @@ PortGroup           net.macports 1.0
 
 name                net.macports.nginx
 version             11
+revision            0
 
 depends_run         port:nginx
 

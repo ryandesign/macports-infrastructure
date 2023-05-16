@@ -5,6 +5,7 @@ PortGroup           net.macports 1.0
 
 name                net.macports.mprsyncup
 version             18
+revision            0
 
 fetch.type          svn
 svn.url             https://github.com/macports/macports-infrastructure/trunk/jobs/mprsyncup

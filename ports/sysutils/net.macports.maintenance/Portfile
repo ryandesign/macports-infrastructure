@@ -5,6 +5,7 @@ PortGroup           net.macports 1.0
 
 name                net.macports.maintenance
 version             1
+revision            0
 
 depends_run         port:net.macports.nginx
 
