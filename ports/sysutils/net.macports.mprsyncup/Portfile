@@ -10,15 +10,19 @@ checksums           rmd160  475165644f466b4885d171893c80e7e4b5d92d95 \
                     size    42068
 
 name                net.macports.mprsyncup
-version             20
+version             21
 revision            0
 
 github.tarball_from archive
 dist_subdir         ${github.project}
 
+set python_branch   3.11
+set python_version  [string map {. {}} ${python_branch}]
+
 depends_run         port:coreutils \
                     port:git \
                     port:moreutils \
+                    port:python${python_version} \
                     port:rsync
 
 worksrcdir          ${worksrcdir}/jobs
@@ -36,4 +40,6 @@ destroot {
     xinstall -W ${filespath} current_versions_for_each_portindex.sh mprsyncup-ts ${destroot}${prefix}/bin
     xinstall -m 0644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
     reinplace -W ${destroot}${prefix}/bin "s|@PREFIX@|${prefix}|g" current_versions_for_each_portindex.sh mprsyncup mprsyncup-ts ${destroot}/Library/${startupitem.location}/${name}.plist
+    reinplace -W ${destroot}${prefix}/bin "1s|^#!/usr/bin/env |#!${prefix}/bin/|" current_versions.tcl
+    reinplace -W ${destroot}${prefix}/bin "1s|^#!/usr/bin/env python$|#!${prefix}/bin/python3.11|" delete_old_archives.py
 }
