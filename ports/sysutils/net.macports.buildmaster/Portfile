@@ -1,16 +1,21 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
+PortGroup           github 1.0
 PortGroup           net.macports 1.0
 
+github.setup        macports macports-infrastructure 60dc8c96bfba5561a37488a7972d4de8ff467fee
+checksums           rmd160  014bf890190dfa16d8dc7fbe0738988300e4d974 \
+                    sha256  735d888b9d23e21124a77ab2bfaa54d6290be5676991bb81cd1024a2ea207963 \
+                    size    42085
+
 name                net.macports.buildmaster
-version             107
+version             108
 revision            0
 
-fetch.type          svn
-svn.url             https://github.com/macports/macports-infrastructure/trunk/buildbot/
-svn.revision        531
-worksrcdir          buildbot
+github.tarball_from archive
+dist_subdir         ${github.project}
+worksrcdir          ${worksrcdir}/buildbot
 
 depends_run         port:buildbot-0.8 \
                     port:git \
