@@ -10,13 +10,13 @@ checksums           rmd160  1598d5ed64f105085c1fb0eb76f394a698e8e0a5 \
                     size    42074
 
 name                net.macports.mprsyncup
-version             22
+version             23
 revision            0
 
 github.tarball_from archive
 dist_subdir         ${github.project}
 
-set python_branch   3.11
+set python_branch   3.12
 set python_version  [string map {. {}} ${python_branch}]
 
 depends_run         port:coreutils \
@@ -31,7 +31,8 @@ extract.post_args-append \
                     ${worksrcdir}
 
 patchfiles          delete_old_archives.py.patch \
-                    mprsyncup.patch
+                    mprsyncup.patch \
+                    noparallel.patch
 
 destroot.keepdirs   ${destroot}${prefix}/var/log/${name} ${destroot}/Volumes/RAID${prefix}/var/rsync/macports
 destroot {
@@ -41,5 +42,5 @@ destroot {
     xinstall -m 0644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
     reinplace -W ${destroot}${prefix}/bin "s|@PREFIX@|${prefix}|g" current_versions_for_each_portindex.sh mprsyncup mprsyncup-ts ${destroot}/Library/${startupitem.location}/${name}.plist
     reinplace -W ${destroot}${prefix}/bin "1s|^#!/usr/bin/env |#!${prefix}/bin/|" current_versions.tcl
-    reinplace -W ${destroot}${prefix}/bin "1s|^#!/usr/bin/env python$|#!${prefix}/bin/python3.11|" delete_old_archives.py
+    reinplace -W ${destroot}${prefix}/bin "1s|^#!/usr/bin/env python$|#!${prefix}/bin/python${python_branch}|" delete_old_archives.py
 }
