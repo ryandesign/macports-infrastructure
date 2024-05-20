@@ -4,13 +4,13 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           net.macports 1.0
 
-github.setup        macports macports-infrastructure e6f2aac4dd0826038610d1dca1d5b48fe28375b5
-checksums           rmd160  1598d5ed64f105085c1fb0eb76f394a698e8e0a5 \
-                    sha256  93bbae1fc555ded004ff2d5eb26d1c908dc217080f2f26986c042451e491c644 \
-                    size    42074
+github.setup        macports macports-infrastructure 8f3c1d3fccb92b14a1afc328e0f96913c709ebde
+checksums           rmd160  317e4667a70dbfaf2c81ba9d76bcfebc9dd4ea9f \
+                    sha256  29d43eb29b153cafe4080b6a6d1cfb16482b090aef59297aae4624a18f585f9f \
+                    size    42090
 
 name                net.macports.mprsyncup
-version             23
+version             24
 revision            0
 
 github.tarball_from archive
@@ -31,8 +31,7 @@ extract.post_args-append \
                     ${worksrcdir}
 
 patchfiles          delete_old_archives.py.patch \
-                    mprsyncup.patch \
-                    noparallel.patch
+                    mprsyncup.patch
 
 destroot.keepdirs   ${destroot}${prefix}/var/log/${name} ${destroot}/Volumes/RAID${prefix}/var/rsync/macports
 destroot {
