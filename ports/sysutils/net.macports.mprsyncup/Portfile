@@ -4,13 +4,13 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           net.macports 1.0
 
-github.setup        macports macports-infrastructure 8f3c1d3fccb92b14a1afc328e0f96913c709ebde
-checksums           rmd160  317e4667a70dbfaf2c81ba9d76bcfebc9dd4ea9f \
-                    sha256  29d43eb29b153cafe4080b6a6d1cfb16482b090aef59297aae4624a18f585f9f \
-                    size    42090
+github.setup        macports macports-infrastructure 8042d997b2b0c2bfe97daf29fd951529dbb62119
+checksums           rmd160  92056ef95e7fcfa34a9405c1dadf4e0a78f91091 \
+                    sha256  9feec45ea6b32a30c82e9ccea376962b95d3896199f3b4a24cb998d7e527a5ce \
+                    size    42278
 
 name                net.macports.mprsyncup
-version             24
+version             25
 revision            0
 
 github.tarball_from archive
@@ -21,6 +21,7 @@ set python_version  [string map {. {}} ${python_branch}]
 
 depends_run         port:coreutils \
                     port:git \
+                    port:gzip \
                     port:moreutils \
                     port:python${python_version} \
                     port:rsync

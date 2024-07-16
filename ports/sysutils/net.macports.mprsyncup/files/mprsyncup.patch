@@ -1,5 +1,5 @@
---- mprsyncup.orig	2024-05-20 17:09:14.000000000 -0500
-+++ mprsyncup	2024-05-20 17:15:38.000000000 -0500
+--- mprsyncup.orig	2024-07-15 13:39:16.000000000 -0500
++++ mprsyncup	2024-07-16 13:04:34.000000000 -0500
 @@ -31,15 +31,15 @@
  set -x
  
@@ -20,7 +20,7 @@
  MPBIN=${MPTOOLSPREFIX}/bin
  
  # Commands we need. For options to be substituted correctly, these must
-@@ -73,8 +73,7 @@
+@@ -74,8 +74,7 @@
  RELEASE_URL_FILE=config/RELEASE_URL
  
  # private key to use for signing
@@ -30,7 +30,7 @@
  
  #
  # Functions
-@@ -99,6 +98,14 @@
+@@ -100,6 +99,14 @@
  }
  
  #
@@ -45,7 +45,7 @@
  # Update trunk/base
  #
  
-@@ -264,4 +271,3 @@
+@@ -274,4 +281,3 @@
      ${RM} -rf "${ROOT}"/PortIndex_*
  fi
  
