@@ -4,13 +4,13 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           net.macports 1.0
 
-github.setup        macports macports-infrastructure 8042d997b2b0c2bfe97daf29fd951529dbb62119
-checksums           rmd160  92056ef95e7fcfa34a9405c1dadf4e0a78f91091 \
-                    sha256  9feec45ea6b32a30c82e9ccea376962b95d3896199f3b4a24cb998d7e527a5ce \
-                    size    42278
+github.setup        macports macports-infrastructure bb13331e8b9124b82fc6c9442fca7ec09368fe50
+checksums           rmd160  ca1ffb96ab56114345e43491a17fb96dacde548b \
+                    sha256  6d9e8426a7a66c4508fa006b5d2b6b49495e96b4828692ec3fff5d8673bd6ce6 \
+                    size    42280
 
 name                net.macports.mprsyncup
-version             25
+version             26
 revision            0
 
 github.tarball_from archive
