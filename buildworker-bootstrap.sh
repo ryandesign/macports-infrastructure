@@ -98,6 +98,11 @@ fi
 
 sed -i '' -E 's/^#?(startupitem_install[[:space:]]+).*$/\1no/' "$PREFIX"/etc/macports/macports.conf
 
+if [ ! -x "$PREFIX"/bin/bsdtar ]; then
+  echo "$UI_PREFIX Installing libarchive"
+  "$PREFIX"/bin/port -N install libarchive
+fi
+
 if [ ! -x "$PREFIX"/bin/git ]; then
   echo "$UI_PREFIX Installing git"
   "$PREFIX"/bin/port -N install git
