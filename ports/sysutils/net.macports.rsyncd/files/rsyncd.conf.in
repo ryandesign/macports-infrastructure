@@ -36,3 +36,7 @@ use chroot = no
 [packages]
     comment = MacPorts packages (deprecated; use "macports/packages" instead)
     path = /Volumes/RAID@PREFIX@/var/rsync/macports/packages
+
+[darwinbuild]
+    comment = darwinbuild files from src.macosforge.org
+    path = /Volumes/RAID@PREFIX@/var/rsync/src.macosforge.org
