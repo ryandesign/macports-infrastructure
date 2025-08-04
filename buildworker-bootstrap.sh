@@ -105,7 +105,7 @@ fi
 
 if [ ! -x "$PREFIX"/bin/git ]; then
   echo "$UI_PREFIX Installing git"
-  "$PREFIX"/bin/port -N install git
+  "$PREFIX"/bin/port -N install git $("$PREFIX"/bin/port info --line --variants git | tr ',' '\n' | sed -E -n 's/^(perl)/-\1/p')
 fi
 
 if [ ! -d "$EXTRA_PORTS_WC" ]; then
