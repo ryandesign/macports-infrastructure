@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker2
-version             9
+version             10
 revision            0
 
 distfiles
@@ -44,12 +44,17 @@ set password_base   [random_password]
 
 variant base description {Use a base worker} {
     post-destroot {
-        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker2/base
-
-        ln -s ../info ${destroot}${prefix}/var/buildworker2/base/info
+        xinstall -d -o buildbot -g buildbot \
+            ${destroot}${prefix}/var/buildworker2/base/info
+        xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin \
+            ${destroot}${prefix}/var/buildworker2/base/info
 
         xinstall -m 0644 ${filespath}/${name}.base.plist.in ${destroot}/Library/${startupitem.location}/${name}.base.plist
         reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.base.plist
+    }
+
+    post-deactivate {
+        delete ${prefix}/var/buildworker2/base/info/host
     }
 }
 
@@ -81,12 +86,17 @@ set password_ports  [random_password]
 
 variant ports description {Use a ports worker} {
     post-destroot {
-        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker2/ports
-
-        ln -s ../info ${destroot}${prefix}/var/buildworker2/ports/info
+        xinstall -d -o buildbot -g buildbot \
+            ${destroot}${prefix}/var/buildworker2/ports/info
+        xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin \
+            ${destroot}${prefix}/var/buildworker2/ports/info
 
         xinstall -m 0644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/${startupitem.location}/${name}.ports.plist
         reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.ports.plist
+    }
+
+    post-deactivate {
+        delete ${prefix}/var/buildworker2/ports/info/host
     }
 }
 
@@ -137,12 +147,17 @@ variant jobs description {Use a jobs worker} {
     depends_run-append  port:asciidoc port:libxslt port:docbook-xsl-nons
 
     post-destroot {
-        xinstall -d -o buildbot -g buildbot ${destroot}${prefix}/var/buildworker2/jobs
-
-        ln -s ../info ${destroot}${prefix}/var/buildworker2/jobs/info
+        xinstall -d -o buildbot -g buildbot \
+            ${destroot}${prefix}/var/buildworker2/jobs/info
+        xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin \
+            ${destroot}${prefix}/var/buildworker2/jobs/info
 
         xinstall -m 0644 ${filespath}/${name}.jobs.plist.in ${destroot}/Library/${startupitem.location}/${name}.jobs.plist
         reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.jobs.plist
+    }
+
+    post-deactivate {
+        delete ${prefix}/var/buildworker2/jobs/info/host
     }
 }
 
@@ -166,27 +181,14 @@ sudo launchctl load -w /Library/${startupitem.location}/${name}.jobs.plist"
 sudo launchctl unload -w /Library/${startupitem.location}/${name}.jobs.plist"
 }
 
-# This only handles automatically updating the host info.
-startupitem.autostart   yes
-
 destroot {
-    xinstall -d -o buildbot -g buildbot \
-        ${destroot}${prefix}/share/buildworker2 \
-        ${destroot}${prefix}/var/buildworker2/info \
+    xinstall -d ${destroot}${prefix}/share/buildworker2
 
     xinstall ${filespath}/host.sh.in ${destroot}${prefix}/share/buildworker2/host.sh
-    xinstall ${filespath}/update_host.sh.in ${destroot}${prefix}/share/buildworker2/update_host.sh
+    xinstall ${filespath}/run.sh.in ${destroot}${prefix}/share/buildworker2/run.sh
     reinplace "s|@ARCH@|${build_arch}|g" ${destroot}${prefix}/share/buildworker2/host.sh
     reinplace "s|@CXX_LIB@|${cxx_lib}|g" ${destroot}${prefix}/share/buildworker2/host.sh
-
-    xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin ${destroot}${prefix}/var/buildworker2/info
-
-    xinstall -m 0644 ${filespath}/${name}.plist.in ${destroot}/Library/${startupitem.location}/${name}.plist
-    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/share/buildworker2/update_host.sh ${destroot}/Library/${startupitem.location}/${name}.plist
-}
-
-post-deactivate {
-    delete ${prefix}/var/buildworker2/info/host
+    reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/share/buildworker2/run.sh
 }
 
 notes "
