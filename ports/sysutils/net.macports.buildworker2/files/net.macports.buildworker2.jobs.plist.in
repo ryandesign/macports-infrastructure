@@ -16,7 +16,7 @@
         <string>net.macports.buildworker2.jobs</string>
         <key>ProgramArguments</key>
         <array>
-            <string>@PREFIX@$/share/buildworker2/run.sh</string>
+            <string>@PREFIX@/share/buildworker2/run.sh</string>
         </array>
         <key>RunAtLoad</key>
         <true/>

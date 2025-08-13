@@ -16,7 +16,7 @@
         <string>net.macports.buildworker.ports</string>
         <key>ProgramArguments</key>
         <array>
-            <string>@PREFIX@$/share/buildworker/run.sh</string>
+            <string>@PREFIX@/share/buildworker/run.sh</string>
         </array>
         <key>RunAtLoad</key>
         <true/>
