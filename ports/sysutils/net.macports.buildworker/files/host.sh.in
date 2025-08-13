@@ -38,6 +38,8 @@ case "$MACOS_VERSION" in
     12|12.*)                MACOS_NAME="macOS Monterey";;
     13|13.*)                MACOS_NAME="macOS Ventura";;
     14|14.*)                MACOS_NAME="macOS Sonoma";;
+    15|15.*)                MACOS_NAME="macOS Sequoia";;
+    26|26.*)                MACOS_NAME="macOS Tahoe";;
     *)                      MACOS_NAME="macOS"
 esac
 
