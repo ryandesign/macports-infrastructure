@@ -1,20 +1,22 @@
---- master.cfg.orig	2021-03-20 01:01:54.000000000 -0500
-+++ master.cfg	2021-03-20 01:06:14.000000000 -0500
-@@ -444,10 +444,10 @@
- # because archives must be built with prefix=/opt/local
- if config['production']:
-     prefix = '/opt/local'
--    dlhost = 'packages@packages-origin.macports.org'
-+    dlhost = ''
-     dlhost_private = dlhost
--    dlpath = '/var/www/html/packages'
--    dlpath_private = '/var/www/html/packages-private'
-+    dlpath = '/Volumes/RAID@PREFIX@/var/rsync/macports/packages'
-+    dlpath_private = '/Volumes/RAID@PREFIX@/var/www/macports/packages-private'
- else:
+--- master.cfg.orig	2025-09-15 23:49:10.000000000 -0500
++++ master.cfg	2025-09-16 00:15:50.000000000 -0500
+@@ -451,12 +451,12 @@
      prefix = config['slaveprefix']
-     dlhost = ''
-@@ -863,6 +863,7 @@
+ 
+ dlhost = config.get('dlhost',
+-    'packages@packages-origin.macports.org' if config['production'] else '')
++    '' if config['production'] else '')
+ dlhost_private = config.get('dlhost_private', dlhost)
+ dlpath = config.get('dlpath',
+-    '/var/www/html/packages' if config['production'] else './deployed_archives')
++    '/Volumes/RAID@PREFIX@/var/rsync/macports/packages' if config['production'] else './deployed_archives')
+ dlpath_private = config.get('dlpath_private',
+-    '/var/www/html/packages-private' if config['production'] else './deployed_archives_private')
++    '/Volumes/RAID@PREFIX@/var/www/macports/packages-private' if config['production'] else './deployed_archives_private')
+ 
+ # Path to upload archives from on the builder.
+ ulpath = config.get('ulpath',  'archive_staging')
+@@ -883,6 +883,7 @@
          haltOnFailure=True))
      jobs_man_factory.addStep(steps.Configure(
          command="./standard_configure.sh",
