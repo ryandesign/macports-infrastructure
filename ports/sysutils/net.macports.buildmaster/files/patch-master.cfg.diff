@@ -1,6 +1,6 @@
---- master.cfg.orig	2025-09-15 23:49:10.000000000 -0500
-+++ master.cfg	2025-09-16 00:15:50.000000000 -0500
-@@ -451,12 +451,12 @@
+--- master.cfg.orig	2026-01-20 01:12:28.000000000 -0600
++++ master.cfg	2026-01-20 01:16:25.000000000 -0600
+@@ -455,12 +455,12 @@
      prefix = config['slaveprefix']
  
  dlhost = config.get('dlhost',
@@ -16,7 +16,7 @@
  
  # Path to upload archives from on the builder.
  ulpath = config.get('ulpath',  'archive_staging')
-@@ -883,6 +883,7 @@
+@@ -895,6 +895,7 @@
          haltOnFailure=True))
      jobs_man_factory.addStep(steps.Configure(
          command="./standard_configure.sh",
