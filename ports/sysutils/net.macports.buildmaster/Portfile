@@ -10,7 +10,7 @@ checksums           rmd160  8f7e105d66adbc480c8b45d4ef95cad61747ba7d \
                     size    45725
 
 name                net.macports.buildmaster
-version             111
+version             112
 revision            0
 
 github.tarball_from archive

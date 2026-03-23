@@ -36,5 +36,9 @@ server {
     access_log @PREFIX@/var/log/nginx/rsync-access.log main;
     error_log @PREFIX@/var/log/nginx/rsync-error.log;
 
+    if ($bad_ua) {
+        return 444;
+    }
+
     return 301 https://distfiles.macports.org$request_uri;
 }

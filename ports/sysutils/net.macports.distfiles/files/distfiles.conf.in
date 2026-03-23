@@ -36,6 +36,10 @@ server {
     access_log @PREFIX@/var/log/nginx/distfiles-access.log main;
     error_log @PREFIX@/var/log/nginx/distfiles-error.log;
 
+    if ($bad_ua) {
+        return 444;
+    }
+
     root /Volumes/RAID@PREFIX@/var/rsync/macports/distfiles;
     autoindex on;
 

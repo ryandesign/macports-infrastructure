@@ -7,6 +7,10 @@ server {
     access_log @PREFIX@/var/log/nginx/build-access.log main;
     error_log @PREFIX@/var/log/nginx/build-error.log;
 
+    if ($bad_ua) {
+        return 444;
+    }
+
     return 301 https://$host$request_uri;
 }
 
@@ -46,6 +50,10 @@ server {
     access_log @PREFIX@/var/log/nginx/build-access.log main;
     error_log @PREFIX@/var/log/nginx/build-error.log;
 
+    if ($bad_ua) {
+        return 444;
+    }
+
     location / {
         # Rewrite macOS Big Sur "11.0" URLs to "11".
         location ~ ^(.*/(base|ports)-11)\.0(_.*)$ {
@@ -80,6 +88,10 @@ server {
     server_name_in_redirect on;
     access_log @PREFIX@/var/log/nginx/build-access.log main;
     error_log @PREFIX@/var/log/nginx/build-error.log;
+
+    if ($bad_ua) {
+        return 444;
+    }
 
     location / {
         proxy_pass http://localhost:8010/;

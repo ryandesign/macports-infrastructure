@@ -7,6 +7,10 @@ server {
     access_log @PREFIX@/var/log/nginx/build2-access.log main;
     error_log @PREFIX@/var/log/nginx/build2-error.log;
 
+    if ($bad_ua) {
+        return 444;
+    }
+
     return 301 https://$host$request_uri;
 }
 
@@ -45,6 +49,10 @@ server {
     server_name_in_redirect on;
     access_log @PREFIX@/var/log/nginx/build2-access.log main;
     error_log @PREFIX@/var/log/nginx/build2-error.log;
+
+    if ($bad_ua) {
+        return 444;
+    }
 
     root @PREFIX@/var/www;
 

@@ -33,6 +33,10 @@ server {
     root share/nginx/maintenance;
     error_page 500 502 503 504 /maintenance.html;
 
+    if ($bad_ua) {
+        return 444;
+    }
+
     location = /maintenance.html {
         internal;
     }
