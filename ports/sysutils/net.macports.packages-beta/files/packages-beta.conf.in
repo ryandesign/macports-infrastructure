@@ -50,6 +50,8 @@ server {
     allow 127.0.0.0/8;
     allow 172.16.0.0/12;
     allow 192.168.0.0/16;
+    allow ::1;
+    allow fc00::/7;
     deny all;
 
     server_name packages-beta.macports.org;
@@ -88,6 +90,8 @@ server {
     allow 127.0.0.0/8;
     allow 172.16.0.0/12;
     allow 192.168.0.0/16;
+    allow ::1;
+    allow fc00::/7;
     deny all;
 
     server_name packages-beta.internal.macports.net packages-beta;
