@@ -47,14 +47,16 @@ server {
 
     # Fastly
     # https://docs.fastly.com/en/guides/accessing-fastlys-ip-ranges
-    # https://api.fastly.com/public-ip-list
+    # curl -s https://api.fastly.com/public-ip-list | jq '.addresses, .ipv6_addresses'
     allow 23.235.32.0/20;
     allow 43.249.72.0/22;
     allow 103.244.50.0/24;
     allow 103.245.222.0/23;
     allow 103.245.224.0/24;
     allow 104.156.80.0/20;
-    allow 146.75.0.0/16;
+    allow 140.248.64.0/18;
+    allow 140.248.128.0/17;
+    allow 146.75.0.0/17;
     allow 151.101.0.0/16;
     allow 157.52.64.0/18;
     allow 167.82.0.0/17;
@@ -65,6 +67,8 @@ server {
     allow 185.31.16.0/22;
     allow 199.27.72.0/21;
     allow 199.232.0.0/16;
+    allow 2a04:4e40::/32;
+    allow 2a04:4e42::/32;
 
     # Local
     allow 10.0.0.0/8;

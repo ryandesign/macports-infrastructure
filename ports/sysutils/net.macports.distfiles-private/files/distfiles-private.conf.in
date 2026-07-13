@@ -47,14 +47,16 @@ server {
 
     # Fastly
     # https://docs.fastly.com/en/guides/accessing-fastlys-ip-ranges
-    # https://api.fastly.com/public-ip-list
+    # curl -s https://api.fastly.com/public-ip-list | jq '.addresses, .ipv6_addresses'
     allow 23.235.32.0/20;
     allow 43.249.72.0/22;
     allow 103.244.50.0/24;
     allow 103.245.222.0/23;
     allow 103.245.224.0/24;
     allow 104.156.80.0/20;
-    allow 146.75.0.0/16;
+    allow 140.248.64.0/18;
+    allow 140.248.128.0/17;
+    allow 146.75.0.0/17;
     allow 151.101.0.0/16;
     allow 157.52.64.0/18;
     allow 167.82.0.0/17;
@@ -65,39 +67,19 @@ server {
     allow 185.31.16.0/22;
     allow 199.27.72.0/21;
     allow 199.232.0.0/16;
+    allow 2a04:4e40::/32;
+    allow 2a04:4e42::/32;
 
-    # GitHub Actions / Azure Pipelines
-    # from my server logs
+    # GitHub Actions
+    # curl -s https://api.github.com/meta | jq .actions_macos
     allow 13.105.49.0/24;
-    allow 143.55.64.10;
-    allow 143.55.64.11;
-    allow 143.55.64.12;
-    allow 143.55.64.13;
-    allow 143.55.64.14;
-    allow 143.55.64.15;
-    allow 143.55.64.22;
-    allow 143.55.64.23;
-    allow 143.55.64.24;
-    allow 143.55.64.25;
-    allow 143.55.64.26;
-    allow 143.55.64.27;
-    allow 143.55.64.30;
-    allow 143.55.64.31;
-    allow 143.55.64.32;
-    allow 143.55.64.33;
-    allow 143.55.65.14;
-    allow 143.55.65.15;
-    allow 143.55.65.32;
-    allow 143.55.65.33;
-    allow 143.55.65.52;
-    allow 143.55.65.53;
-    allow 143.55.65.54;
-    allow 143.55.65.55;
-    allow 199.19.85.33;
-    allow 199.19.85.34;
-    allow 199.19.85.35;
-    allow 199.19.85.226;
-    allow 199.7.166.17;
+    allow 13.105.117.0/24;
+    allow 13.105.220.0/25;
+    allow 13.105.220.128/27;
+    allow 13.105.220.160/28;
+    allow 13.105.220.176/29;
+    allow 13.105.220.184/30;
+    allow 13.105.220.188/31;
 
     # Local
     allow 10.0.0.0/8;
