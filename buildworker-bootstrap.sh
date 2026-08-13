@@ -118,7 +118,8 @@ fi
 
 if ! grep -q "file://$EXTRA_PORTS_DIR" "$PREFIX"/etc/macports/sources.conf; then
   echo "$UI_PREFIX Adding $EXTRA_PORTS_DIR to sources.conf"
-  echo "file://$EXTRA_PORTS_DIR" >> "$PREFIX"/etc/macports/sources.conf
+  echo "file://$EXTRA_PORTS_DIR" > "$PREFIX"/etc/macports/sources.conf
+  cat "$PREFIX"/etc/macports/sources.conf.default >> "$PREFIX"/etc/macports/sources.conf
   "$PREFIX"/bin/port -N sync
 fi
 
