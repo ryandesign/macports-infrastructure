@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>net.macports.buildworker.http-ssh-tunnel</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>sleep 5 &amp;&amp; @PREFIX@/bin/ssh -N -i @PREFIX@/var/buildworker/ssh/id_ed25519 -o UserKnownHostsFile=@PREFIX@/var/buildworker/ssh/known_hosts -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -L 80:localhost:8080 builders@build.macports.org</string>
+    </array>
+    <key>KeepAlive</key>
+    <true/>
+    <key>ThrottleInterval</key>
+    <integer>3</integer>
+    <key>StandardErrorPath</key>
+    <string>/tmp/net.macports.buildworker.http-ssh-tunnel.err</string>
+</dict>
+</plist>

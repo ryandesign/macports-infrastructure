@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             42
+version             43
 revision            0
 
 distfiles
@@ -95,7 +95,15 @@ variant ports description {Use a ports worker} {
             ${destroot}${prefix}/var/buildworker/ports/info
 
         xinstall -m 0644 ${filespath}/${name}.ports.plist.in ${destroot}/Library/${startupitem.location}/${name}.ports.plist
-        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.ports.plist
+        xinstall -m 0644 ${filespath}/${buildbot_tunnel_plist}.in ${destroot}/Library/${startupitem.location}/${buildbot_tunnel_plist}
+        xinstall -m 0644 ${filespath}/${http_tunnel_plist}.in ${destroot}/Library/${startupitem.location}/${http_tunnel_plist}
+
+        reinplace "s|@PREFIX@|${prefix}|g" ${destroot}/Library/${startupitem.location}/${name}.ports.plist \
+            ${destroot}/Library/${startupitem.location}/${buildbot_tunnel_plist} \
+            ${destroot}/Library/${startupitem.location}/${http_tunnel_plist}
+
+        xinstall -d ${destroot}${prefix}/var/buildworker/ssh
+        xinstall -m 0640 ${filespath}/known_hosts ${destroot}${prefix}/var/buildworker/ssh/known_hosts
     }
 
     post-deactivate {
@@ -108,6 +116,8 @@ default_variants +ports
 if {[variant_isset ports]} {
     # mpbb checkout sets binpath to use this
     depends_run-append  port:libarchive
+    # ssh tunnels use this
+    depends_run-append  port:openssh
 
     append notes_create "
 sudo -H ${prefix}/bin/buildslave\
@@ -211,3 +221,21 @@ ${notes_load}
 To stop the buildworkers, run:
 ${notes_unload}
 "
+
+if {[variant_isset ports]} {
+    set buildbot_tunnel_plist ${name}.buildbot-ssh-tunnel.plist
+    set http_tunnel_plist ${name}.http-ssh-tunnel.plist
+    notes-append "
+To generate an ssh key, run:
+sudo ssh-keygen -N '' -t ed25519 -f ${prefix}/var/buildworker/ssh/id_ed25519
+
+${prefix}/var/buildworker/ssh/id_ed25519.pub will need to be added to
+~/.ssh/authorized_keys on the remote host before the ssh tunnels can be started.
+
+To start the ssh tunnel to the buildmaster, run:
+sudo launchctl load -w /Library/${startupitem.location}/${buildbot_tunnel_plist}
+
+To start the ssh tunnel to the http proxy for packages and distfiles, run:
+sudo launchctl load -w /Library/${startupitem.location}/${http_tunnel_plist}
+"
+}
