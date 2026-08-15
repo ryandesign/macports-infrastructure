@@ -46,6 +46,7 @@ set password_base   [random_password]
 variant base description {Use a base worker} {
     post-destroot {
         xinstall -d -o buildbot -g buildbot \
+            ${destroot}${prefix}/var/buildworker/base \
             ${destroot}${prefix}/var/buildworker/base/info
         xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin \
             ${destroot}${prefix}/var/buildworker/base/info
@@ -88,6 +89,7 @@ set password_ports  [random_password]
 variant ports description {Use a ports worker} {
     post-destroot {
         xinstall -d -o buildbot -g buildbot \
+            ${destroot}${prefix}/var/buildworker/ports \
             ${destroot}${prefix}/var/buildworker/ports/info
         xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin \
             ${destroot}${prefix}/var/buildworker/ports/info
@@ -149,6 +151,7 @@ variant jobs description {Use a jobs worker} {
 
     post-destroot {
         xinstall -d -o buildbot -g buildbot \
+            ${destroot}${prefix}/var/buildworker/jobs \
             ${destroot}${prefix}/var/buildworker/jobs/info
         xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin \
             ${destroot}${prefix}/var/buildworker/jobs/info
