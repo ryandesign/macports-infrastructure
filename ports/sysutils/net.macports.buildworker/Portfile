@@ -69,7 +69,7 @@ if {[variant_isset base]} {
 sudo -H -u buildbot ${prefix}/bin/buildslave\
     create-slave --allow-shutdown=signal --umask=022\
     ${prefix}/var/buildworker/base\
-    build:9989\
+    localhost:9989\
     base-${worker_id}\
     ${password_base}"
     append notes_upgrade "
@@ -113,7 +113,7 @@ if {[variant_isset ports]} {
 sudo -H ${prefix}/bin/buildslave\
     create-slave --allow-shutdown=signal --umask=022\
     ${prefix}/var/buildworker/ports\
-    build:9989\
+    localhost:9989\
     ports-${worker_id}\
     ${password_ports}"
     append notes_upgrade "
@@ -170,7 +170,7 @@ if {[variant_isset jobs]} {
 sudo -H -u buildbot ${prefix}/bin/buildslave\
     create-slave --umask=022\
     ${prefix}/var/buildworker/jobs\
-    build:9989\
+    localhost:9989\
     jobs\
     ${password_jobs}"
     append notes_upgrade "
