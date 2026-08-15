@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           net.macports 1.0
 
 name                net.macports.buildworker
-version             42
+version             43
 revision            0
 
 distfiles
@@ -46,6 +46,7 @@ set password_base   [random_password]
 variant base description {Use a base worker} {
     post-destroot {
         xinstall -d -o buildbot -g buildbot \
+            ${destroot}${prefix}/var/buildworker/base \
             ${destroot}${prefix}/var/buildworker/base/info
         xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin \
             ${destroot}${prefix}/var/buildworker/base/info
@@ -68,7 +69,7 @@ if {[variant_isset base]} {
 sudo -H -u buildbot ${prefix}/bin/buildslave\
     create-slave --allow-shutdown=signal --umask=022\
     ${prefix}/var/buildworker/base\
-    build:9989\
+    localhost:9989\
     base-${worker_id}\
     ${password_base}"
     append notes_upgrade "
@@ -88,6 +89,7 @@ set password_ports  [random_password]
 variant ports description {Use a ports worker} {
     post-destroot {
         xinstall -d -o buildbot -g buildbot \
+            ${destroot}${prefix}/var/buildworker/ports \
             ${destroot}${prefix}/var/buildworker/ports/info
         xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin \
             ${destroot}${prefix}/var/buildworker/ports/info
@@ -111,7 +113,7 @@ if {[variant_isset ports]} {
 sudo -H ${prefix}/bin/buildslave\
     create-slave --allow-shutdown=signal --umask=022\
     ${prefix}/var/buildworker/ports\
-    build:9989\
+    localhost:9989\
     ports-${worker_id}\
     ${password_ports}"
     append notes_upgrade "
@@ -149,6 +151,7 @@ variant jobs description {Use a jobs worker} {
 
     post-destroot {
         xinstall -d -o buildbot -g buildbot \
+            ${destroot}${prefix}/var/buildworker/jobs \
             ${destroot}${prefix}/var/buildworker/jobs/info
         xinstall -m 0644 -o buildbot -g buildbot ${filespath}/admin \
             ${destroot}${prefix}/var/buildworker/jobs/info
@@ -167,7 +170,7 @@ if {[variant_isset jobs]} {
 sudo -H -u buildbot ${prefix}/bin/buildslave\
     create-slave --umask=022\
     ${prefix}/var/buildworker/jobs\
-    build:9989\
+    localhost:9989\
     jobs\
     ${password_jobs}"
     append notes_upgrade "
@@ -182,6 +185,8 @@ sudo launchctl load -w /Library/${startupitem.location}/${name}.jobs.plist"
 sudo launchctl unload -w /Library/${startupitem.location}/${name}.jobs.plist"
 }
 
+set tunnel_plist org.macports.buildbot-ssh-tunnel.plist
+
 destroot {
     xinstall -d ${destroot}${prefix}/share/buildworker
 
@@ -190,6 +195,9 @@ destroot {
     reinplace "s|@ARCH@|${build_arch}|g" ${destroot}${prefix}/share/buildworker/host.sh
     reinplace "s|@CXX_LIB@|${cxx_lib}|g" ${destroot}${prefix}/share/buildworker/host.sh
     reinplace "s|@PREFIX@|${prefix}|g" ${destroot}${prefix}/share/buildworker/run.sh
+
+    xinstall -d ${destroot}/Library/LaunchAgents
+    xinstall -m 0644 ${filespath}/${tunnel_plist} ${destroot}/Library/LaunchAgents
 }
 
 notes "
@@ -207,4 +215,7 @@ ${notes_load}
 
 To stop the buildworkers, run:
 ${notes_unload}
+
+To start the ssh tunnel to the buildmaster, run:
+launchctl load -w /Library/LaunchAgents/${tunnel_plist}
 "
